@@ -114,15 +114,18 @@ export default function LessonDetailScreen() {
                   : 'Lesson Title Unavailable'
             }</Text>
             {lesson.introduction && (
-              <Text style={[styles.description, { color: mutedTextColor }]}>{
+              <View style={[styles.introductionContainer, { backgroundColor: cardBackgroundColor }]}>
+                <ThemedText type="subtitle" style={[styles.introductionTitle, { color: textColor }]}>Introduction:</ThemedText>
+                <Text style={[styles.introductionText, { color: mutedTextColor }]}>{
                 typeof lesson.introduction === 'object' && lesson.introduction.en 
                 ? lesson.introduction.en 
                 : typeof lesson.introduction === 'string' 
                   ? lesson.introduction 
                   : ''
-              }</Text>
+                }</Text>
+              </View>
             )}
-            {lesson.description && (
+            {lesson.description && lesson.description.trim() !== '' && (
               <Text style={[styles.description, { color: mutedTextColor }]}>{lesson.description}</Text>
             )}
             
@@ -189,8 +192,24 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 16,
-    marginBottom: 16, // Adjusted margin
+    marginBottom: 16,
     textAlign: 'center',
+  },
+  introductionContainer: {
+    marginTop: 16,
+    marginBottom: 16,
+    padding: 12,
+    // backgroundColor: cardBackgroundColor, // Moved to inline style
+    borderRadius: 8,
+  },
+  introductionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  introductionText: {
+    fontSize: 16,
+    lineHeight: 24, // Improve readability
   },
   rulesContainer: {
     marginTop: 16,
