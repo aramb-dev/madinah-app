@@ -47,7 +47,7 @@ export default function LessonsScreen() {
       <View style={styles.container}>
         <Text style={styles.title}>Madinah Arabic Lessons</Text>
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-        
+
         {books.map((book, index) => (
           <View key={book.id} style={styles.bookItem}>
             <Text style={styles.bookTitle}>{book.title}</Text>
@@ -59,7 +59,7 @@ export default function LessonsScreen() {
             </Text>
           </View>
         ))}
-        
+
         {books.length === 0 && (
           <Text style={styles.noDataText}>No books available.</Text>
         )}
