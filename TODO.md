@@ -23,9 +23,11 @@ This task list is managed by the ExpoDev agent and is based on the `TECHNICAL_IM
 ## Phase 3: Data Display and Feature Implementation
 
 - [ ] **Task 4: Integrate Data Fetching**
-  - Use React Query and the API client to fetch the list of books and lessons for the main screen.
-  - Display the fetched lessons using the `LessonListItem` component.
-  - Implement the detailed lesson view to display content for a selected lesson.
+  - [x] Use React Query and the API client to fetch the list of books for the main screen.
+  - [x] Fix bug where `books.map` is called on `undefined`.
+  - [ ] Display the fetched books on the main screen.
+  - [ ] Fetch and display lessons for a selected book.
+  - [ ] Implement the detailed lesson view to display content for a selected lesson.
 
 - [ ] **Task 5: Implement In-App Changelog**
   - Create a new screen for the changelog, accessible from the Settings tab.

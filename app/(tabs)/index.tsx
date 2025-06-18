@@ -13,7 +13,7 @@ export default function LessonsScreen() {
       try {
         setLoading(true);
         const data = await api.getBooks();
-        setBooks(data);
+        setBooks(Array.isArray(data) ? data : []);
       } catch (err) {
         setError('Failed to load books');
         console.error('Error fetching books:', err);

@@ -25,7 +25,7 @@ Your entire development process must be guided by the specifications laid out in
 
 ### 2.2. Version Control (Git)
 - **Commits**: You **must** commit your changes to Git after each single task is completed.
-- **Conventional Commits**: All commit messages **must** follow the Conventional Commits specification.
+- **Conventional Commits**: All commit messages **must** follow the Conventional Commits specification. When using `git commit -am`, the commit message **must** be enclosed in quotes (e.g., `git commit -am "feat(api): implement client"`).
   - **Format**: `type(scope): description`
   - **Examples**:
     - `feat(api): implement client for book endpoints`
