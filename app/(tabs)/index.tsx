@@ -1,5 +1,5 @@
 import { StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
-import { Text, View } from '@/components/Themed';
+import { Text, View, useThemeColor } from '@/components/Themed'; // Import useThemeColor
 import { useEffect, useState } from 'react';
 import { api, Book } from '@/api/client';
 import { useRouter } from 'expo-router'; // Import useRouter
@@ -48,26 +48,31 @@ export default function LessonsScreen() {
     router.push(`/lessons/${bookId}`);
   };
 
+  const bookItemBackground = useThemeColor({}, 'card'); // Example usage for book item background
+  const textColor = useThemeColor({}, 'text');
+  const mutedColor = useThemeColor({}, 'muted');
+  const separatorColor = useThemeColor({}, 'border');
+
   return (
     <ScrollView style={styles.scrollContainer}>
       <View style={styles.container}>
-        <Text style={styles.title}>Madinah Arabic Lessons</Text>
-        <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+        <Text style={[styles.title, { color: textColor }]}>Madinah Arabic Lessons</Text>
+        <View style={[styles.separator, { backgroundColor: separatorColor }]} />
 
         {books.map((book, index) => (
-          <TouchableOpacity key={book.id} onPress={() => handleBookPress(book.id)} style={styles.bookItem}>
-            <Text style={styles.bookTitle}>{book.title}</Text>
+          <TouchableOpacity key={book.id} onPress={() => handleBookPress(book.id)} style={[styles.bookItem, { backgroundColor: bookItemBackground }]}>
+            <Text style={[styles.bookTitle, { color: textColor }]}>{book.title}</Text>
             {book.description && (
-              <Text style={styles.bookDescription}>{book.description}</Text>
+              <Text style={[styles.bookDescription, { color: mutedColor }]}>{book.description}</Text>
             )}
-            <Text style={styles.lessonCount}>
+            <Text style={[styles.lessonCount, { color: mutedColor }]}>
               {book.lessons?.length || 0} lessons
             </Text>
           </TouchableOpacity>
         ))}
 
         {books.length === 0 && (
-          <Text style={styles.noDataText}>No books available.</Text>
+          <Text style={[styles.noDataText, { color: mutedColor }]}>No books available.</Text>
         )}
       </View>
     </ScrollView>
@@ -81,54 +86,51 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'flex-start',
-    paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingHorizontal: 16, // Adjusted padding
+    paddingTop: 24, // Adjusted padding
+    paddingBottom: 24, // Added padding at the bottom
   },
   title: {
-    fontSize: 24,
+    fontSize: 28, // Increased font size
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 16, // Increased margin
   },
   separator: {
-    marginVertical: 20,
+    marginVertical: 24, // Increased margin
     height: 1,
     width: '100%',
   },
   bookItem: {
     width: '100%',
-    marginBottom: 20,
-    padding: 15,
-    borderRadius: 8,
-    backgroundColor: 'rgba(0,0,0,0.05)', // Consider using ThemeColors here
+    marginBottom: 16, // Adjusted margin
+    padding: 20, // Increased padding
+    borderRadius: 12, // Increased border radius
+    // backgroundColor is now set dynamically
   },
   bookTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
+    fontSize: 20, // Increased font size
+    fontWeight: '600', // Adjusted font weight
+    marginBottom: 8, // Increased margin
   },
   bookDescription: {
-    fontSize: 14,
-    opacity: 0.7,
-    marginBottom: 5,
+    fontSize: 15, // Increased font size
+    marginBottom: 8, // Increased margin
   },
   lessonCount: {
-    fontSize: 12,
-    opacity: 0.6,
+    fontSize: 13, // Increased font size
   },
   loadingText: {
-    marginTop: 10,
+    marginTop: 12, // Adjusted margin
     fontSize: 16,
   },
   errorText: {
     fontSize: 16,
-    color: 'red',
+    // color: 'red', // Color will be handled by theme or can be set explicitly if needed for errors
     textAlign: 'center',
   },
   noDataText: {
     fontSize: 16,
-    opacity: 0.7,
     textAlign: 'center',
-    marginTop: 20,
+    marginTop: 24, // Increased margin
   },
 });

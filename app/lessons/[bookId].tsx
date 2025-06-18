@@ -56,23 +56,34 @@ export default function BookLessonsScreen() {
     );
   }
 
+  const itemBackgroundColor = useThemeColor({}, 'card');
+  const textColor = useThemeColor({}, 'text');
+  const mutedTextColor = useThemeColor({}, 'muted');
+  const separatorColor = useThemeColor({}, 'border');
+
   return (
     <ScrollView style={styles.scrollContainer}>
       <View style={styles.container}>
-        <ThemedText type="title" style={styles.title}>{bookTitle}</ThemedText>
-        <ThemedText style={styles.subtitle}>Lessons</ThemedText>
-        
-        {lessons.length > 0 ? (
-          lessons.map((lesson) => (
-            <LessonListItem
-              key={lesson.id}
-              id={lesson.id}
-              title={lesson.title}
-              onPress={() => router.push(`/lessons/${bookId}/${lesson.id}`)} // Navigate to individual lesson screen
-            />
-          ))
-        ) : (
-          <ThemedText style={styles.noDataText}>No lessons found for this book.</ThemedText>
+        {book && (
+          <Text style={[styles.title, { color: textColor }]}>{book.title} - Lessons</Text>
+        )}
+        <View style={[styles.separator, { backgroundColor: separatorColor }]} />
+
+        {lessons.map((lesson, index) => (
+          <TouchableOpacity
+            key={lesson.id}
+            onPress={() => handleLessonPress(lesson.id)}
+            style={[styles.lessonItem, { backgroundColor: itemBackgroundColor }]} // Dynamic background
+          >
+            <Text style={[styles.lessonTitle, { color: textColor }]}>{lesson.title}</Text>
+            {lesson.description && (
+              <Text style={[styles.lessonDescription, { color: mutedTextColor }]}>{lesson.description}</Text>
+            )}
+          </TouchableOpacity>
+        ))}
+
+        {lessons.length === 0 && !loading && (
+          <Text style={[styles.noDataText, { color: mutedTextColor }]}>No lessons available for this book.</Text>
         )}
       </View>
     </ScrollView>
@@ -85,35 +96,48 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: 20,
-  },
-  centeredContainer: {
-    flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    paddingHorizontal: 16,
+    paddingTop: 24,
+    paddingBottom: 24,
   },
   title: {
-    marginBottom: 5,
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 16,
     textAlign: 'center',
   },
-  subtitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 15,
-    textAlign: 'center',
-    opacity: 0.8,
+  separator: {
+    marginVertical: 24,
+    height: 1,
+    width: '100%',
+  },
+  lessonItem: {
+    width: '100%',
+    marginBottom: 16,
+    padding: 20,
+    borderRadius: 12,
+    // backgroundColor is now dynamic
+  },
+  lessonTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  lessonDescription: {
+    fontSize: 15,
   },
   loadingText: {
-    marginTop: 10,
+    marginTop: 12,
+    fontSize: 16,
   },
   errorText: {
-    color: 'red',
+    fontSize: 16,
     textAlign: 'center',
   },
   noDataText: {
+    fontSize: 16,
     textAlign: 'center',
-    marginTop: 20,
-    opacity: 0.7,
+    marginTop: 24,
   },
 });

@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-nat
 import { useLocalSearchParams } from 'expo-router';
 import { api, Lesson } from '@/api/client'; // Assuming Lesson type includes content
 import { ThemedText } from '@/components/ThemedText';
-
 export default function LessonDetailScreen() {
   const { bookId, lessonId } = useLocalSearchParams<{ bookId: string; lessonId: string }>();
   const [lesson, setLesson] = useState<Lesson | null>(null);
@@ -47,13 +46,43 @@ export default function LessonDetailScreen() {
     );
   }
 
+  const backgroundColor = useThemeColor({}, 'background');
+  const textColor = useThemeColor({}, 'text');
+  const mutedTextColor = useThemeColor({}, 'muted');
+  const cardBackgroundColor = useThemeColor({}, 'card');
+  const separatorColor = useThemeColor({}, 'border');
+
   return (
-    <ScrollView style={styles.scrollContainer}>
+    <ScrollView style={[styles.scrollContainer, { backgroundColor }]}>
       <View style={styles.container}>
-        <ThemedText type="title" style={styles.title}>{lesson.title}</ThemedText>
-        {/* Assuming lesson.content holds the main text of the lesson */}
-        <ThemedText style={styles.contentText}>{lesson.content || 'No content available for this lesson.'}</ThemedText>
-        {/* Add more detailed rendering based on lesson structure if needed */}
+        {lesson && (
+          <>
+            <Text style={[styles.title, { color: textColor }]}>{lesson.title}</Text>
+            {lesson.description && (
+              <Text style={[styles.description, { color: mutedTextColor }]}>{lesson.description}</Text>
+            )}
+            <View style={[styles.separator, { backgroundColor: separatorColor }]} />
+
+            {lesson.content && lesson.content.length > 0 ? (
+              lesson.content.map((item, index) => (
+                <View key={index} style={[styles.contentItem, { backgroundColor: cardBackgroundColor }]}>
+                  {item.arabic && (
+                    <ThemedText type="arabic" style={[styles.arabicText, { color: textColor }]}>
+                      {item.arabic}
+                    </ThemedText>
+                  )}
+                  {item.translation && (
+                    <Text style={[styles.translationText, { color: mutedTextColor }]}>
+                      {item.translation}
+                    </Text>
+                  )}
+                </View>
+              ))
+            ) : (
+              <Text style={[styles.noDataText, { color: mutedTextColor }]}>No content available for this lesson.</Text>
+            )}
+          </>
+        )}
       </View>
     </ScrollView>
   );
@@ -65,27 +94,53 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: 20,
-  },
-  centeredContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
+    paddingHorizontal: 16,
+    paddingTop: 24,
+    paddingBottom: 24,
   },
   title: {
-    marginBottom: 15,
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 8,
     textAlign: 'center',
+  },
+  description: {
+    fontSize: 16,
+    marginBottom: 24,
+    textAlign: 'center',
+  },
+  separator: {
+    marginVertical: 24,
+    height: 1,
+    width: '100%',
+  },
+  contentItem: {
+    marginBottom: 16,
+    padding: 20,
+    borderRadius: 12,
+  },
+  arabicText: {
+    fontSize: 22, // Adjusted for Arabic font
+    lineHeight: 36, // Adjusted for Arabic font readability
+    textAlign: 'right', // Standard for Arabic text
+    marginBottom: 8,
+  },
+  translationText: {
+    fontSize: 15,
+    fontStyle: 'italic',
   },
   loadingText: {
-    marginTop: 10,
-  },
-  errorText: {
-    color: 'red',
+    marginTop: 12,
+    fontSize: 16,
     textAlign: 'center',
   },
-  contentText: {
+  errorText: {
     fontSize: 16,
-    lineHeight: 24,
+    textAlign: 'center',
+  },
+  noDataText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 24,
   },
 });
