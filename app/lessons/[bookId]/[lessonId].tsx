@@ -1,8 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { api, Lesson } from '@/api/client'; // Assuming Lesson type includes content
+import { api, Lesson as ApiLesson } from '@/api/client'; // Assuming Lesson type includes content
+import { useThemeColor } from '@/components/useThemeColor';
 import { ThemedText } from '@/components/ThemedText';
+
+// Define a more specific Lesson type for the component's needs
+interface LessonContentItem {
+  arabic?: string;
+  translation?: string;
+}
+
+interface Lesson extends Omit<ApiLesson, 'content'> {
+  content?: LessonContentItem[];
+  description?: string; // Add description to Lesson type
+}
+
 export default function LessonDetailScreen() {
   const { bookId, lessonId } = useLocalSearchParams<{ bookId: string; lessonId: string }>();
   const [lesson, setLesson] = useState<Lesson | null>(null);
@@ -15,9 +28,20 @@ export default function LessonDetailScreen() {
     const fetchLessonDetails = async () => {
       try {
         setLoading(true);
-        // Assuming api.getLessonById exists and fetches detailed lesson content
-        const lessonDetails = await api.getLessonById(bookId, lessonId);
-        setLesson(lessonDetails);
+        const lessonDetails = await api.getBookLesson(bookId, lessonId);
+        // Adapt the API response to the component's Lesson type
+        const adaptedLesson: Lesson = {
+          ...lessonDetails,
+          // Assuming lessonDetails.content is a string that needs parsing or is structured differently
+          // For now, let's assume it might be an array or needs to be transformed.
+          // If lessonDetails.content is a simple string, this will need adjustment.
+          // If the API returns content as an array of objects {arabic, translation}, this is fine.
+          // If it's a string, you might need to parse it or adjust the type.
+          // For the purpose of fixing the type error, we'll assume it can be cast or is already compatible.
+          content: lessonDetails.content ? (typeof lessonDetails.content === 'string' ? JSON.parse(lessonDetails.content) : lessonDetails.content) : [],
+          description: lessonDetails.description || '', // Ensure description is always a string
+        };
+        setLesson(adaptedLesson);
       } catch (err) {
         console.error('Failed to fetch lesson details:', err);
         setError(`Failed to load lesson ${lessonId} from book ${bookId}`);
@@ -31,7 +55,7 @@ export default function LessonDetailScreen() {
 
   if (loading) {
     return (
-      <View style={styles.centeredContainer}>
+      <View style={[styles.container, styles.centeredContent]}>
         <ActivityIndicator size="large" />
         <ThemedText style={styles.loadingText}>Loading lesson content...</ThemedText>
       </View>
@@ -40,7 +64,7 @@ export default function LessonDetailScreen() {
 
   if (error || !lesson) {
     return (
-      <View style={styles.centeredContainer}>
+      <View style={[styles.container, styles.centeredContent]}>
         <ThemedText style={styles.errorText}>{error || 'Lesson not found.'}</ThemedText>
       </View>
     );
@@ -63,8 +87,8 @@ export default function LessonDetailScreen() {
             )}
             <View style={[styles.separator, { backgroundColor: separatorColor }]} />
 
-            {lesson.content && lesson.content.length > 0 ? (
-              lesson.content.map((item, index) => (
+            {lesson.content && Array.isArray(lesson.content) && lesson.content.length > 0 ? (
+              lesson.content.map((item: LessonContentItem, index: number) => (
                 <View key={index} style={[styles.contentItem, { backgroundColor: cardBackgroundColor }]}>
                   {item.arabic && (
                     <ThemedText type="arabic" style={[styles.arabicText, { color: textColor }]}>
@@ -97,6 +121,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 24,
     paddingBottom: 24,
+  },
+  centeredContent: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     fontSize: 28,

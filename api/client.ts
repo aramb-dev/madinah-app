@@ -13,11 +13,17 @@ export interface Book {
   lessons?: Lesson[];
 }
 
+export interface LessonContentItem {
+  arabic?: string;
+  translation?: string;
+}
+
 export interface Lesson {
   id: string;
   bookId: string;
   title: string;
-  content?: string;
+  description?: string; // Added description
+  content?: string | LessonContentItem[]; // Made content more flexible
   rules?: Rule[];
 }
 
