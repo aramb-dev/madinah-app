@@ -26,6 +26,14 @@ interface Lesson extends Omit<ApiLesson, 'content' | 'rules'> { // Exclude rules
   rules?: Rule[]; // Add rules
 }
 
+// Helper function to get localized text
+const getLocalizedText = (localizedString: ApiLesson['title'] | ApiLesson['introduction'] | undefined, lang: 'en' | 'ar' = 'en'): string => {
+  if (!localizedString) return '';
+  if (typeof localizedString === 'string') return localizedString;
+  // Prioritize requested language, then fallback
+  return localizedString[lang] || localizedString.ar || localizedString.en || ''; 
+};
+
 export default function LessonDetailScreen() {
   const { bookId, lessonId } = useLocalSearchParams<{ bookId: string; lessonId: string }>();
   const [lesson, setLesson] = useState<Lesson | null>(null);
@@ -99,40 +107,33 @@ export default function LessonDetailScreen() {
     );
   }
 
-  // useThemeColor calls moved to top
+  const titleTextToDisplay = getLocalizedText(lesson.title, 'en');
+  const introTextToDisplay = getLocalizedText(lesson.introduction, 'en');
+  const descriptionTextToDisplay = lesson.description || ''; // Already a string
+
+  const hasDisplayableRules = lesson.rules && Array.isArray(lesson.rules) && lesson.rules.length > 0;
+  const hasDisplayableContentItems = lesson.content && Array.isArray(lesson.content) && lesson.content.length > 0;
 
   return (
     <ScrollView style={[styles.scrollContainer, { backgroundColor }]}>
       <View style={styles.container}>
         {lesson && (
           <>
-            <Text style={[styles.title, { color: textColor }]}>{
-              typeof lesson.title === 'object' && lesson.title.en 
-                ? lesson.title.en 
-                : typeof lesson.title === 'string' 
-                  ? lesson.title 
-                  : 'Lesson Title Unavailable'
-            }</Text>
-            {lesson.introduction && (
+            <Text style={[styles.title, { color: textColor }]}>{titleTextToDisplay || 'Lesson Title Unavailable'}</Text>
+            {introTextToDisplay.trim() !== '' && (
               <View style={[styles.introductionContainer, { backgroundColor: cardBackgroundColor }]}>
                 <ThemedText type="subtitle" style={[styles.introductionTitle, { color: textColor }]}>Introduction:</ThemedText>
-                <Text style={[styles.introductionText, { color: mutedTextColor }]}>{
-                typeof lesson.introduction === 'object' && lesson.introduction.en 
-                ? lesson.introduction.en 
-                : typeof lesson.introduction === 'string' 
-                  ? lesson.introduction 
-                  : ''
-                }</Text>
+                <Text style={[styles.introductionText, { color: mutedTextColor }]}>{introTextToDisplay}</Text>
               </View>
             )}
-            {lesson.description && lesson.description.trim() !== '' && (
-              <Text style={[styles.description, { color: mutedTextColor }]}>{lesson.description}</Text>
+            {descriptionTextToDisplay.trim() !== '' && (
+              <Text style={[styles.description, { color: mutedTextColor }]}>{descriptionTextToDisplay}</Text>
             )}
             
-            {lesson.rules && Array.isArray(lesson.rules) && lesson.rules.length > 0 && (
+            {hasDisplayableRules && (
               <View style={styles.rulesContainer}>
                 <ThemedText type="subtitle" style={[styles.rulesTitle, { color: textColor }]}>Rules:</ThemedText>
-                {lesson.rules.map((rule, index) => (
+                {lesson.rules!.map((rule, index) => (
                   <View key={rule.id || `rule-${index}`} style={[styles.ruleItem, { backgroundColor: cardBackgroundColor }]}>
                     <ThemedText type="subtitle" style={[styles.ruleName, { color: textColor }]}>{rule.name}</ThemedText>
                     <Text style={[styles.ruleExplanation, { color: mutedTextColor }]}>{rule.explanation}</Text>
@@ -143,10 +144,12 @@ export default function LessonDetailScreen() {
               </View>
             )}
 
-            <View style={[styles.separator, { backgroundColor: separatorColor }]} />
+            {(hasDisplayableRules || hasDisplayableContentItems) && 
+              <View style={[styles.separator, { backgroundColor: separatorColor }]} />
+            }
 
-            {lesson.content && Array.isArray(lesson.content) && lesson.content.length > 0 ? (
-              lesson.content.map((item: LessonContentItem, index: number) => (
+            {hasDisplayableContentItems && (
+              lesson.content!.map((item: LessonContentItem, index: number) => (
                 <View key={index} style={[styles.contentItem, { backgroundColor: cardBackgroundColor }]}>
                   {item.arabic && (
                     <ThemedText type="arabic" style={[styles.arabicText, { color: textColor }]}>
@@ -160,7 +163,9 @@ export default function LessonDetailScreen() {
                   )}
                 </View>
               ))
-            ) : (
+            )}
+
+            {!hasDisplayableRules && !hasDisplayableContentItems && (
               <Text style={[styles.noDataText, { color: mutedTextColor }]}>No content available for this lesson.</Text>
             )}
           </>
