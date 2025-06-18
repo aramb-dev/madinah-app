@@ -25,7 +25,7 @@ This task list is managed by the ExpoDev agent and is based on the `TECHNICAL_IM
 - [ ] **Task 4: Integrate Data Fetching**
   - [x] Use React Query and the API client to fetch the list of books for the main screen.
   - [x] Fix bug where `books.map` is called on `undefined`.
-  - [ ] Display the fetched books on the main screen.
+  - [x] Display the fetched books on the main screen.
   - [ ] Fetch and display lessons for a selected book.
   - [ ] Implement the detailed lesson view to display content for a selected lesson.
 
