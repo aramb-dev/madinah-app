@@ -42,42 +42,130 @@ The application will be a client-side application that communicates with a backe
 -   **`GET /api/lessons`**: Get all lessons from all books.
 -   **`GET /api/lesson-titles`**: Get titles of all lessons across all books.
 
-#### Metadata & App Info
+#### Metadata
 -   **`GET /api/metadata`**: Get global metadata about all books and lessons.
--   **~~`GET /api/changelog`~~**: Get a list of changes and version history for the app. (This endpoint is no longer used; changelog is local)
 -   **`GET /api/books/{bookId}/metadata`**: Get metadata for a specific book.
 -   **`GET /api/books/{bookId}/lesson-titles`**: Get titles of all lessons in a specific book.
 -   **`GET /api/books/{bookId}/rule-count`**: Get rule statistics for a specific book.
 
 ### Data Structures
-_(Data structures for Book, Lesson, and Rule remain the same)_
+
+#### Book
+```json
+{
+  "id": "string",
+  "title": {
+    "ar": "string",
+    "en": "string"
+  },
+  "description": {
+    "arabic": "string",
+    "english": "string"
+  },
+  "lessons": "Array<Lesson>",
+  "available": "boolean",
+  "comingSoon": "boolean (optional)"
+}
+```
+
+#### Lesson
+```json
+{
+  "id": "string",
+  "title": {
+    "ar": "string",
+    "en": "string"
+  },
+  "introduction": {
+    "arabic": "string",
+    "english": "string"
+  },
+  "rules": "Array<Rule>"
+}
+```
+
+#### Rule
+```json
+{
+  "name": "string",
+  "arabicText": "string",
+  "explanation": "string"
+}
+```
 
 ## 5. Key Features and Implementation
 
 ### 5.1. Lesson and Content Display
-_(Implementation details remain the same)_
+
+-   **Description:** The app will display lessons with Arabic text and translations fetched from the API.
+-   **Implementation:**
+    -   Use `expo-font` to load custom Arabic fonts for proper rendering.
+    -   Use React Query to fetch lesson content from the API. The data will be cached to allow for offline viewing.
+    -   A `FlashList` from Shopify or a `FlatList` will be used for efficient rendering of long lists of content.
 
 ### 5.2. Interactive Exercises
-_(Implementation details remain the same)_
+
+-   **Description:** The app will feature interactive exercises to test the user's knowledge.
+-   **Implementation:**
+    -   Create custom components for multiple-choice questions, fill-in-the-blanks, and other exercise types.
+    -   User's answers and results will be managed by React state and can be submitted to the API to track progress.
 
 ### 5.3. Navigation
-_(Implementation details remain the same)_
+
+-   **Description:** The app will have a clear and intuitive navigation structure.
+-   **Implementation:**
+    -   Use Expo Router for file-based routing.
+    -   A Tab Navigator for the main sections (e.g., Lessons, Vocabulary, Settings).
+    -   A Stack Navigator for navigating from the lesson list to individual lesson screens.
 
 ### 5.4. Data Management & Synchronization
-_(Implementation details remain the same)_
 
-### 5.5. In-App Changelog
--   **Description:** A dedicated screen within the app to show users what's new in each version.
+-   **Description:** The app's content will be sourced from the API in the `aramb-dev/madinah` repository to ensure synchronization with the website.
 -   **Implementation:**
-    -   Create a new screen, accessible from the "Settings" tab.
-    -   The screen will load data from a local `changelog.json` file located in the `assets` directory.
-    -   The changelog data will be displayed in a `ScrollView`, showing version numbers, dates, and a list of changes. App updates will be required to update the changelog.
+    -   Define API client functions to interact with the Next.js API endpoints.
+    -   Use a data fetching library like React Query to handle API requests, caching, and background synchronization.
+    -   Implement a caching strategy to store fetched data locally, allowing for offline access. For example, when a user views a lesson, the content is saved to local storage for future offline use.
 
 ## 6. Project Structure
-_(Project structure remains the same)_
+
+A suggested project structure using Expo Router:
+
+```
+/app
+  - (tabs)
+    - _layout.tsx       # Tab navigator layout
+    - index.tsx         # Lessons list screen
+    - vocabulary.tsx    # Vocabulary screen
+    - settings.tsx      # Settings screen
+  - lesson
+    - [lessonId].tsx    # Dynamic route for individual lessons
+  - _layout.tsx         # Root layout
+  - modal.tsx           # Example modal screen
+/api
+  - client.ts           # API client setup (e.g., Axios instance with base URL)
+  - lessons.ts          # Functions for fetching lesson data
+/assets
+  - fonts/
+    - ArabicFont.ttf    # Custom Arabic font
+  - images/
+/components
+  - StyledText.tsx
+  - Exercise.tsx
+  - LessonListItem.tsx
+/constants
+  - Colors.ts
+  - Styles.ts
+/hooks
+  - useCachedResources.ts
+  - useLessons.ts       # Hook for fetching lesson data with React Query
+```
 
 ## 7. Development Workflow
-_(Development workflow remains the same)_
+
+-   **Linting:** Use ESLint with plugins for React Native and TypeScript to maintain code quality.
+-   **Formatting:** Use Prettier for consistent code formatting.
+-   **Version Control:** Use Git and host the repository on GitHub.
+-   **API Development:** The API will be developed and maintained as part of the `aramb-dev/madinah` Next.js project.
 
 ## 8. Next Steps
 
@@ -85,6 +173,5 @@ _(Development workflow remains the same)_
 2.  **Develop UI components:** Create the necessary UI components for displaying lessons and exercises.
 3.  **Implement navigation:** Set up the navigation structure using Expo Router.
 4.  **Integrate data fetching:** Use React Query and the API client to fetch, cache, and display the content from the API.
-5.  **Implement Changelog:** Create the changelog screen and load data from the local `assets/changelog.json` file.
 
 This document provides a starting point for the development of the Madinah Arabic app. It can be expanded and refined as the project progresses.
