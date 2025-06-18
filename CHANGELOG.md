@@ -4,26 +4,83 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.0.6] - Undated
+### Added
+- Display book name in book-level screen titles.
+- Improve dynamic title logic and fetch book details.
+- Add dynamic screen title and restructure lesson detail view.
+- Add exercises tab and clarify screen titles.
 
 ### Changed
-- Updated book-level screens to display the book name in the header title.
+- Revert to using static changelog data from assets.
+- Move changelog logic to use git log data.
+- Remove unused lesson detail fetching logic and rendering.
+- Improve localization handling and content display logic.
+
+## [0.0.5] - Undated
+### Added
+- Improve introduction section styling and readability.
+- Add rules and introduction to lesson detail screen.
+- Update getBookById to return ApiResponse<Book>.
 
 ### Fixed
-- Resolved diagnostic errors in the book lessons screen (`app/lessons/[bookId].tsx`) related to StyleSheet declaration and JSX structure.
+- Ensure rules are copied over in lesson adaptation.
+- Handle api response structure and error cases.
+- Initialize book title with loading message and simplify title logic.
+- Handle unexpected response structure in getBookLessons.
 
 ### Changed
-- Ensured lesson detail screen title dynamically displays "Book {ID} - Lesson {ID}" or the lesson title.
-- Improved logic for dynamic screen titles on lesson detail pages for clarity and robustness.
-- Updated lesson detail screen to display book name instead of book ID in the title.
+- Update rule interface and display in lesson view.
+- Move useThemeColor calls to top level for better readability.
+
+## [0.0.4] - Undated
+### Added
+- Update book and lesson types to support localized strings.
 
 ### Fixed
-- Corrected React Hook order in LessonsScreen to prevent rendering errors.
+- Improve error handling and add debug logging for book lessons.
+- Handle edge cases in book lessons fetching and display.
+- Improve error handling and response parsing in apiRequest.
+- Move React Hooks to top level to prevent rendering errors.
+- Correct Amiri-Regular.ttf font path in _layout.tsx.
+
+### Changed
+- Improve theme handling and error states in book lessons screen.
+
+## [0.0.3] - Undated
+### Added
+- Add arabic font families including Amiri, Kufi, IBM, Baloo, Noto and Playpen.
+- Add muted, card and border color definitions.
 
 ### Fixed
-- Corrected font path for `Amiri-Regular.ttf` in `app/_layout.tsx` to resolve bundling errors.
-- Resolved TypeScript errors in `[lessonId].tsx` by correcting API usage, type definitions, and imports.
-- Fixed 'Cannot find module @/components/useThemeColor' error by creating `hooks/useThemeColor.ts` and updating import path.
-- Added 'muted', 'card', and 'border' color definitions to `constants/Colors.ts` to resolve `useThemeColor` errors.
-- Resolved multiple TypeScript errors in the book lessons screen (`app/lessons/[bookId].tsx`).
-- Corrected usage of `useThemeColor` with valid color names in `app/lessons/[bookId].tsx`.
+- Resolve useThemeColor module not found error.
+- Resolve TS errors in lesson detail screen.
+- Correct theme color usage in book lessons screen.
+- Resolve TypeScript errors and improve book lessons screen.
+
+### Changed
+- Update color variable names and values for consistency.
+
+## [0.0.2] - Undated
+### Added
+- Improve lesson screens with dynamic theming and styling.
+- Implement React Query caching with AsyncStorage.
+- Implement ThemedText and add Amiri Arabic font.
+
+### Fixed
+- Correct ThemedText import path in BookLessonsScreen.
+
+## [0.0.1] - Undated
+### Added
+- Implement detailed lesson view and navigation.
+- Implement navigation to book lessons screen.
+- Create basic Exercise component placeholder.
+- Create LessonListItem component.
+- Switch to local changelog data from assets.
+- Implement tab navigation with lessons, vocabulary, and settings.
+- Implement API client for all endpoints.
+
+### Fixed
+- Ensure books state is array and update agent prompt for git commits.
+- Fix imports.
+- Remove duplicate FontAwesome import that was causing SyntaxError during iOS bundling.
