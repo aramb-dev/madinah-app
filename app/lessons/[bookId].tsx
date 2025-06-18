@@ -166,7 +166,7 @@ export default function BookLessonsScreen() {
         <ScrollView style={[styles.scrollContainer, { backgroundColor: itemBackgroundColor /* Use theme background for scroll view */ }]} >
           <View style={styles.container}>
             {/* Always render the title Text component, bookTitle state handles loading/error/actual title */}
-            <Text style={[styles.title, { color: textColor }]}>{bookTitle === 'Loading title...' || bookTitle === 'Error Loading Data' || bookTitle === 'Book Title Unavailable' ? bookTitle : `${bookTitle} - Lessons`}</Text>
+            <ThemedText type="title" style={[styles.title, { color: textColor }]}>{bookTitle === 'Loading title...' || bookTitle === 'Error Loading Data' || bookTitle === 'Book Title Unavailable' ? bookTitle : `${bookTitle} - Lessons`}</ThemedText>
             <View style={[styles.separator, { backgroundColor: separatorColor }]} />
 
             {lessons && lessons.length > 0 ? lessons.map((lesson, index) => (
@@ -176,14 +176,17 @@ export default function BookLessonsScreen() {
                 style={[styles.lessonItem, { backgroundColor: itemBackgroundColor }]} // Dynamic background
               >
                 {/* Assuming lesson.title is also a LocalizedString */}
-                <Text style={[styles.lessonTitle, { color: textColor }]}>{
+                <ThemedText type="arabic" style={[styles.lessonTitle, { color: textColor }]}>
+                  {typeof lesson.title === 'object' && lesson.title.en ? lesson.title.en :
+                  typeof lesson.title === 'string' ? lesson.title : 'Lesson Title Unavailable'}
+                </ThemedText>
                   typeof lesson.title === 'object' && lesson.title.en ? lesson.title.en :
                   typeof lesson.title === 'string' ? lesson.title : 'Lesson Title Unavailable'
                 }</Text>
                 {/* lesson.description removed as it does not exist on Lesson type */}
               </TouchableOpacity>
             )) : (
-              <Text style={[styles.noDataText, { color: mutedTextColor }]}>No lessons available for this book.</Text>
+              <ThemedText style={[styles.noDataText, { color: mutedTextColor }]}>No lessons available for this book.</ThemedText>
             )}
           </View>
         </ScrollView>

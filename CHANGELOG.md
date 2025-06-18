@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Load all available Arabic fonts (Amiri, Playpen Sans Arabic, Noto Sans Arabic, IBM Plex Sans Arabic, Noto Kufi Arabic, Baloo Bhaijaan 2, Noto Naskh Arabic).
 - Update ThemedText component to use selected font for Arabic text rendering.
 
+### Fixed
+- Resolved bug where selected font was not applying in lesson view.
+
 ## [0.0.6] - Undated
 ### Added
 - Display book name in book-level screen titles.

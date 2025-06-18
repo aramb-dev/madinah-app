@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   },
   arabic: {
     fontSize: 20, // Adjust size as needed
-    fontFamily: 'Amiri-Regular', // Specify the Arabic font
+    // fontFamily will be set dynamically
     lineHeight: 30, // Adjust line height for Arabic text
   },
 });

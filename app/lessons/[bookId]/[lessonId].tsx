@@ -179,15 +179,15 @@ export default function LessonDetailScreen() {
           )}
           {!loading && !error && lesson && (
             <>
-              <Text style={[styles.title, { color: textColor }]}>{getLocalizedText(lesson.title, 'en') || 'Lesson Title Unavailable'}</Text>
+              <ThemedText type="title" style={[styles.title, { color: textColor }]}>{getLocalizedText(lesson.title, 'en') || 'Lesson Title Unavailable'}</ThemedText>
               {getLocalizedText(lesson.introduction, 'en').trim() !== '' && (
                 <View style={[styles.introductionContainer, { backgroundColor: cardBackgroundColor }]}>
                   <ThemedText type="subtitle" style={[styles.introductionTitle, { color: textColor }]}>Introduction:</ThemedText>
-                  <Text style={[styles.introductionText, { color: mutedTextColor }]}>{getLocalizedText(lesson.introduction, 'en')}</Text>
+                  <ThemedText style={[styles.introductionText, { color: mutedTextColor }]}>{getLocalizedText(lesson.introduction, 'en')}</ThemedText>
                 </View>
               )}
               {(lesson.description || '').trim() !== '' && (
-                <Text style={[styles.description, { color: mutedTextColor }]}>{lesson.description}</Text>
+                <ThemedText style={[styles.description, { color: mutedTextColor }]}>{lesson.description}</ThemedText>
               )}
               
               {lesson.rules && Array.isArray(lesson.rules) && lesson.rules.length > 0 && (
@@ -196,7 +196,8 @@ export default function LessonDetailScreen() {
                   {lesson.rules!.map((rule, index) => (
                     <View key={rule.id || `rule-${index}`} style={[styles.ruleItem, { backgroundColor: cardBackgroundColor }]}>
                       <ThemedText type="subtitle" style={[styles.ruleName, { color: textColor }]}>{rule.name}</ThemedText>
-                      <Text style={[styles.ruleExplanation, { color: mutedTextColor }]}>{rule.explanation}</Text>
+                      <ThemedText type="arabic" style={[styles.ruleArabicText, { color: textColor }]}>{rule.arabicText}</ThemedText>
+                      <ThemedText style={[styles.ruleExplanation, { color: mutedTextColor }]}>{rule.explanation}</ThemedText>
                     </View>
                   ))}
                 </View>
