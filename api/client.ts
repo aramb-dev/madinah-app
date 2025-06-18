@@ -118,8 +118,13 @@ export const getBookById = (bookId: string): Promise<Book> => {
   return apiRequest<Book>(`/books/${bookId}`);
 };
 
-export const getBookLessons = (bookId: string): Promise<Lesson[]> => {
-  return apiRequest<Lesson[]>(`/books/${bookId}/lessons`);
+export const getBookLessons = async (bookId: string): Promise<Lesson[]> => {
+  const response = await apiRequest<ApiResponse<Lesson[]>>(`/books/${bookId}/lessons`);
+  if (response && response.success && Array.isArray(response.data)) {
+    return response.data;
+  }
+  console.error(`Unexpected response structure for getBookLessons (bookId: ${bookId}):`, response);
+  return []; // Return empty array on unexpected structure or error
 };
 
 export const getBookLesson = (bookId: string, lessonId: string): Promise<Lesson> => {
