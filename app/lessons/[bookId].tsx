@@ -10,7 +10,7 @@ export default function BookLessonsScreen() {
   const { bookId } = useLocalSearchParams<{ bookId: string }>();
   const router = useRouter();
   const [lessons, setLessons] = useState<Lesson[]>([]);
-  const [bookTitle, setBookTitle] = useState<string>(''); // Keep this for book title
+  const [bookTitle, setBookTitle] = useState<string>('Loading title...'); // Initialize with a loading message
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -44,16 +44,16 @@ export default function BookLessonsScreen() {
           }
         }
 
-        if (bookDetails && typeof bookDetails.title === 'object' && bookDetails.title !== null && bookDetails.title.en) {
-          setBookTitle(bookDetails.title.en);
-          console.log(`[BookLessonsScreen] Set bookTitle to: ${bookDetails.title.en}`);
-        } else if (bookDetails && typeof bookDetails.title === 'string') {
-          setBookTitle(bookDetails.title);
-          console.log(`[BookLessonsScreen] Set bookTitle to (string): ${bookDetails.title}`);
-        } else {
-          setBookTitle('Book Title Unavailable');
-          console.log('[BookLessonsScreen] Set bookTitle to: Book Title Unavailable');
+        let titleToSet = 'Book Title Unavailable';
+        if (bookDetails) {
+          if (typeof bookDetails.title === 'string') {
+            titleToSet = bookDetails.title;
+          } else if (typeof bookDetails.title === 'object' && bookDetails.title !== null && bookDetails.title.en) {
+            titleToSet = bookDetails.title.en;
+          }
         }
+        setBookTitle(titleToSet);
+        console.log(`[BookLessonsScreen] Set bookTitle to: ${titleToSet}`);
 
         if (bookDetails && bookDetails.lessons) {
           console.log('[BookLessonsScreen] bookDetails.lessons (first 5):', JSON.stringify(bookDetails.lessons.slice(0,5)));
@@ -111,9 +111,8 @@ export default function BookLessonsScreen() {
   return (
     <ScrollView style={[styles.scrollContainer, { backgroundColor: itemBackgroundColor /* Use theme background for scroll view */ }]} >
       <View style={styles.container}>
-        {bookTitle && (
-          <Text style={[styles.title, { color: textColor }]}>{bookTitle} - Lessons</Text>
-        )}
+        {/* Always render the title Text component, bookTitle state handles loading/error/actual title */}
+        <Text style={[styles.title, { color: textColor }]}>{bookTitle === 'Loading title...' || bookTitle === 'Error Loading Data' || bookTitle === 'Book Title Unavailable' ? bookTitle : `${bookTitle} - Lessons`}</Text>
         <View style={[styles.separator, { backgroundColor: separatorColor }]} />
 
         {lessons && lessons.length > 0 ? lessons.map((lesson, index) => (
