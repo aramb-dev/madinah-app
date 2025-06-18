@@ -35,25 +35,36 @@ export default function LessonDetailScreen() {
     const fetchLessonDetails = async () => {
       try {
         setLoading(true);
-        const lessonDetails = await api.getBookLesson(bookId, lessonId);
-        // Adapt the API response to the component's Lesson type
-        const adaptedLesson: Lesson = {
-          ...lessonDetails,
-          // Assuming lessonDetails.content is a string that needs parsing or is structured differently
-          // For now, let's assume it might be an array or needs to be transformed.
-          // If lessonDetails.content is a simple string, this will need adjustment.
-          // If the API returns content as an array of objects {arabic, translation}, this is fine.
-          // If it's a string, you might need to parse it or adjust the type.
-          // For the purpose of fixing the type error, we'll assume it can be cast or is already compatible.
-          content: lessonDetails.content ? (typeof lessonDetails.content === 'string' ? JSON.parse(lessonDetails.content) : lessonDetails.content) : [],
-          description: lessonDetails.description || '', // Ensure description is always a string
-        };
-        setLesson(adaptedLesson);
+        const apiResponse = await api.getBookLesson(bookId, lessonId);
+        console.log('[LessonDetailScreen] Received apiResponse for lesson details:', JSON.stringify(apiResponse, null, 2));
+
+        if (apiResponse && apiResponse.success && apiResponse.data) {
+          const lessonData = apiResponse.data;
+          // Adapt the API response to the component's Lesson type
+          const adaptedLesson: Lesson = {
+            ...lessonData,
+            // Process content: if it's a string, parse it; otherwise, use as is or default to empty array
+            content: lessonData.content
+              ? typeof lessonData.content === 'string'
+                ? JSON.parse(lessonData.content)
+                : Array.isArray(lessonData.content) ? lessonData.content : []
+              : [],
+            description: lessonData.description || '', // Ensure description is always a string
+          };
+          setLesson(adaptedLesson);
+          console.log('[LessonDetailScreen] Adapted lesson set:', JSON.stringify(adaptedLesson, null, 2));
+        } else {
+          console.error('[LessonDetailScreen] Failed to fetch lesson details or data is missing in response:', apiResponse);
+          setError(`Failed to load details for lesson ${lessonId} from book ${bookId}.`);
+          setLesson(null);
+        }
       } catch (err) {
-        console.error('Failed to fetch lesson details:', err);
-        setError(`Failed to load lesson ${lessonId} from book ${bookId}`);
+        console.error('[LessonDetailScreen] Error in fetchLessonDetails:', err);
+        setError(`Failed to load lesson ${lessonId} from book ${bookId}.`);
+        setLesson(null);
       } finally {
         setLoading(false);
+        console.log('[LessonDetailScreen] fetchLessonDetails finished.');
       }
     };
 
@@ -84,7 +95,13 @@ export default function LessonDetailScreen() {
       <View style={styles.container}>
         {lesson && (
           <>
-            <Text style={[styles.title, { color: textColor }]}>{lesson.title}</Text>
+            <Text style={[styles.title, { color: textColor }]}>{
+              typeof lesson.title === 'object' && lesson.title.en 
+                ? lesson.title.en 
+                : typeof lesson.title === 'string' 
+                  ? lesson.title 
+                  : 'Lesson Title Unavailable'
+            }</Text>
             {lesson.description && (
               <Text style={[styles.description, { color: mutedTextColor }]}>{lesson.description}</Text>
             )}

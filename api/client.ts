@@ -127,8 +127,8 @@ export const getBookLessons = async (bookId: string): Promise<Lesson[]> => {
   return []; // Return empty array on unexpected structure or error
 };
 
-export const getBookLesson = (bookId: string, lessonId: string): Promise<Lesson> => {
-  return apiRequest<Lesson>(`/books/${bookId}/lessons/${lessonId}`);
+export const getBookLesson = (bookId: string, lessonId: string): Promise<ApiResponse<Lesson>> => {
+  return apiRequest<ApiResponse<Lesson>>(`/books/${bookId}/lessons/${lessonId}`);
 };
 
 // Lessons API
