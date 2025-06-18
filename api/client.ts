@@ -63,20 +63,47 @@ async function apiRequest<T>(endpoint: string): Promise<T> {
     const response = await fetch(`${BASE_URL}${endpoint}`);
     
     if (!response.ok) {
+      console.error(`API request error for ${endpoint}: Status ${response.status}`);
+      const errorText = await response.text();
+      console.error(`API request error text for ${endpoint}:`, errorText);
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
-    const data = await response.json();
-    return data;
+
+    // Log the raw response text before parsing
+    const responseText = await response.text();
+    console.log(`Raw response for ${endpoint}:`, responseText.substring(0, 500)); // Log first 500 chars
+
+    try {
+      const data = JSON.parse(responseText); // Parse the logged text
+      console.log(`Parsed data for ${endpoint}:`, data);
+      return data;
+    } catch (parseError) {
+      console.error(`Failed to parse JSON for ${endpoint}:`, parseError);
+      console.error(`Response text that failed to parse for ${endpoint}:`, responseText.substring(0, 1000)); // Log more if parse fails
+      throw parseError; // Re-throw the parsing error
+    }
   } catch (error) {
     console.error(`API request failed for ${endpoint}:`, error);
     throw error;
   }
 }
 
+// Define a type for the API response structure
+interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  count?: number; // Optional count property seen in logs
+}
+
 // Books API
-export const getBooks = (): Promise<Book[]> => {
-  return apiRequest<Book[]>('/books');
+export const getBooks = async (): Promise<Book[]> => {
+  const response = await apiRequest<ApiResponse<Book[]>>('/books');
+  if (response && response.success && Array.isArray(response.data)) {
+    return response.data;
+  }
+  // Log an error or return an empty array if the structure is not as expected
+  console.error('Unexpected response structure for getBooks:', response);
+  return [];
 };
 
 export const getBookById = (bookId: string): Promise<Book> => {

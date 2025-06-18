@@ -20,8 +20,8 @@ export default function LessonsScreen() {
     const fetchBooks = async () => {
       try {
         setLoading(true);
-        const data = await api.getBooks();
-        setBooks(Array.isArray(data) ? data : []);
+        const booksData = await api.getBooks(); // getBooks now returns Book[] directly
+        setBooks(booksData); // Set the books directly
       } catch (err) {
         setError('Failed to load books');
         console.error('Error fetching books:', err);
