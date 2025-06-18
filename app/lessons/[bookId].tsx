@@ -32,36 +32,35 @@ export default function BookLessonsScreen() {
     const fetchBookDetails = async () => {
       try {
         setLoading(true);
-        // Assuming api.getBookById returns an object with title and lessons array
-        // And that title is a LocalizedString { ar: string, en: string }
         const bookDetails = await api.getBookById(bookId);
-        // Ensure bookDetails.title is an object with an 'en' property before accessing it
+
         if (bookDetails && typeof bookDetails.title === 'object' && bookDetails.title.en) {
-          setBookTitle(bookDetails.title.en); // Display English title
+          setBookTitle(bookDetails.title.en);
         } else if (bookDetails && typeof bookDetails.title === 'string') {
-          // Fallback if title is just a string (older structure?)
           setBookTitle(bookDetails.title);
         } else {
-          setBookTitle('Book Title Unavailable'); // Fallback title
+          setBookTitle('Book Title Unavailable');
         }
 
-        if (bookDetails.lessons && Array.isArray(bookDetails.lessons)) {
+        if (bookDetails && bookDetails.lessons && Array.isArray(bookDetails.lessons)) {
           setLessons(bookDetails.lessons);
         } else {
-          // If lessons are not directly in bookDetails, fetch them separately
+          // If lessons are not directly in bookDetails or are not an array, fetch them separately
           const bookLessons = await api.getBookLessons(bookId);
-          setLessons(bookLessons);
+          // Ensure bookLessons is an array before setting state
+          setLessons(Array.isArray(bookLessons) ? bookLessons : []);
         }
       } catch (err) {
         console.error('Failed to fetch book details or lessons:', err);
         setError(`Failed to load lessons for book ${bookId}. Please check console for details.`);
+        setLessons([]); // Set to empty array on error to prevent .map error
       } finally {
         setLoading(false);
       }
     };
 
     fetchBookDetails();
-  }, [bookId]); // Removed theme color dependencies as they are now top-level
+  }, [bookId]);
 
   const handleLessonPress = (lessonId: string) => {
     router.push(`/lessons/${bookId}/${lessonId}`);
@@ -94,23 +93,21 @@ export default function BookLessonsScreen() {
         )}
         <View style={[styles.separator, { backgroundColor: separatorColor }]} />
 
-        {lessons.map((lesson, index) => (
+        {lessons && lessons.length > 0 ? lessons.map((lesson, index) => (
           <TouchableOpacity
             key={lesson.id}
             onPress={() => handleLessonPress(lesson.id)}
             style={[styles.lessonItem, { backgroundColor: itemBackgroundColor }]} // Dynamic background
           >
             {/* Assuming lesson.title is also a LocalizedString */}
-            <Text style={[styles.lessonTitle, { color: textColor }]}>{
-              typeof lesson.title === 'object' && lesson.title.en ? lesson.title.en : 
+            <Text style={[styles.lessonTitle, { color: textColor }]}>{ 
+              typeof lesson.title === 'object' && lesson.title.en ? lesson.title.en :
               typeof lesson.title === 'string' ? lesson.title : 'Lesson Title Unavailable'
             }</Text>
             {/* lesson.description removed as it does not exist on Lesson type */}
           </TouchableOpacity>
-        ))}
-
-        {lessons.length === 0 && !loading && (
-          <Text style={[styles.noDataText, { color: mutedTextColor }]}>No lessons available for this book.</Text>
+        )) : (
+          !loading && <Text style={[styles.noDataText, { color: mutedTextColor }]}>No lessons available for this book.</Text>
         )}
       </View>
     </ScrollView>
