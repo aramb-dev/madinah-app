@@ -6,11 +6,18 @@
 const BASE_URL = 'https://madinah.arabic.aramb.dev/api';
 
 // Types based on the API specification
+export interface LocalizedString {
+  ar: string;
+  en: string;
+}
+
 export interface Book {
   id: string;
-  title: string;
-  description?: string;
+  title: LocalizedString;
+  description?: LocalizedString;
   lessons?: Lesson[];
+  available?: boolean; // Added based on log: "available": true
+  comingSoon?: boolean; // Added based on log: "comingSoon": false
 }
 
 export interface LessonContentItem {
@@ -21,8 +28,9 @@ export interface LessonContentItem {
 export interface Lesson {
   id: string;
   bookId: string;
-  title: string;
-  description?: string; // Added description
+  title: LocalizedString; // Updated to LocalizedString
+  introduction?: LocalizedString; // Added based on log: "introduction":{"arabic":"هَ 
+  description?: string; // Kept as string, or could be LocalizedString if API supports
   content?: string | LessonContentItem[]; // Made content more flexible
   rules?: Rule[];
 }

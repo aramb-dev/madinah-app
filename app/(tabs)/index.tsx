@@ -67,9 +67,9 @@ export default function LessonsScreen() {
 
         {books.map((book, index) => (
           <TouchableOpacity key={book.id} onPress={() => handleBookPress(book.id)} style={[styles.bookItem, { backgroundColor: bookItemBackground }]}>
-            <Text style={[styles.bookTitle, { color: textColor }]}>{book.title}</Text>
+            <Text style={[styles.bookTitle, { color: textColor }]}>{book.title.en}</Text>
             {book.description && (
-              <Text style={[styles.bookDescription, { color: mutedColor }]}>{book.description}</Text>
+              <Text style={[styles.bookDescription, { color: mutedColor }]}>{book.description.en}</Text>
             )}
             <Text style={[styles.lessonCount, { color: mutedColor }]}>
               {book.lessons?.length || 0} lessons
