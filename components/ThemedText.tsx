@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text as DefaultText, StyleSheet } from 'react-native';
 import { TextProps, useThemeColor } from './Themed'; // Import from existing Themed.tsx
+import { useFont } from './FontContext';
 
 // Define a type for the props, extending the existing TextProps
 // and adding a 'type' prop for different text styles
@@ -11,6 +12,7 @@ export type ThemedTextProps = TextProps & {
 export function ThemedText(props: ThemedTextProps) {
   const { style, lightColor, darkColor, type = 'default', ...otherProps } = props;
   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
+  const { selectedFont } = useFont();
 
   let textStyle;
   switch (type) {
@@ -24,7 +26,7 @@ export function ThemedText(props: ThemedTextProps) {
       textStyle = styles.link;
       break;
     case 'arabic': // Style for Arabic text
-      textStyle = styles.arabic;
+      textStyle = [styles.arabic, { fontFamily: selectedFont.fontFamily }];
       break;
     default:
       textStyle = styles.default;

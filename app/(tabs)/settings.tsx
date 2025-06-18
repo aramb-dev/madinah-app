@@ -14,6 +14,25 @@ export default function SettingsScreen() {
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       
       <View style={styles.settingsItem}>
+        <Link href="/appearances" asChild>
+          <Pressable style={styles.settingsButton}>
+            <FontAwesome 
+              name="paint-brush" 
+              size={20} 
+              color={Colors[colorScheme ?? 'light'].text}
+              style={styles.settingsIcon}
+            />
+            <Text style={styles.settingsText}>Appearances</Text>
+            <FontAwesome 
+              name="chevron-right" 
+              size={16} 
+              color={Colors[colorScheme ?? 'light'].text}
+            />
+          </Pressable>
+        </Link>
+      </View>
+      
+      <View style={styles.settingsItem}>
         <Link href="/changelog" asChild>
           <Pressable style={styles.settingsButton}>
             <FontAwesome 
