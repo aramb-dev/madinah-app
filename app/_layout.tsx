@@ -42,7 +42,7 @@ const asyncStoragePersister = createAsyncStoragePersister({
 export default function RootLayout() {
   const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-    'Amiri-Regular': require('../assets/fonts/Amiri-Regular.ttf'),
+    'Amiri-Regular': require('../assets/fonts/Amiri/Amiri-Regular.ttf'),
     ...FontAwesome.font,
   });
 
