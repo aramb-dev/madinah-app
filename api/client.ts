@@ -36,9 +36,11 @@ export interface Lesson {
 }
 
 export interface Rule {
-  id: string;
-  content: string;
-  type?: string;
+  name: string; // Updated based on logs
+  arabicText: string; // Updated based on logs
+  explanation: string; // Updated based on logs
+  id?: string; // Optional, as not present in all log examples for rules
+  type?: string; // Optional
 }
 
 export interface Metadata {

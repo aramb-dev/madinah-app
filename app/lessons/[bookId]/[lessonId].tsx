@@ -12,8 +12,10 @@ interface LessonContentItem {
 }
 
 interface Rule {
-  id: string;
-  content: string;
+  name: string;
+  arabicText: string;
+  explanation: string;
+  id?: string;
   type?: string;
 }
 
@@ -128,8 +130,11 @@ export default function LessonDetailScreen() {
               <View style={styles.rulesContainer}>
                 <ThemedText type="subtitle" style={[styles.rulesTitle, { color: textColor }]}>Rules:</ThemedText>
                 {lesson.rules.map((rule, index) => (
-                  <View key={`rule-${index}`} style={[styles.contentItem, { backgroundColor: cardBackgroundColor }]}>
-                    <Text style={[styles.translationText, { color: textColor }]}>{rule.content}</Text>
+                  <View key={rule.id || `rule-${index}`} style={[styles.ruleItem, { backgroundColor: cardBackgroundColor }]}>
+                    <ThemedText type="subtitle" style={[styles.ruleName, { color: textColor }]}>{rule.name}</ThemedText>
+                    <Text style={[styles.ruleExplanation, { color: mutedTextColor }]}>{rule.explanation}</Text>
+                    {/* Optionally, display arabicText if needed */}
+                    {/* <ThemedText type="arabic" style={[styles.arabicText, { color: textColor }]}>{rule.arabicText}</ThemedText> */}
                   </View>
                 ))}
               </View>
@@ -195,6 +200,20 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 12,
+  },
+  ruleItem: {
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 12,
+    // Add other styling as needed, e.g., shadow
+  },
+  ruleName: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  ruleExplanation: {
+    fontSize: 16,
   },
   separator: {
     marginVertical: 24,
