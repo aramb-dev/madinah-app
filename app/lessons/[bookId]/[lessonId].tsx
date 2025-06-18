@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { api, Lesson as ApiLesson } from '@/api/client'; // Assuming Lesson type includes content
-import { useThemeColor } from '@/components/useThemeColor';
+import { useThemeColor } from '@/hooks/useThemeColor';
 import { ThemedText } from '@/components/ThemedText';
 
 // Define a more specific Lesson type for the component's needs
