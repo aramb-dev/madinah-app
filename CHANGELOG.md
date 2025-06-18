@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Ensured lesson detail screen title dynamically displays "Book {ID} - Lesson {ID}" or the lesson title.
+- Improved logic for dynamic screen titles on lesson detail pages for clarity and robustness.
+- Updated lesson detail screen to display book name instead of book ID in the title.
 
 ### Fixed
 - Corrected React Hook order in LessonsScreen to prevent rendering errors.

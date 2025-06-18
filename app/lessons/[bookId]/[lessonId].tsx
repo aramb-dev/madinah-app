@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
 import { useLocalSearchParams, Stack } from 'expo-router';
-import { api, Lesson as ApiLesson } from '@/api/client'; // Assuming Lesson type includes content
+import { api, Lesson as ApiLesson, Book as ApiBook } from '@/api/client'; // Assuming Lesson type includes content
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { ThemedText } from '@/components/ThemedText';
 
@@ -39,6 +39,7 @@ export default function LessonDetailScreen() {
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [bookDetails, setBookDetails] = useState<ApiBook | null>(null);
 
   // Moved useThemeColor calls to the top level
   const backgroundColor = useThemeColor({}, 'background');
@@ -48,11 +49,77 @@ export default function LessonDetailScreen() {
   const separatorColor = useThemeColor({}, 'border');
 
   // Dynamic screen title
-  const screenTitle = lesson?.title ? getLocalizedText(lesson.title) : (bookId && lessonId ? `Book ${bookId} - Lesson ${lessonId}` : 'Lesson Details');
+  // Dynamic screen title
+  let screenTitle = 'Lesson Details'; // Default title
+  if (bookId && lessonId) {
+    const bookName = bookDetails?.title ? getLocalizedText(bookDetails.title) : `Book ${bookId}`;
+    const lessonName = lesson?.title ? getLocalizedText(lesson.title) : `Lesson ${lessonId}`;
+    screenTitle = `${bookName} - ${lessonName}`;
+  } else if (lesson?.title) {
+    screenTitle = getLocalizedText(lesson.title);
+  } else if (bookDetails?.title) {
+    screenTitle = getLocalizedText(bookDetails.title);
+  }
 
   useEffect(() => {
     if (!bookId || !lessonId) return;
 
+    const fetchData = async () => { // Renamed to reflect fetching both book and lesson
+      try {
+        setLoading(true);
+
+        // Fetch book details
+        if (bookId) {
+          const bookResponse = await api.getBookById(bookId);
+          if (bookResponse && bookResponse.success && bookResponse.data) {
+            setBookDetails(bookResponse.data);
+          } else {
+            console.error(`[LessonDetailScreen] Failed to fetch book details for bookId: ${bookId}`, bookResponse);
+            // Optionally set an error state specific to book fetching if needed
+          }
+        }
+
+        // Fetch lesson details
+        if (bookId && lessonId) { // Ensure lessonId is also present before fetching lesson
+          const lessonApiResponse = await api.getBookLesson(bookId, lessonId);
+          console.log('[LessonDetailScreen] Received apiResponse for lesson details:', JSON.stringify(lessonApiResponse, null, 2));
+
+          if (lessonApiResponse && lessonApiResponse.success && lessonApiResponse.data) {
+            const lessonData = lessonApiResponse.data;
+            const adaptedLesson: Lesson = {
+              ...lessonData,
+              content: lessonData.content
+                ? typeof lessonData.content === 'string'
+                  ? JSON.parse(lessonData.content)
+                  : Array.isArray(lessonData.content) ? lessonData.content : []
+                : [],
+              description: lessonData.description || '',
+              rules: lessonData.rules || [],
+            };
+            setLesson(adaptedLesson);
+            console.log('[LessonDetailScreen] Adapted lesson set:', JSON.stringify(adaptedLesson, null, 2));
+          } else {
+            console.error('[LessonDetailScreen] Failed to fetch lesson details or data is missing in response:', lessonApiResponse);
+            setError(`Failed to load details for lesson ${lessonId} from book ${bookId}.`);
+            setLesson(null);
+          }
+        }
+      } catch (err) {
+        console.error('[LessonDetailScreen] Error in fetchData:', err);
+        setError(`Failed to load data for book ${bookId} / lesson ${lessonId}.`);
+        setLesson(null); // Also clear lesson if book fetch fails or general error
+        setBookDetails(null); // Clear book details on error
+      } finally {
+        setLoading(false);
+        console.log('[LessonDetailScreen] fetchData finished.');
+      }
+    };
+
+    fetchData();
+  }, [bookId, lessonId]);
+
+  // Original fetchLessonDetails logic is now part of fetchData
+  /*
     const fetchLessonDetails = async () => {
       try {
         setLoading(true);
@@ -90,8 +157,9 @@ export default function LessonDetailScreen() {
       }
     };
 
-    fetchLessonDetails();
+    fetchData(); // Call the combined fetch function
   }, [bookId, lessonId]);
+  */
 
   return (
     <>
