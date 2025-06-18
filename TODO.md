@@ -26,7 +26,7 @@ This task list is managed by the ExpoDev agent and is based on the `TECHNICAL_IM
   - [x] Use React Query and the API client to fetch the list of books for the main screen.
   - [x] Fix bug where `books.map` is called on `undefined`.
   - [x] Display the fetched books on the main screen.
-  - [ ] Fetch and display lessons for a selected book.
+  - [x] Fetch and display lessons for a selected book.
   - [ ] Implement the detailed lesson view to display content for a selected lesson.
 
 - [x] Implement Changelog: Create the changelog screen and load data from the local `assets/changelog.json` file.
