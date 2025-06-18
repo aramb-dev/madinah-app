@@ -22,6 +22,13 @@ export default function LessonDetailScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Moved useThemeColor calls to the top level
+  const backgroundColor = useThemeColor({}, 'background');
+  const textColor = useThemeColor({}, 'text');
+  const mutedTextColor = useThemeColor({}, 'muted');
+  const cardBackgroundColor = useThemeColor({}, 'card');
+  const separatorColor = useThemeColor({}, 'border');
+
   useEffect(() => {
     if (!bookId || !lessonId) return;
 
@@ -70,11 +77,7 @@ export default function LessonDetailScreen() {
     );
   }
 
-  const backgroundColor = useThemeColor({}, 'background');
-  const textColor = useThemeColor({}, 'text');
-  const mutedTextColor = useThemeColor({}, 'muted');
-  const cardBackgroundColor = useThemeColor({}, 'card');
-  const separatorColor = useThemeColor({}, 'border');
+  // useThemeColor calls moved to top
 
   return (
     <ScrollView style={[styles.scrollContainer, { backgroundColor }]}>
