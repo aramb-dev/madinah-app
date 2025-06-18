@@ -13,10 +13,10 @@ export default function BookLessonsScreen() {
   const [bookTitle, setBookTitle] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [itemBackgroundColor, setItemBackgroundColor] = useState<string>('');
-  const [textColor, setTextColor] = useState<string>('');
-  const [mutedTextColor, setMutedTextColor] = useState<string>('');
-  const [separatorColor, setSeparatorColor] = useState<string>('');
+  const [cardBackgroundColor, setCardBackgroundColor] = useState<string>('');
+  const [themeTextColorState, setThemeTextColorState] = useState<string>('');
+  const [mutedTextColorState, setMutedTextColorState] = useState<string>('');
+  const [separatorColorState, setSeparatorColor] = useState<string>('');
 
   const themeItemBackgroundColor = useThemeColor({}, 'background'); // Using 'background' for 'card'
   const themeTextColor = useThemeColor({}, 'text');
@@ -26,9 +26,9 @@ export default function BookLessonsScreen() {
   useEffect(() => {
     if (!bookId) return;
 
-    setItemBackgroundColor(themeItemBackgroundColor);
-    setTextColor(themeTextColor);
-    setMutedTextColor(themeMutedTextColor);
+    setCardBackgroundColor(themeItemBackgroundColor);
+    setThemeTextColorState(themeTextColor);
+    setMutedTextColorState(themeMutedTextColor);
     setSeparatorColor(themeSeparatorColor);
 
     const fetchBookDetails = async () => {

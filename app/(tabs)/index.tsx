@@ -48,10 +48,10 @@ export default function LessonsScreen() {
     router.push(`/lessons/${bookId}`);
   };
 
-  const bookItemBackground = useThemeColor({}, 'card'); // Example usage for book item background
+  const bookItemBackground = useThemeColor({}, 'background'); // Example usage for book item background
   const textColor = useThemeColor({}, 'text');
-  const mutedColor = useThemeColor({}, 'muted');
-  const separatorColor = useThemeColor({}, 'border');
+  const mutedColor = useThemeColor({}, 'text');
+  const separatorColor = useThemeColor({}, 'background');
 
   return (
     <ScrollView style={styles.scrollContainer}>
