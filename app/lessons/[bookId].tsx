@@ -135,7 +135,7 @@ export default function BookLessonsScreen() {
       } catch (err) {
         console.error('[BookLessonsScreen] Error in fetchBookDetails:', err);
         setError(`Failed to load lessons for book ${bookId}.`);
-        setLessons([]); 
+        setLessons([]);
         setBookTitle('Error Loading Data'); // Set a title in case of error
       } finally {
         setLoading(false);
@@ -176,7 +176,7 @@ export default function BookLessonsScreen() {
                 style={[styles.lessonItem, { backgroundColor: itemBackgroundColor }]} // Dynamic background
               >
                 {/* Assuming lesson.title is also a LocalizedString */}
-                <Text style={[styles.lessonTitle, { color: textColor }]}>{ 
+                <Text style={[styles.lessonTitle, { color: textColor }]}>{
                   typeof lesson.title === 'object' && lesson.title.en ? lesson.title.en :
                   typeof lesson.title === 'string' ? lesson.title : 'Lesson Title Unavailable'
                 }</Text>

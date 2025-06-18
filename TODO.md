@@ -38,4 +38,5 @@ This task list is managed by the ExpoDev agent and is based on the `TECHNICAL_IM
   - [x] Ensure custom Arabic fonts are loaded and applied correctly.
   - [x] Implement caching and offline access strategies.
 - [x] Refine styling using `StyleSheet` API, ensuring consistency and responsiveness.
+  - [ ] Refactor Changelog screen to use `git log` output instead of `assets/changelog.json`.
   - [ ] Review and test all features.
