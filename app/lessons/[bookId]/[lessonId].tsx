@@ -11,9 +11,17 @@ interface LessonContentItem {
   translation?: string;
 }
 
-interface Lesson extends Omit<ApiLesson, 'content'> {
+interface Rule {
+  id: string;
+  content: string;
+  type?: string;
+}
+
+interface Lesson extends Omit<ApiLesson, 'content' | 'rules'> { // Exclude rules as well if it's handled separately
   content?: LessonContentItem[];
-  description?: string; // Add description to Lesson type
+  description?: string; 
+  introduction?: ApiLesson['introduction']; // Align with ApiLesson's LocalizedString or undefined
+  rules?: Rule[]; // Add rules
 }
 
 export default function LessonDetailScreen() {
@@ -102,9 +110,30 @@ export default function LessonDetailScreen() {
                   ? lesson.title 
                   : 'Lesson Title Unavailable'
             }</Text>
+            {lesson.introduction && (
+              <Text style={[styles.description, { color: mutedTextColor }]}>{
+                typeof lesson.introduction === 'object' && lesson.introduction.en 
+                ? lesson.introduction.en 
+                : typeof lesson.introduction === 'string' 
+                  ? lesson.introduction 
+                  : ''
+              }</Text>
+            )}
             {lesson.description && (
               <Text style={[styles.description, { color: mutedTextColor }]}>{lesson.description}</Text>
             )}
+            
+            {lesson.rules && Array.isArray(lesson.rules) && lesson.rules.length > 0 && (
+              <View style={styles.rulesContainer}>
+                <ThemedText type="subtitle" style={[styles.rulesTitle, { color: textColor }]}>Rules:</ThemedText>
+                {lesson.rules.map((rule, index) => (
+                  <View key={`rule-${index}`} style={[styles.contentItem, { backgroundColor: cardBackgroundColor }]}>
+                    <Text style={[styles.translationText, { color: textColor }]}>{rule.content}</Text>
+                  </View>
+                ))}
+              </View>
+            )}
+
             <View style={[styles.separator, { backgroundColor: separatorColor }]} />
 
             {lesson.content && Array.isArray(lesson.content) && lesson.content.length > 0 ? (
@@ -154,8 +183,17 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 16,
-    marginBottom: 24,
+    marginBottom: 16, // Adjusted margin
     textAlign: 'center',
+  },
+  rulesContainer: {
+    marginTop: 16,
+    marginBottom: 24,
+  },
+  rulesTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 12,
   },
   separator: {
     marginVertical: 24,
