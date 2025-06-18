@@ -114,8 +114,8 @@ export const getBooks = async (): Promise<Book[]> => {
   return [];
 };
 
-export const getBookById = (bookId: string): Promise<Book> => {
-  return apiRequest<Book>(`/books/${bookId}`);
+export const getBookById = (bookId: string): Promise<ApiResponse<Book>> => {
+  return apiRequest<ApiResponse<Book>>(`/books/${bookId}`);
 };
 
 export const getBookLessons = async (bookId: string): Promise<Lesson[]> => {
