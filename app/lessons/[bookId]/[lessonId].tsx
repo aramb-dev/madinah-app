@@ -58,6 +58,7 @@ export default function LessonDetailScreen() {
                 : Array.isArray(lessonData.content) ? lessonData.content : []
               : [],
             description: lessonData.description || '', // Ensure description is always a string
+            rules: lessonData.rules || [], // Ensure rules are copied over
           };
           setLesson(adaptedLesson);
           console.log('[LessonDetailScreen] Adapted lesson set:', JSON.stringify(adaptedLesson, null, 2));
