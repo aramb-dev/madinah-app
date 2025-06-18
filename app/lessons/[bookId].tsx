@@ -68,7 +68,7 @@ export default function BookLessonsScreen() {
               key={lesson.id}
               id={lesson.id}
               title={lesson.title}
-              // onPress={() => router.push(`/lessons/${bookId}/${lesson.id}`)} // Navigate to individual lesson screen
+              onPress={() => router.push(`/lessons/${bookId}/${lesson.id}`)} // Navigate to individual lesson screen
             />
           ))
         ) : (
