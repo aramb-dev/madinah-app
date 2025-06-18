@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Implemented font selection feature, allowing users to choose their preferred Arabic font from settings.
 - Implement font selection feature with Appearances screen in Settings tab.
 - Add FontContext for managing user's preferred Arabic font selection.
 - Load all available Arabic fonts (Amiri, Playpen Sans Arabic, Noto Sans Arabic, IBM Plex Sans Arabic, Noto Kufi Arabic, Baloo Bhaijaan 2, Noto Naskh Arabic).
