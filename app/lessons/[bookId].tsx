@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, useRouter, Link } from 'expo-router';
 import { api, Lesson } from '@/api/client';
-import { ThemedText } from '@/components/Themed'; // Corrected import path
+import { ThemedText } from '@/components/ThemedText'; // Corrected import path
 import LessonListItem from '@/components/LessonListItem'; // Import the LessonListItem component
 
 export default function BookLessonsScreen() {
