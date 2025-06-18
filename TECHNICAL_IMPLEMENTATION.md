@@ -44,7 +44,7 @@ The application will be a client-side application that communicates with a backe
 
 #### Metadata & App Info
 -   **`GET /api/metadata`**: Get global metadata about all books and lessons.
--   **`GET /api/changelog`**: Get a list of changes and version history for the app.
+-   **~~`GET /api/changelog`~~**: Get a list of changes and version history for the app. (This endpoint is no longer used; changelog is local)
 -   **`GET /api/books/{bookId}/metadata`**: Get metadata for a specific book.
 -   **`GET /api/books/{bookId}/lesson-titles`**: Get titles of all lessons in a specific book.
 -   **`GET /api/books/{bookId}/rule-count`**: Get rule statistics for a specific book.
@@ -70,8 +70,8 @@ _(Implementation details remain the same)_
 -   **Description:** A dedicated screen within the app to show users what's new in each version.
 -   **Implementation:**
     -   Create a new screen, accessible from the "Settings" tab.
-    -   The screen will fetch data from the `GET /api/changelog` endpoint.
-    -   The changelog data will be displayed in a `ScrollView`, showing version numbers, dates, and a list of changes. This keeps the changelog up-to-date without requiring an app update.
+    -   The screen will load data from a local `changelog.json` file located in the `assets` directory.
+    -   The changelog data will be displayed in a `ScrollView`, showing version numbers, dates, and a list of changes. App updates will be required to update the changelog.
 
 ## 6. Project Structure
 _(Project structure remains the same)_
@@ -85,6 +85,6 @@ _(Development workflow remains the same)_
 2.  **Develop UI components:** Create the necessary UI components for displaying lessons and exercises.
 3.  **Implement navigation:** Set up the navigation structure using Expo Router.
 4.  **Integrate data fetching:** Use React Query and the API client to fetch, cache, and display the content from the API.
-5.  **Implement Changelog:** Create the changelog screen and fetch data from the `/api/changelog` endpoint.
+5.  **Implement Changelog:** Create the changelog screen and load data from the local `assets/changelog.json` file.
 
 This document provides a starting point for the development of the Madinah Arabic app. It can be expanded and refined as the project progresses.
