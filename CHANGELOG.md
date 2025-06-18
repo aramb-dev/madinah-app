@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Resolved bug where selected font was not applying in lesson view.
+- Fixed SyntaxError in `app/lessons/[bookId].tsx`.
 
 ## [0.0.6] - Undated
 ### Added

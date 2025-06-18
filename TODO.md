@@ -42,9 +42,9 @@ This task list is managed by the ExpoDev agent and is based on the `TECHNICAL_IM
 
 ## Phase 5: Additional Features
 
-- [ ] **Task 7: Implement Font Selection Feature**
+- [x] **Task 7: Implement Font Selection Feature**
   - [x] Create FontContext for managing selected font state
   - [x] Load all available Arabic fonts in the app
   - [x] Create Appearances screen with font selection interface
   - [x] Add Appearances section to Settings tab
-  - [x] Update `ThemedText` component to use the selected font for Arabic text.
+  - [x] Update `ThemedText` component to use the selected font for Arabic text. (Fixed SyntaxError in `[bookId].tsx`)

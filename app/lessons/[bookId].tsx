@@ -177,12 +177,9 @@ export default function BookLessonsScreen() {
               >
                 {/* Assuming lesson.title is also a LocalizedString */}
                 <ThemedText type="arabic" style={[styles.lessonTitle, { color: textColor }]}>
-                  {typeof lesson.title === 'object' && lesson.title.en ? lesson.title.en :
-                  typeof lesson.title === 'string' ? lesson.title : 'Lesson Title Unavailable'}
-                </ThemedText>
-                  typeof lesson.title === 'object' && lesson.title.en ? lesson.title.en :
-                  typeof lesson.title === 'string' ? lesson.title : 'Lesson Title Unavailable'
-                }</Text>
+                   {typeof lesson.title === 'object' && lesson.title.en ? lesson.title.en :
+                   typeof lesson.title === 'string' ? lesson.title : 'Lesson Title Unavailable'}
+                 </ThemedText>
                 {/* lesson.description removed as it does not exist on Lesson type */}
               </TouchableOpacity>
             )) : (
