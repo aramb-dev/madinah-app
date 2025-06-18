@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, Stack } from 'expo-router';
 import { api, Lesson as ApiLesson } from '@/api/client'; // Assuming Lesson type includes content
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { ThemedText } from '@/components/ThemedText';
@@ -47,7 +47,130 @@ export default function LessonDetailScreen() {
   const cardBackgroundColor = useThemeColor({}, 'card');
   const separatorColor = useThemeColor({}, 'border');
 
+  // Dynamic screen title
+  const screenTitle = lesson?.title ? getLocalizedText(lesson.title) : (bookId && lessonId ? `Book ${bookId} - Lesson ${lessonId}` : 'Lesson Details');
+
   useEffect(() => {
+    if (!bookId || !lessonId) return;
+
+    const fetchLessonDetails = async () => {
+      try {
+        setLoading(true);
+        const apiResponse = await api.getBookLesson(bookId, lessonId);
+        console.log('[LessonDetailScreen] Received apiResponse for lesson details:', JSON.stringify(apiResponse, null, 2));
+
+        if (apiResponse && apiResponse.success && apiResponse.data) {
+          const lessonData = apiResponse.data;
+          // Adapt the API response to the component's Lesson type
+          const adaptedLesson: Lesson = {
+            ...lessonData,
+            // Process content: if it's a string, parse it; otherwise, use as is or default to empty array
+            content: lessonData.content
+              ? typeof lessonData.content === 'string'
+                ? JSON.parse(lessonData.content)
+                : Array.isArray(lessonData.content) ? lessonData.content : []
+              : [],
+            description: lessonData.description || '', // Ensure description is always a string
+            rules: lessonData.rules || [], // Ensure rules are copied over
+          };
+          setLesson(adaptedLesson);
+          console.log('[LessonDetailScreen] Adapted lesson set:', JSON.stringify(adaptedLesson, null, 2));
+        } else {
+          console.error('[LessonDetailScreen] Failed to fetch lesson details or data is missing in response:', apiResponse);
+          setError(`Failed to load details for lesson ${lessonId} from book ${bookId}.`);
+          setLesson(null);
+        }
+      } catch (err) {
+        console.error('[LessonDetailScreen] Error in fetchLessonDetails:', err);
+        setError(`Failed to load lesson ${lessonId} from book ${bookId}.`);
+        setLesson(null);
+      } finally {
+        setLoading(false);
+        console.log('[LessonDetailScreen] fetchLessonDetails finished.');
+      }
+    };
+
+    fetchLessonDetails();
+  }, [bookId, lessonId]);
+
+  return (
+    <>
+      <Stack.Screen options={{ title: screenTitle }} />
+      <ScrollView style={[styles.scrollContainer, { backgroundColor }]}>
+        <View style={styles.container}>
+          {loading && (
+            <View style={[styles.container, styles.centeredContent]}>
+              <ActivityIndicator size="large" />
+              <ThemedText style={styles.loadingText}>Loading lesson content...</ThemedText>
+            </View>
+          )}
+          {error && !loading && (
+            <View style={[styles.container, styles.centeredContent]}>
+              <ThemedText style={styles.errorText}>{error || 'Lesson not found.'}</ThemedText>
+            </View>
+          )}
+          {!loading && !error && lesson && (
+            <>
+              <Text style={[styles.title, { color: textColor }]}>{getLocalizedText(lesson.title, 'en') || 'Lesson Title Unavailable'}</Text>
+              {getLocalizedText(lesson.introduction, 'en').trim() !== '' && (
+                <View style={[styles.introductionContainer, { backgroundColor: cardBackgroundColor }]}>
+                  <ThemedText type="subtitle" style={[styles.introductionTitle, { color: textColor }]}>Introduction:</ThemedText>
+                  <Text style={[styles.introductionText, { color: mutedTextColor }]}>{getLocalizedText(lesson.introduction, 'en')}</Text>
+                </View>
+              )}
+              {(lesson.description || '').trim() !== '' && (
+                <Text style={[styles.description, { color: mutedTextColor }]}>{lesson.description}</Text>
+              )}
+              
+              {lesson.rules && Array.isArray(lesson.rules) && lesson.rules.length > 0 && (
+                <View style={styles.rulesContainer}>
+                  <ThemedText type="subtitle" style={[styles.rulesTitle, { color: textColor }]}>Rules:</ThemedText>
+                  {lesson.rules!.map((rule, index) => (
+                    <View key={rule.id || `rule-${index}`} style={[styles.ruleItem, { backgroundColor: cardBackgroundColor }]}>
+                      <ThemedText type="subtitle" style={[styles.ruleName, { color: textColor }]}>{rule.name}</ThemedText>
+                      <Text style={[styles.ruleExplanation, { color: mutedTextColor }]}>{rule.explanation}</Text>
+                    </View>
+                  ))}
+                </View>
+              )}
+
+              {(lesson.rules && Array.isArray(lesson.rules) && lesson.rules.length > 0 || lesson.content && Array.isArray(lesson.content) && lesson.content.length > 0) && 
+                <View style={[styles.separator, { backgroundColor: separatorColor }]} />
+              }
+
+              {lesson.content && Array.isArray(lesson.content) && lesson.content.length > 0 && (
+                lesson.content!.map((item: LessonContentItem, index: number) => (
+                  <View key={index} style={[styles.contentItem, { backgroundColor: cardBackgroundColor }]}>
+                    {item.arabic && (
+                      <ThemedText type="arabic" style={[styles.arabicText, { color: textColor }]}>
+                        {item.arabic}
+                      </ThemedText>
+                    )}
+                    {item.translation && (
+                      <Text style={[styles.translationText, { color: mutedTextColor }]}>
+                        {item.translation}
+                      </Text>
+                    )}
+                  </View>
+                ))
+              )}
+
+              {!(lesson.rules && Array.isArray(lesson.rules) && lesson.rules.length > 0) && !(lesson.content && Array.isArray(lesson.content) && lesson.content.length > 0) && (
+                <Text style={[styles.noDataText, { color: mutedTextColor }]}>No content available for this lesson.</Text>
+              )}
+            </>
+          )}
+        </View>
+      </ScrollView>
+    </>
+  );
+}
+
+// The existing StyleSheet.create call and styles remain unchanged below this line
+// ... styles ...
+
+  // Dynamic screen title is now handled within the main component return structure using Stack.Screen
+  // useEffect(() => {
     if (!bookId || !lessonId) return;
 
     const fetchLessonDetails = async () => {
@@ -107,72 +230,64 @@ export default function LessonDetailScreen() {
     );
   }
 
-  const titleTextToDisplay = getLocalizedText(lesson.title, 'en');
-  const introTextToDisplay = getLocalizedText(lesson.introduction, 'en');
-  const descriptionTextToDisplay = lesson.description || ''; // Already a string
-
-  const hasDisplayableRules = lesson.rules && Array.isArray(lesson.rules) && lesson.rules.length > 0;
-  const hasDisplayableContentItems = lesson.content && Array.isArray(lesson.content) && lesson.content.length > 0;
-
-  return (
-    <ScrollView style={[styles.scrollContainer, { backgroundColor }]}>
-      <View style={styles.container}>
-        {lesson && (
-          <>
-            <Text style={[styles.title, { color: textColor }]}>{titleTextToDisplay || 'Lesson Title Unavailable'}</Text>
-            {introTextToDisplay.trim() !== '' && (
-              <View style={[styles.introductionContainer, { backgroundColor: cardBackgroundColor }]}>
-                <ThemedText type="subtitle" style={[styles.introductionTitle, { color: textColor }]}>Introduction:</ThemedText>
-                <Text style={[styles.introductionText, { color: mutedTextColor }]}>{introTextToDisplay}</Text>
-              </View>
-            )}
-            {descriptionTextToDisplay.trim() !== '' && (
-              <Text style={[styles.description, { color: mutedTextColor }]}>{descriptionTextToDisplay}</Text>
-            )}
+  // Conditional rendering logic for rules and content items is now part of the main return structure
+  // return (
+  //   <ScrollView style={[styles.scrollContainer, { backgroundColor }]}>
+  //     <View style={styles.container}>
+  //       {lesson && (
+  //         <>
+  //           <Text style={[styles.title, { color: textColor }]}>{titleTextToDisplay || 'Lesson Title Unavailable'}</Text>
+  //           {introTextToDisplay.trim() !== '' && (
+  //             <View style={[styles.introductionContainer, { backgroundColor: cardBackgroundColor }]}>
+  //               <ThemedText type="subtitle" style={[styles.introductionTitle, { color: textColor }]}>Introduction:</ThemedText>
+  //               <Text style={[styles.introductionText, { color: mutedTextColor }]}>{introTextToDisplay}</Text>
+  //             </View>
+  //           )}
+  //           {descriptionTextToDisplay.trim() !== '' && (
+  //             <Text style={[styles.description, { color: mutedTextColor }]}>{descriptionTextToDisplay}</Text>
+  //           )}
             
-            {hasDisplayableRules && (
-              <View style={styles.rulesContainer}>
-                <ThemedText type="subtitle" style={[styles.rulesTitle, { color: textColor }]}>Rules:</ThemedText>
-                {lesson.rules!.map((rule, index) => (
-                  <View key={rule.id || `rule-${index}`} style={[styles.ruleItem, { backgroundColor: cardBackgroundColor }]}>
-                    <ThemedText type="subtitle" style={[styles.ruleName, { color: textColor }]}>{rule.name}</ThemedText>
-                    <Text style={[styles.ruleExplanation, { color: mutedTextColor }]}>{rule.explanation}</Text>
-                    {/* Optionally, display arabicText if needed */}
-                    {/* <ThemedText type="arabic" style={[styles.arabicText, { color: textColor }]}>{rule.arabicText}</ThemedText> */}
-                  </View>
-                ))}
-              </View>
-            )}
+  //           {hasDisplayableRules && (
+  //             <View style={styles.rulesContainer}>
+  //               <ThemedText type="subtitle" style={[styles.rulesTitle, { color: textColor }]}>Rules:</ThemedText>
+  //               {lesson.rules!.map((rule, index) => (
+  //                 <View key={rule.id || `rule-${index}`} style={[styles.ruleItem, { backgroundColor: cardBackgroundColor }]}>
+  //                   <ThemedText type="subtitle" style={[styles.ruleName, { color: textColor }]}>{rule.name}</ThemedText>
+  //                   <Text style={[styles.ruleExplanation, { color: mutedTextColor }]}>{rule.explanation}</Text>
+  //                 </View>
+  //               ))}
+  //             </View>
+  //           )}
 
-            {(hasDisplayableRules || hasDisplayableContentItems) && 
-              <View style={[styles.separator, { backgroundColor: separatorColor }]} />
-            }
+  //           {(hasDisplayableRules || hasDisplayableContentItems) && 
+  //             <View style={[styles.separator, { backgroundColor: separatorColor }]} />
+  //           }
 
-            {hasDisplayableContentItems && (
-              lesson.content!.map((item: LessonContentItem, index: number) => (
-                <View key={index} style={[styles.contentItem, { backgroundColor: cardBackgroundColor }]}>
-                  {item.arabic && (
-                    <ThemedText type="arabic" style={[styles.arabicText, { color: textColor }]}>
-                      {item.arabic}
-                    </ThemedText>
-                  )}
-                  {item.translation && (
-                    <Text style={[styles.translationText, { color: mutedTextColor }]}>
-                      {item.translation}
-                    </Text>
-                  )}
-                </View>
-              ))
-            )}
+  //           {hasDisplayableContentItems && (
+  //             lesson.content!.map((item: LessonContentItem, index: number) => (
+  //               <View key={index} style={[styles.contentItem, { backgroundColor: cardBackgroundColor }]}>
+  //                 {item.arabic && (
+  //                   <ThemedText type="arabic" style={[styles.arabicText, { color: textColor }]}>
+  //                     {item.arabic}
+  //                   </ThemedText>
+  //                 )}
+  //                 {item.translation && (
+  //                   <Text style={[styles.translationText, { color: mutedTextColor }]}>
+  //                     {item.translation}
+  //                   </Text>
+  //                 )}
+  //               </View>
+  //               ))
+  //           )}
 
-            {!hasDisplayableRules && !hasDisplayableContentItems && (
-              <Text style={[styles.noDataText, { color: mutedTextColor }]}>No content available for this lesson.</Text>
-            )}
-          </>
-        )}
-      </View>
-    </ScrollView>
-  );
+  //           {!hasDisplayableRules && !hasDisplayableContentItems && (
+  //             <Text style={[styles.noDataText, { color: mutedTextColor }]}>No content available for this lesson.</Text>
+  //           )}
+  //         </>
+  //       )}
+  //     </View>
+  //   </ScrollView>
+  // );
 }
 
 const styles = StyleSheet.create({
