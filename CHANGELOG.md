@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- Updated book-level screens to display the book name in the header title.
+
+### Fixed
+- Resolved diagnostic errors in the book lessons screen (`app/lessons/[bookId].tsx`) related to StyleSheet declaration and JSX structure.
+
+### Changed
 - Ensured lesson detail screen title dynamically displays "Book {ID} - Lesson {ID}" or the lesson title.
 - Improved logic for dynamic screen titles on lesson detail pages for clarity and robustness.
 - Updated lesson detail screen to display book name instead of book ID in the title.
