@@ -4,6 +4,7 @@ import { useLocalSearchParams, useRouter, Link } from 'expo-router';
 import { api, Lesson } from '@/api/client';
 import { ThemedText } from '@/components/ThemedText'; // Corrected import path
 import LessonListItem from '@/components/LessonListItem'; // Import the LessonListItem component
+import { useThemeColor } from '@/components/Themed'; // Import useThemeColor
 
 export default function BookLessonsScreen() {
   const { bookId } = useLocalSearchParams<{ bookId: string }>();
@@ -39,6 +40,10 @@ export default function BookLessonsScreen() {
     fetchBookDetails();
   }, [bookId]);
 
+  const handleLessonPress = (lessonId: string) => {
+    router.push(`/lessons/${bookId}/${lessonId}`);
+  };
+
   if (loading) {
     return (
       <View style={styles.centeredContainer}>
@@ -64,8 +69,8 @@ export default function BookLessonsScreen() {
   return (
     <ScrollView style={styles.scrollContainer}>
       <View style={styles.container}>
-        {book && (
-          <Text style={[styles.title, { color: textColor }]}>{book.title} - Lessons</Text>
+        {bookTitle && (
+          <Text style={[styles.title, { color: textColor }]}>{bookTitle} - Lessons</Text>
         )}
         <View style={[styles.separator, { backgroundColor: separatorColor }]} />
 
@@ -76,9 +81,7 @@ export default function BookLessonsScreen() {
             style={[styles.lessonItem, { backgroundColor: itemBackgroundColor }]} // Dynamic background
           >
             <Text style={[styles.lessonTitle, { color: textColor }]}>{lesson.title}</Text>
-            {lesson.description && (
-              <Text style={[styles.lessonDescription, { color: mutedTextColor }]}>{lesson.description}</Text>
-            )}
+            {/* lesson.description removed as it does not exist on Lesson type */}
           </TouchableOpacity>
         ))}
 
@@ -139,5 +142,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     marginTop: 24,
+  },
+  centeredContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
