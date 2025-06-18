@@ -1,12 +1,14 @@
-import { StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { useEffect, useState } from 'react';
 import { api, Book } from '@/api/client';
+import { useRouter } from 'expo-router'; // Import useRouter
 
 export default function LessonsScreen() {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter(); // Initialize router
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -42,6 +44,10 @@ export default function LessonsScreen() {
     );
   }
 
+  const handleBookPress = (bookId: string) => {
+    router.push(`/lessons/${bookId}`);
+  };
+
   return (
     <ScrollView style={styles.scrollContainer}>
       <View style={styles.container}>
@@ -49,7 +55,7 @@ export default function LessonsScreen() {
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
 
         {books.map((book, index) => (
-          <View key={book.id} style={styles.bookItem}>
+          <TouchableOpacity key={book.id} onPress={() => handleBookPress(book.id)} style={styles.bookItem}>
             <Text style={styles.bookTitle}>{book.title}</Text>
             {book.description && (
               <Text style={styles.bookDescription}>{book.description}</Text>
@@ -57,7 +63,7 @@ export default function LessonsScreen() {
             <Text style={styles.lessonCount}>
               {book.lessons?.length || 0} lessons
             </Text>
-          </View>
+          </TouchableOpacity>
         ))}
 
         {books.length === 0 && (
@@ -94,7 +100,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     padding: 15,
     borderRadius: 8,
-    backgroundColor: 'rgba(0,0,0,0.05)',
+    backgroundColor: 'rgba(0,0,0,0.05)', // Consider using ThemeColors here
   },
   bookTitle: {
     fontSize: 18,
