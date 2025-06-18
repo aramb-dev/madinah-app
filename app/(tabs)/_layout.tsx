@@ -29,21 +29,28 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Lessons',
+          title: 'Lessons', // Explicitly set user-friendly name
           tabBarIcon: ({ color }) => <TabBarIcon name="book" color={color} />,
         }}
       />
       <Tabs.Screen
         name="vocabulary"
         options={{
-          title: 'Vocabulary',
+          title: 'Vocabulary', // Explicitly set user-friendly name
           tabBarIcon: ({ color }) => <TabBarIcon name="list" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="two" // Assuming this is the missing tab based on directory structure
+        options={{
+          title: 'Exercises', // Placeholder, user can change this
+          tabBarIcon: ({ color }) => <TabBarIcon name="pencil-square-o" color={color} />, // Example icon
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
-          title: 'Settings',
+          title: 'Settings', // Explicitly set user-friendly name
           tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />,
         }}
       />
