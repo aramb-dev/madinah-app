@@ -15,10 +15,10 @@ This task list is managed by the ExpoDev agent and is based on the `TECHNICAL_IM
   - Set up Expo Router with a tab navigator for the main sections (Lessons, Vocabulary, Settings).
   - Create a stack navigator for drilling down from a lesson list to a specific lesson view.
 
-- [ ] **Task 3: Develop UI Components**
+- [x] **Task 3: Develop UI Components**
   - Create reusable UI components as outlined in the project structure.
   - [x] Start with `LessonListItem.tsx` for displaying lessons in a list.
-  - [ ] Create basic placeholders for other components like `Exercise.tsx`.
+  - [x] Create basic placeholders for other components like `Exercise.tsx`.
 
 ## Phase 3: Data Display and Feature Implementation
 
