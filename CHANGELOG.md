@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- Corrected React Hook order in LessonsScreen to prevent rendering errors.
+
+### Fixed
 - Corrected font path for `Amiri-Regular.ttf` in `app/_layout.tsx` to resolve bundling errors.
 - Resolved TypeScript errors in `[lessonId].tsx` by correcting API usage, type definitions, and imports.
 - Fixed 'Cannot find module @/components/useThemeColor' error by creating `hooks/useThemeColor.ts` and updating import path.

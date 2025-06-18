@@ -10,6 +10,12 @@ export default function LessonsScreen() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter(); // Initialize router
 
+  // Moved useThemeColor hooks to the top level
+  const bookItemBackground = useThemeColor({}, 'background');
+  const textColor = useThemeColor({}, 'text');
+  const mutedColor = useThemeColor({}, 'text'); // Assuming this was intended to be 'text' or similar, not 'muted'
+  const separatorColor = useThemeColor({}, 'background');
+
   useEffect(() => {
     const fetchBooks = async () => {
       try {
@@ -48,10 +54,10 @@ export default function LessonsScreen() {
     router.push(`/lessons/${bookId}`);
   };
 
-  const bookItemBackground = useThemeColor({}, 'background'); // Example usage for book item background
-  const textColor = useThemeColor({}, 'text');
-  const mutedColor = useThemeColor({}, 'text');
-  const separatorColor = useThemeColor({}, 'background');
+  // const bookItemBackground = useThemeColor({}, 'background'); // Example usage for book item background
+  // const textColor = useThemeColor({}, 'text');
+  // const mutedColor = useThemeColor({}, 'text');
+  // const separatorColor = useThemeColor({}, 'background');
 
   return (
     <ScrollView style={styles.scrollContainer}>
