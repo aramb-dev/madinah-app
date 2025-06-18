@@ -13,9 +13,23 @@ export default function BookLessonsScreen() {
   const [bookTitle, setBookTitle] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [itemBackgroundColor, setItemBackgroundColor] = useState<string>('');
+  const [textColor, setTextColor] = useState<string>('');
+  const [mutedTextColor, setMutedTextColor] = useState<string>('');
+  const [separatorColor, setSeparatorColor] = useState<string>('');
+
+  const themeItemBackgroundColor = useThemeColor({}, 'background'); // Using 'background' for 'card'
+  const themeTextColor = useThemeColor({}, 'text');
+  const themeMutedTextColor = useThemeColor({}, 'text'); // Using 'text' for 'muted'
+  const themeSeparatorColor = useThemeColor({}, 'tabIconDefault'); // Using 'tabIconDefault' for 'border'
 
   useEffect(() => {
     if (!bookId) return;
+
+    setItemBackgroundColor(themeItemBackgroundColor);
+    setTextColor(themeTextColor);
+    setMutedTextColor(themeMutedTextColor);
+    setSeparatorColor(themeSeparatorColor);
 
     const fetchBookDetails = async () => {
       try {
@@ -61,10 +75,10 @@ export default function BookLessonsScreen() {
     );
   }
 
-  const itemBackgroundColor = useThemeColor({}, 'card');
+  const itemBackgroundColor = useThemeColor({}, 'background'); // Using 'background' for 'card'
   const textColor = useThemeColor({}, 'text');
-  const mutedTextColor = useThemeColor({}, 'muted');
-  const separatorColor = useThemeColor({}, 'border');
+  const mutedTextColor = useThemeColor({}, 'text'); // Using 'text' for 'muted'
+  const separatorColor = useThemeColor({}, 'tabIconDefault'); // Using 'tabIconDefault' for 'border'
 
   return (
     <ScrollView style={styles.scrollContainer}>

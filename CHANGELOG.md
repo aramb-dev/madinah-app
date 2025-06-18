@@ -8,3 +8,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Resolved multiple TypeScript errors in the book lessons screen (`app/lessons/[bookId].tsx`).
+- Corrected usage of `useThemeColor` with valid color names in `app/lessons/[bookId].tsx`.
