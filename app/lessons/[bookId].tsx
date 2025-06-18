@@ -10,33 +10,42 @@ export default function BookLessonsScreen() {
   const { bookId } = useLocalSearchParams<{ bookId: string }>();
   const router = useRouter();
   const [lessons, setLessons] = useState<Lesson[]>([]);
-  const [bookTitle, setBookTitle] = useState<string>('');
+  const [bookTitle, setBookTitle] = useState<string>(''); // Keep this for book title
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [cardBackgroundColor, setCardBackgroundColor] = useState<string>('');
-  const [themeTextColorState, setThemeTextColorState] = useState<string>('');
-  const [mutedTextColorState, setMutedTextColorState] = useState<string>('');
-  const [separatorColorState, setSeparatorColor] = useState<string>('');
 
-  const themeItemBackgroundColor = useThemeColor({}, 'background'); // Using 'background' for 'card'
-  const themeTextColor = useThemeColor({}, 'text');
-  const themeMutedTextColor = useThemeColor({}, 'text'); // Using 'text' for 'muted'
-  const themeSeparatorColor = useThemeColor({}, 'tabIconDefault'); // Using 'tabIconDefault' for 'border'
+  // Moved useThemeColor calls to the top level
+  const itemBackgroundColor = useThemeColor({}, 'background'); // Using 'background' for 'card'
+  const textColor = useThemeColor({}, 'text');
+  const mutedTextColor = useThemeColor({}, 'text'); // Using 'text' for 'muted'
+  const separatorColor = useThemeColor({}, 'tabIconDefault'); // Using 'tabIconDefault' for 'border'
 
   useEffect(() => {
-    if (!bookId) return;
-
-    setCardBackgroundColor(themeItemBackgroundColor);
-    setThemeTextColorState(themeTextColor);
-    setMutedTextColorState(themeMutedTextColor);
-    setSeparatorColor(themeSeparatorColor);
+    if (!bookId) {
+      // It's good practice to handle the case where bookId might be undefined or null
+      // For example, by setting an error state or redirecting
+      setError('Book ID is missing.');
+      setLoading(false);
+      return;
+    }
 
     const fetchBookDetails = async () => {
       try {
         setLoading(true);
+        // Assuming api.getBookById returns an object with title and lessons array
+        // And that title is a LocalizedString { ar: string, en: string }
         const bookDetails = await api.getBookById(bookId);
-        setBookTitle(bookDetails.title);
-        if (bookDetails.lessons) {
+        // Ensure bookDetails.title is an object with an 'en' property before accessing it
+        if (bookDetails && typeof bookDetails.title === 'object' && bookDetails.title.en) {
+          setBookTitle(bookDetails.title.en); // Display English title
+        } else if (bookDetails && typeof bookDetails.title === 'string') {
+          // Fallback if title is just a string (older structure?)
+          setBookTitle(bookDetails.title);
+        } else {
+          setBookTitle('Book Title Unavailable'); // Fallback title
+        }
+
+        if (bookDetails.lessons && Array.isArray(bookDetails.lessons)) {
           setLessons(bookDetails.lessons);
         } else {
           // If lessons are not directly in bookDetails, fetch them separately
@@ -45,14 +54,14 @@ export default function BookLessonsScreen() {
         }
       } catch (err) {
         console.error('Failed to fetch book details or lessons:', err);
-        setError(`Failed to load lessons for book ${bookId}`);
+        setError(`Failed to load lessons for book ${bookId}. Please check console for details.`);
       } finally {
         setLoading(false);
       }
     };
 
     fetchBookDetails();
-  }, [bookId]);
+  }, [bookId]); // Removed theme color dependencies as they are now top-level
 
   const handleLessonPress = (lessonId: string) => {
     router.push(`/lessons/${bookId}/${lessonId}`);
@@ -75,13 +84,10 @@ export default function BookLessonsScreen() {
     );
   }
 
-  const itemBackgroundColor = useThemeColor({}, 'background'); // Using 'background' for 'card'
-  const textColor = useThemeColor({}, 'text');
-  const mutedTextColor = useThemeColor({}, 'text'); // Using 'text' for 'muted'
-  const separatorColor = useThemeColor({}, 'tabIconDefault'); // Using 'tabIconDefault' for 'border'
+  // Removed duplicate useThemeColor calls here
 
   return (
-    <ScrollView style={styles.scrollContainer}>
+    <ScrollView style={[styles.scrollContainer, { backgroundColor: itemBackgroundColor /* Use theme background for scroll view */ }]} >
       <View style={styles.container}>
         {bookTitle && (
           <Text style={[styles.title, { color: textColor }]}>{bookTitle} - Lessons</Text>
@@ -94,7 +100,11 @@ export default function BookLessonsScreen() {
             onPress={() => handleLessonPress(lesson.id)}
             style={[styles.lessonItem, { backgroundColor: itemBackgroundColor }]} // Dynamic background
           >
-            <Text style={[styles.lessonTitle, { color: textColor }]}>{lesson.title}</Text>
+            {/* Assuming lesson.title is also a LocalizedString */}
+            <Text style={[styles.lessonTitle, { color: textColor }]}>{
+              typeof lesson.title === 'object' && lesson.title.en ? lesson.title.en : 
+              typeof lesson.title === 'string' ? lesson.title : 'Lesson Title Unavailable'
+            }</Text>
             {/* lesson.description removed as it does not exist on Lesson type */}
           </TouchableOpacity>
         ))}
