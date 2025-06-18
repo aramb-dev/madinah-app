@@ -1,7 +1,8 @@
 import { StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { useEffect, useState } from 'react';
-import { api, ChangelogEntry } from '@/api/client';
+import { ChangelogEntry } from '@/api/client'; // Assuming ChangelogEntry is still relevant or will be defined locally
+import changelogData from '@/assets/changelog.json'; // Import local changelog data
 
 export default function ChangelogScreen() {
   const [changelog, setChangelog] = useState<ChangelogEntry[]>([]);
@@ -9,20 +10,20 @@ export default function ChangelogScreen() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchChangelog = async () => {
+    const loadChangelog = () => {
       try {
         setLoading(true);
-        const data = await api.getChangelog();
-        setChangelog(data);
+        // Assuming changelogData is an array of ChangelogEntry
+        setChangelog(changelogData as ChangelogEntry[]);
       } catch (err) {
-        setError('Failed to load changelog');
-        console.error('Error fetching changelog:', err);
+        setError('Failed to load changelog from local file');
+        console.error('Error loading changelog:', err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchChangelog();
+    loadChangelog();
   }, []);
 
   if (loading) {

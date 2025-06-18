@@ -99,9 +99,6 @@ export const getMetadata = (): Promise<Metadata> => {
   return apiRequest<Metadata>('/metadata');
 };
 
-export const getChangelog = (): Promise<ChangelogEntry[]> => {
-  return apiRequest<ChangelogEntry[]>('/changelog');
-};
 
 export const getBookMetadata = (bookId: string): Promise<Metadata> => {
   return apiRequest<Metadata>(`/books/${bookId}/metadata`);
@@ -129,7 +126,6 @@ export const api = {
   
   // Metadata & App Info
   getMetadata,
-  getChangelog,
   getBookMetadata,
   getBookLessonTitles,
   getBookRuleCount,

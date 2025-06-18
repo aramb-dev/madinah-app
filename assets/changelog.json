@@ -1,0 +1,19 @@
+[
+  {
+    "version": "1.0.0",
+    "date": "2024-07-27",
+    "changes": [
+      "Initial release of the application.",
+      "Implemented basic lesson viewing.",
+      "Added navigation between books and lessons."
+    ]
+  },
+  {
+    "version": "0.9.0-beta",
+    "date": "2024-07-20",
+    "changes": [
+      "Beta version for testing.",
+      "Fixed several UI bugs."
+    ]
+  }
+]

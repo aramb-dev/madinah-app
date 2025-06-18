@@ -29,9 +29,7 @@ This task list is managed by the ExpoDev agent and is based on the `TECHNICAL_IM
   - [ ] Fetch and display lessons for a selected book.
   - [ ] Implement the detailed lesson view to display content for a selected lesson.
 
-- [ ] **Task 5: Implement In-App Changelog**
-  - Create a new screen for the changelog, accessible from the Settings tab.
-  - Fetch and display the version history from the `/api/changelog` endpoint.
+- [x] Implement Changelog: Create the changelog screen and load data from the local `assets/changelog.json` file.
 
 ## Phase 4: Finalize and Refine
 
