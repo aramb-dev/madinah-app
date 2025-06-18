@@ -11,7 +11,7 @@ This task list is managed by the ExpoDev agent and is based on the `TECHNICAL_IM
 
 ## Phase 2: Core UI and Navigation
 
-- [ ] **Task 2: Implement Navigation**
+- [x] **Task 2: Implement Navigation**
   - Set up Expo Router with a tab navigator for the main sections (Lessons, Vocabulary, Settings).
   - Create a stack navigator for drilling down from a lesson list to a specific lesson view.
 
