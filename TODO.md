@@ -17,8 +17,8 @@ This task list is managed by the ExpoDev agent and is based on the `TECHNICAL_IM
 
 - [ ] **Task 3: Develop UI Components**
   - Create reusable UI components as outlined in the project structure.
-  - Start with `LessonListItem.tsx` for displaying lessons in a list.
-  - Create basic placeholders for other components like `Exercise.tsx`.
+  - [x] Start with `LessonListItem.tsx` for displaying lessons in a list.
+  - [ ] Create basic placeholders for other components like `Exercise.tsx`.
 
 ## Phase 3: Data Display and Feature Implementation
 
