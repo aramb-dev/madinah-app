@@ -29,7 +29,7 @@ export interface Lesson {
   id: string;
   bookId: string;
   title: LocalizedString; // Updated to LocalizedString
-  introduction?: LocalizedString; // Added based on log: "introduction":{"arabic":"هَ 
+  introduction?: LocalizedString; // Added based on log: "introduction":{"arabic":"هَ
   description?: string; // Kept as string, or could be LocalizedString if API supports
   content?: string | LessonContentItem[]; // Made content more flexible
   rules?: Rule[];
@@ -69,7 +69,7 @@ export interface RuleCount {
 async function apiRequest<T>(endpoint: string): Promise<T> {
   try {
     const response = await fetch(`${BASE_URL}${endpoint}`);
-    
+
     if (!response.ok) {
       console.error(`API request error for ${endpoint}: Status ${response.status}`);
       const errorText = await response.text();
@@ -160,11 +160,11 @@ export const api = {
   getBookById,
   getBookLessons,
   getBookLesson,
-  
+
   // Lessons
   getAllLessons,
   getAllLessonTitles,
-  
+
   // Metadata & App Info
   getMetadata,
   getBookMetadata,

@@ -32,30 +32,53 @@ export default function BookLessonsScreen() {
     const fetchBookDetails = async () => {
       try {
         setLoading(true);
+        console.log(`[BookLessonsScreen] Fetching details for bookId: ${bookId}`);
         const bookDetails = await api.getBookById(bookId);
+        console.log('[BookLessonsScreen] Received bookDetails:', JSON.stringify(bookDetails, null, 2));
 
-        if (bookDetails && typeof bookDetails.title === 'object' && bookDetails.title.en) {
+        if (bookDetails) {
+          console.log('[BookLessonsScreen] bookDetails.title:', JSON.stringify(bookDetails.title));
+          console.log('[BookLessonsScreen] typeof bookDetails.title:', typeof bookDetails.title);
+          if (typeof bookDetails.title === 'object' && bookDetails.title !== null) {
+            console.log('[BookLessonsScreen] bookDetails.title.en:', bookDetails.title.en);
+          }
+        }
+
+        if (bookDetails && typeof bookDetails.title === 'object' && bookDetails.title !== null && bookDetails.title.en) {
           setBookTitle(bookDetails.title.en);
+          console.log(`[BookLessonsScreen] Set bookTitle to: ${bookDetails.title.en}`);
         } else if (bookDetails && typeof bookDetails.title === 'string') {
           setBookTitle(bookDetails.title);
+          console.log(`[BookLessonsScreen] Set bookTitle to (string): ${bookDetails.title}`);
         } else {
           setBookTitle('Book Title Unavailable');
+          console.log('[BookLessonsScreen] Set bookTitle to: Book Title Unavailable');
+        }
+
+        if (bookDetails && bookDetails.lessons) {
+          console.log('[BookLessonsScreen] bookDetails.lessons (first 5):', JSON.stringify(bookDetails.lessons.slice(0,5)));
+          console.log('[BookLessonsScreen] Array.isArray(bookDetails.lessons):', Array.isArray(bookDetails.lessons));
+          console.log('[BookLessonsScreen] bookDetails.lessons.length:', bookDetails.lessons.length);
         }
 
         if (bookDetails && bookDetails.lessons && Array.isArray(bookDetails.lessons)) {
           setLessons(bookDetails.lessons);
+          console.log(`[BookLessonsScreen] Set lessons from bookDetails.lessons. Count: ${bookDetails.lessons.length}`);
         } else {
-          // If lessons are not directly in bookDetails or are not an array, fetch them separately
+          console.log('[BookLessonsScreen] bookDetails.lessons not found/not an array or bookDetails is null. Fetching lessons separately.');
           const bookLessons = await api.getBookLessons(bookId);
-          // Ensure bookLessons is an array before setting state
+          console.log('[BookLessonsScreen] Received bookLessons from api.getBookLessons (first 5):', JSON.stringify(bookLessons.slice(0,5)));
           setLessons(Array.isArray(bookLessons) ? bookLessons : []);
+          console.log(`[BookLessonsScreen] Set lessons from api.getBookLessons. Count: ${Array.isArray(bookLessons) ? bookLessons.length : 0}`);
         }
       } catch (err) {
-        console.error('Failed to fetch book details or lessons:', err);
-        setError(`Failed to load lessons for book ${bookId}. Please check console for details.`);
-        setLessons([]); // Set to empty array on error to prevent .map error
+        console.error('[BookLessonsScreen] Error in fetchBookDetails:', err);
+        setError(`Failed to load lessons for book ${bookId}.`);
+        setLessons([]); 
+        setBookTitle('Error Loading Data'); // Set a title in case of error
       } finally {
         setLoading(false);
+        console.log('[BookLessonsScreen] fetchBookDetails finished.');
       }
     };
 
