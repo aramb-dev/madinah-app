@@ -8,6 +8,9 @@ export default {
     tint: tintColorLight,
     tabIconDefault: '#ccc',
     tabIconSelected: tintColorLight,
+    muted: '#6c757d', // Added muted color
+    card: '#f8f9fa',   // Added card color
+    border: '#dee2e6', // Added border color
   },
   dark: {
     text: '#fff',
@@ -15,5 +18,8 @@ export default {
     tint: tintColorDark,
     tabIconDefault: '#ccc',
     tabIconSelected: tintColorDark,
+    muted: '#adb5bd',   // Added muted color
+    card: '#343a40',    // Added card color
+    border: '#495057',  // Added border color
   },
 };
