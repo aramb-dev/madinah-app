@@ -7,13 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- Refactored Changelog screen to fetch data from `git log` (currently using placeholder data).
-- Removed `ChangelogEntry` interface from `api/client.ts` as it's now locally defined in `app/changelog.tsx`.
-
-### Changed
-- Updated `TODO.md` to include refactoring the changelog screen to use `git log`.
-
-### Changed
 - Updated book-level screens to display the book name in the header title.
 
 ### Fixed
