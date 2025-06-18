@@ -34,6 +34,8 @@ This task list is managed by the ExpoDev agent and is based on the `TECHNICAL_IM
 ## Phase 4: Finalize and Refine
 
 - [ ] **Task 6: Finalize and Refine**
+  - [x] Implement custom Arabic font (Amiri) and `ThemedText` component
   - Ensure custom Arabic fonts are loaded and applied correctly.
   - Implement caching and offline access strategies.
   - Refine styling using the `StyleSheet` API.
+  - [ ] Review and test all features.
