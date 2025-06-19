@@ -152,7 +152,10 @@ export default function BookLessonsScreen() {
 
   return (
     <>
-      <Stack.Screen options={{ title: screenTitle }} />
+      <Stack.Screen options={{
+        title: screenTitle,
+        headerBackTitle: "Home"
+      }} />
       {loading ? (
         <View style={styles.centeredContainer}>
           <ActivityIndicator size="large" />

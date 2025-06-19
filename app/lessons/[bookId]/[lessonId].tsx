@@ -163,7 +163,10 @@ export default function LessonDetailScreen() {
 
   return (
     <>
-      <Stack.Screen options={{ title: screenTitle }} />
+      <Stack.Screen options={{
+        title: screenTitle,
+        headerBackTitle: "Lessons"
+      }} />
       <ScrollView style={[styles.scrollContainer, { backgroundColor }]} contentContainerStyle={styles.scrollContentContainer}>
         <View style={styles.container}>
           {loading && (
