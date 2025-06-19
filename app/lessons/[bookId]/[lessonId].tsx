@@ -21,7 +21,7 @@ interface Rule {
 
 interface Lesson extends Omit<ApiLesson, 'content' | 'rules'> { // Exclude rules as well if it's handled separately
   content?: LessonContentItem[];
-  description?: string; 
+  description?: string;
   introduction?: ApiLesson['introduction']; // Align with ApiLesson's LocalizedString or undefined
   rules?: Rule[]; // Add rules
 }
@@ -31,7 +31,7 @@ const getLocalizedText = (localizedString: ApiLesson['title'] | ApiLesson['intro
   if (!localizedString) return '';
   if (typeof localizedString === 'string') return localizedString;
   // Prioritize requested language, then fallback
-  return localizedString[lang] || localizedString.ar || localizedString.en || ''; 
+  return localizedString[lang] || localizedString.ar || localizedString.en || '';
 };
 
 export default function LessonDetailScreen() {
@@ -164,7 +164,7 @@ export default function LessonDetailScreen() {
   return (
     <>
       <Stack.Screen options={{ title: screenTitle }} />
-      <ScrollView style={[styles.scrollContainer, { backgroundColor }]}>
+      <ScrollView style={[styles.scrollContainer, { backgroundColor }]} contentContainerStyle={styles.scrollContentContainer}>
         <View style={styles.container}>
           {loading && (
             <View style={[styles.container, styles.centeredContent]}>
@@ -179,31 +179,51 @@ export default function LessonDetailScreen() {
           )}
           {!loading && !error && lesson && (
             <>
-              <ThemedText type="title" style={[styles.title, { color: textColor }]}>{getLocalizedText(lesson.title, 'en') || 'Lesson Title Unavailable'}</ThemedText>
-              {getLocalizedText(lesson.introduction, 'en').trim() !== '' && (
+              <View style={styles.titleContainer}>
+                <ThemedText type="arabic" style={[styles.titleArabic, { color: textColor }]}>{getLocalizedText(lesson.title, 'ar') || 'عنوان الدرس غير متوفر'}</ThemedText>
+                <ThemedText type="title" style={[styles.titleEnglish, { color: textColor }]}>{getLocalizedText(lesson.title, 'en') || 'Lesson Title Unavailable'}</ThemedText>
+              </View>
+              {lesson.introduction && (
                 <View style={[styles.introductionContainer, { backgroundColor: cardBackgroundColor }]}>
                   <ThemedText type="subtitle" style={[styles.introductionTitle, { color: textColor }]}>Introduction:</ThemedText>
-                  <ThemedText style={[styles.introductionText, { color: mutedTextColor }]}>{getLocalizedText(lesson.introduction, 'en')}</ThemedText>
+
+                  {/* Arabic introduction - handle both API structures */}
+                  {((lesson.introduction as any).arabic || (lesson.introduction as any).ar) && (
+                    <View style={styles.arabicTextContainer}>
+                      <ThemedText type="arabic" style={[styles.arabicIntroText, { color: textColor }]}>
+                        {(lesson.introduction as any).arabic || (lesson.introduction as any).ar}
+                      </ThemedText>
+                    </View>
+                  )}
+
+                  {/* English introduction - handle both API structures */}
+                  {((lesson.introduction as any).english || (lesson.introduction as any).en) && (
+                    <ThemedText style={[styles.introductionText, { color: mutedTextColor }]}>
+                      {(lesson.introduction as any).english || (lesson.introduction as any).en}
+                    </ThemedText>
+                  )}
                 </View>
               )}
               {(lesson.description || '').trim() !== '' && (
                 <ThemedText style={[styles.description, { color: mutedTextColor }]}>{lesson.description}</ThemedText>
               )}
-              
+
               {lesson.rules && Array.isArray(lesson.rules) && lesson.rules.length > 0 && (
                 <View style={styles.rulesContainer}>
                   <ThemedText type="subtitle" style={[styles.rulesTitle, { color: textColor }]}>Rules:</ThemedText>
                   {lesson.rules!.map((rule, index) => (
                     <View key={rule.id || `rule-${index}`} style={[styles.ruleItem, { backgroundColor: cardBackgroundColor }]}>
                       <ThemedText type="subtitle" style={[styles.ruleName, { color: textColor }]}>{rule.name}</ThemedText>
-                      <ThemedText type="arabic" style={[styles.ruleArabicText, { color: textColor }]}>{rule.arabicText}</ThemedText>
+                      <View style={styles.arabicTextContainer}>
+                        <ThemedText type="arabic" style={[styles.arabicText, { color: textColor }]}>{rule.arabicText}</ThemedText>
+                      </View>
                       <ThemedText style={[styles.ruleExplanation, { color: mutedTextColor }]}>{rule.explanation}</ThemedText>
                     </View>
                   ))}
                 </View>
               )}
 
-              {(lesson.rules && Array.isArray(lesson.rules) && lesson.rules.length > 0 || lesson.content && Array.isArray(lesson.content) && lesson.content.length > 0) && 
+              {(lesson.rules && Array.isArray(lesson.rules) && lesson.rules.length > 0 || lesson.content && Array.isArray(lesson.content) && lesson.content.length > 0) &&
                 <View style={[styles.separator, { backgroundColor: separatorColor }]} />
               }
 
@@ -211,9 +231,11 @@ export default function LessonDetailScreen() {
                 lesson.content!.map((item: LessonContentItem, index: number) => (
                   <View key={index} style={[styles.contentItem, { backgroundColor: cardBackgroundColor }]}>
                     {item.arabic && (
-                      <ThemedText type="arabic" style={[styles.arabicText, { color: textColor }]}>
-                        {item.arabic}
-                      </ThemedText>
+                      <View style={styles.arabicTextContainer}>
+                        <ThemedText type="arabic" style={[styles.arabicText, { color: textColor }]}>
+                          {item.arabic}
+                        </ThemedText>
+                      </View>
                     )}
                     {item.translation && (
                       <Text style={[styles.translationText, { color: mutedTextColor }]}>
@@ -242,21 +264,44 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flex: 1,
   },
+  scrollContentContainer: {
+    paddingTop: 16,
+  },
   container: {
     flex: 1,
     paddingHorizontal: 16,
-    paddingTop: 24,
+    paddingTop: 16,
     paddingBottom: 24,
   },
   centeredContent: {
     justifyContent: 'center',
     alignItems: 'center',
   },
-  title: {
+  titleContainer: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 8,
+    marginBottom: 20,
+    width: '100%',
+  },
+  titleArabic: {
     fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 8,
     textAlign: 'center',
+    marginBottom: 4,
+    marginTop: 4,
+    width: '100%',
+    writingDirection: 'rtl',
+    lineHeight: 50,  // Reduced but still sufficient for diacritics
+    paddingTop: 8,
+    includeFontPadding: true,
+  },
+  titleEnglish: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    width: '100%',
   },
   description: {
     fontSize: 16,
@@ -264,11 +309,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   introductionContainer: {
-    marginTop: 16,
+    marginTop: 8,
     marginBottom: 16,
     padding: 12,
-    // backgroundColor: cardBackgroundColor, // Moved to inline style
     borderRadius: 8,
+    width: '100%',
   },
   introductionTitle: {
     fontSize: 20,
@@ -277,7 +322,25 @@ const styles = StyleSheet.create({
   },
   introductionText: {
     fontSize: 16,
-    lineHeight: 24, // Improve readability
+    lineHeight: 22,
+    textAlign: 'left',
+    paddingHorizontal: 4,
+    marginTop: 4,
+  },
+  arabicTextContainer: {
+    width: '100%',
+    paddingVertical: 8,
+    paddingTop: 12,  // Still enough padding for diacritics
+    minHeight: 50,  // Reduced but still sufficient
+  },
+  arabicIntroText: {
+    fontSize: 22,
+    lineHeight: 45,  // Reduced but still sufficient
+    textAlign: 'right',
+    writingDirection: 'rtl',
+    paddingHorizontal: 4,
+    paddingTop: 8,
+    includeFontPadding: true,
   },
   rulesContainer: {
     marginTop: 16,
@@ -289,10 +352,9 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   ruleItem: {
-    padding: 12,
+    padding: 10,
     borderRadius: 8,
-    marginBottom: 12,
-    // Add other styling as needed, e.g., shadow
+    marginBottom: 10,
   },
   ruleName: {
     fontSize: 18,
@@ -303,20 +365,27 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   separator: {
-    marginVertical: 24,
+    marginVertical: 16,
     height: 1,
     width: '100%',
   },
   contentItem: {
-    marginBottom: 16,
-    padding: 20,
+    marginBottom: 12,
+    padding: 16,
     borderRadius: 12,
+    width: '100%',
   },
   arabicText: {
-    fontSize: 22, // Adjusted for Arabic font
-    lineHeight: 36, // Adjusted for Arabic font readability
-    textAlign: 'right', // Standard for Arabic text
+    fontSize: 22,
+    lineHeight: 45,  // Reduced but still sufficient
+    textAlign: 'right',
+    writingDirection: 'rtl',
     marginBottom: 8,
+    paddingHorizontal: 4,
+    paddingTop: 8,
+    flexWrap: 'wrap',
+    width: '100%',
+    includeFontPadding: true,
   },
   translationText: {
     fontSize: 15,
