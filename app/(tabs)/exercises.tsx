@@ -1,5 +1,5 @@
 import ComingSoon from '@/components/ComingSoon';
 
-export default function VocabularyScreen() {
+export default function ExercisesScreen() {
   return <ComingSoon />;
 }

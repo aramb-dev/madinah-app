@@ -48,10 +48,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="two" // Assuming this is the missing tab based on directory structure
+        name="exercises"
         options={{
-          title: 'Exercises', // Placeholder, user can change this
-          tabBarIcon: () => ({ sfSymbol: "doc.questionmark" }), // Example icon
+          title: 'Exercises',
+          tabBarIcon: () => ({ sfSymbol: "doc.questionmark" }),
         }}
       />
       <Tabs.Screen

@@ -51,9 +51,7 @@ export default function SettingsScreen() {
         </Link>
       </View>
       
-      <View style={styles.settingsItem}>
-        <Text style={styles.settingsText}>More settings coming soon...</Text>
-      </View>
+
     </View>
   );
 }

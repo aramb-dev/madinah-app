@@ -60,7 +60,7 @@ export default function LessonsScreen() {
   // const separatorColor = useThemeColor({}, 'background');
 
   return (
-    <ScrollView style={styles.scrollContainer}>
+    <ScrollView style={styles.scrollContainer} contentInsetAdjustmentBehavior="automatic">
       <View style={styles.container}>
         <Text style={[styles.title, { color: textColor }]}>Madinah Arabic Lessons</Text>
         <View style={[styles.separator, { backgroundColor: separatorColor }]} />

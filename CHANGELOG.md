@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Refactored "Coming Soon" and implemented screens for consistency.
+- Simplified placeholder screens with a reusable `ComingSoon` component.
+- Adjusted `ScrollView` insets to prevent content from overlapping with the tab bar.
+
+### Fixed
+- Corrected tab navigation to reflect renamed `exercises` screen.
+
 ### Added
 - Implemented font selection feature, allowing users to choose their preferred Arabic font from settings.
 - Implement font selection feature with Appearances screen in Settings tab.
