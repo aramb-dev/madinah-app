@@ -40,6 +40,17 @@ This task list is managed by the ExpoDev agent and is based on the `TECHNICAL_IM
 - [x] Refine styling using `StyleSheet` API, ensuring consistency and responsiveness.
   - [ ] Review and test all features.
 
+## Phase 6: Native iOS Enhancements
+
+- [ ] **Task 8: Implement Native Navigation**
+  - [ ] Transition to `react-native-screens` with a native stack navigator.
+- [ ] **Task 9: Add Haptic Feedback**
+  - [ ] Integrate `expo-haptics` for tactile feedback on user interactions.
+- [ ] **Task 10: Implement Context Menus**
+  - [ ] Add context menus on long-press for items like books and lessons.
+- [ ] **Task 11: Implement Shared Element Transitions**
+  - [ ] Create smooth transitions for elements like book covers when navigating.
+
 ## Phase 5: Additional Features
 
 - [x] **Task 7: Implement Font Selection Feature**

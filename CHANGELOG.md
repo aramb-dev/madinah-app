@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Added native iOS enhancement suggestions to the technical implementation plan and TODO list.
+
 ### Changed
 - Refactored "Coming Soon" and implemented screens for consistency.
 - Simplified placeholder screens with a reusable `ComingSoon` component.

@@ -175,3 +175,12 @@ A suggested project structure using Expo Router:
 4.  **Integrate data fetching:** Use React Query and the API client to fetch, cache, and display the content from the API.
 
 This document provides a starting point for the development of the Madinah Arabic app. It can be expanded and refined as the project progresses.
+
+## 9. Native iOS Enhancements
+
+To improve the user experience on iOS, the following native features can be implemented:
+
+-   **Native Navigation Bar:** Transition to `react-native-screens` and a native stack navigator for authentic platform-specific animations and gestures.
+-   **Haptic Feedback:** Use `expo-haptics` to provide tactile feedback on user interactions.
+-   **Context Menus:** Implement native context menus on long-press for items to offer secondary actions.
+-   **Shared Element Transitions:** Create smooth, shared element transitions for a more fluid navigation experience.
