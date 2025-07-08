@@ -11,6 +11,14 @@ export interface LocalizedString {
   en: string;
 }
 
+export interface Vocabulary {
+  id: string;
+  bookId: string;
+  lessonId: string;
+  arabic: string;
+  english: string;
+}
+
 export interface Book {
   id: string;
   title: LocalizedString;
@@ -68,7 +76,7 @@ export interface RuleCount {
 }
 
 // Generic fetch function with error handling
-async function apiRequest<T>(endpoint: string): Promise<T> {
+export async function apiRequest<T>(endpoint: string): Promise<T> {
   try {
     const response = await fetch(`${BASE_URL}${endpoint}`);
 
@@ -99,7 +107,7 @@ async function apiRequest<T>(endpoint: string): Promise<T> {
 }
 
 // Define a type for the API response structure
-interface ApiResponse<T> {
+export interface ApiResponse<T> {
   success: boolean;
   data: T;
   count?: number; // Optional count property seen in logs
@@ -160,6 +168,12 @@ export const getBookRuleCount = (bookId: string): Promise<RuleCount> => {
   return apiRequest<RuleCount>(`/books/${bookId}/rule-count`);
 };
 
+import {
+  getVocabulary,
+  getBookVocabulary,
+  getLessonVocabulary,
+} from './vocabulary';
+
 // Export all API functions as a single object for easier imports
 export const api = {
   // Books
@@ -167,6 +181,11 @@ export const api = {
   getBookById,
   getBookLessons,
   getBookLesson,
+
+  // Vocabulary
+  getVocabulary,
+  getBookVocabulary,
+  getLessonVocabulary,
 
   // Lessons
   getAllLessons,
