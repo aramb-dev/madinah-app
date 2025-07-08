@@ -19,10 +19,12 @@ export default function VocabularyScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedBook, setSelectedBook] = useState<string>('All');
+  const [selectedLesson, setSelectedLesson] = useState<string>('All');
+  const [filterMode, setFilterMode] = useState<'book' | 'lesson'>('book');
   const { selectedFont } = useFont();
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
-  const snapPoints = useMemo(() => ['25%', '50%'], []);
+  const snapPoints = useMemo(() => ['25%', '60%'], []);
 
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
@@ -35,7 +37,8 @@ export default function VocabularyScreen() {
       setLoading(true);
       setError(null);
       const data = await getVocabulary(
-        selectedBook === 'All' ? undefined : selectedBook
+        selectedBook === 'All' ? undefined : selectedBook,
+        selectedLesson === 'All' ? undefined : selectedLesson
       );
       setVocabulary(data);
     } catch (e) {
@@ -43,28 +46,50 @@ export default function VocabularyScreen() {
     } finally {
       setLoading(false);
     }
-  }, [selectedBook]);
+  }, [selectedBook, selectedLesson]);
 
   useEffect(() => {
     fetchVocabulary();
   }, [fetchVocabulary]);
 
+  const availableLessons = useMemo(() => {
+    if (selectedBook === 'All') return [];
+    const lessons = vocabulary
+      .filter((item) => item.bookId === selectedBook)
+      .map((item) => item.lessonId);
+    return ['All', ...Array.from(new Set(lessons)).sort((a, b) => parseInt(a, 10) - parseInt(b, 10)).map(String)];
+  }, [vocabulary, selectedBook]);
+
   const groupedVocabulary = useMemo(() => {
-    if (selectedBook !== 'All') {
-      return [];
+    if (selectedBook !== 'All' && selectedLesson !== 'All') {
+      return [{ title: `Book ${selectedBook.replace('book', '')} - Lesson ${selectedLesson}`, data: vocabulary }];
     }
-    const grouped = vocabulary.reduce((acc, item) => {
-      const lesson = `Lesson ${item.lessonId}`;
-      const existingLesson = acc.find((section) => section.title === lesson);
-      if (existingLesson) {
-        existingLesson.data.push(item);
-      } else {
-        acc.push({ title: lesson, data: [item] });
+    if (selectedBook !== 'All') {
+      const groupedByLesson = vocabulary.reduce((acc, item) => {
+        const lessonTitle = `Lesson ${item.lessonId}`;
+        let lessonGroup = acc.find(group => group.title === lessonTitle);
+        if (!lessonGroup) {
+          lessonGroup = { title: lessonTitle, data: [] };
+          acc.push(lessonGroup);
+        }
+        lessonGroup.data.push(item);
+        return acc;
+      }, [] as { title: string; data: Vocabulary[] }[]);
+      return groupedByLesson.sort((a, b) => parseInt(a.title.split(' ')[1]) - parseInt(b.title.split(' ')[1]));
+    }
+
+    const groupedByBook = vocabulary.reduce((acc, item) => {
+      const bookTitle = `Book ${item.bookId.replace('book', '')}`;
+      let bookGroup = acc.find(group => group.title === bookTitle);
+      if (!bookGroup) {
+        bookGroup = { title: bookTitle, data: [] };
+        acc.push(bookGroup);
       }
+      bookGroup.data.push(item);
       return acc;
     }, [] as { title: string; data: Vocabulary[] }[]);
-    return grouped;
-  }, [vocabulary, selectedBook]);
+    return groupedByBook;
+  }, [vocabulary, selectedBook, selectedLesson]);
 
   const renderItem = ({ item }: { item: Vocabulary }) => (
     <View style={styles.itemContainer}>
@@ -83,26 +108,33 @@ export default function VocabularyScreen() {
 
   const handleSelectBook = (bookId: string) => {
     setSelectedBook(bookId);
+    setSelectedLesson('All');
+    if (bookId === 'All') {
+      bottomSheetModalRef.current?.dismiss();
+    } else {
+      setFilterMode('lesson');
+    }
+  };
+
+  const handleSelectLesson = (lesson: string) => {
+    setSelectedLesson(lesson);
     bottomSheetModalRef.current?.dismiss();
   };
 
   const EmptyListComponent = () => (
     <View style={styles.emptyContainer}>
-      {selectedBook !== 'All' ? (
-        <>
-          <Text style={styles.emptyText}>
-            No vocabulary found for this filter.
-          </Text>
-          <TouchableOpacity
-            style={styles.clearFilterButton}
-            onPress={() => handleSelectBook('All')}
-          >
-            <Text style={styles.clearFilterButtonText}>Clear Filter</Text>
-          </TouchableOpacity>
-        </>
-      ) : (
-        <Text style={styles.emptyText}>No vocabulary found.</Text>
-      )}
+      <Text style={styles.emptyText}>
+        No vocabulary found for the selected filter.
+      </Text>
+      <TouchableOpacity
+        style={styles.clearFilterButton}
+        onPress={() => {
+          setSelectedBook('All');
+          setSelectedLesson('All');
+        }}
+      >
+        <Text style={styles.clearFilterButtonText}>Clear Filter</Text>
+      </TouchableOpacity>
     </View>
   );
 
@@ -112,7 +144,7 @@ export default function VocabularyScreen() {
         <Text style={styles.headerTitle}>Vocabulary</Text>
         <Pressable onPress={handlePresentModalPress}>
           <Ionicons name="filter-circle-outline" size={24} color="black" />
-          {selectedBook !== 'All' && <View style={styles.filterBadge} />}
+          {(selectedBook !== 'All' || selectedLesson !== 'All') && <View style={styles.filterBadge} />}
         </Pressable>
       </View>
 
@@ -128,7 +160,7 @@ export default function VocabularyScreen() {
           keyExtractor={(item) => item.id}
           style={{ flex: 1 }}
           contentContainerStyle={styles.listContent}
-          ListEmptyComponent={<EmptyListComponent />}
+          ListEmptyComponent={groupedVocabulary.length === 0 ? <EmptyListComponent /> : null}
         />
       )}
 
@@ -136,24 +168,68 @@ export default function VocabularyScreen() {
         ref={bottomSheetModalRef}
         snapPoints={snapPoints}
         style={styles.bottomSheet}
+        onDismiss={() => setFilterMode('book')}
       >
         <BottomSheetView style={styles.modalView}>
-          <Text style={styles.modalText}>Filter by Book</Text>
-          <TouchableOpacity
-            style={styles.modalButton}
-            onPress={() => handleSelectBook('All')}
-          >
-            <Text style={styles.modalButtonText}>All</Text>
-          </TouchableOpacity>
-          {books.map((book) => (
+          <View style={styles.segmentedControl}>
             <TouchableOpacity
-              key={book}
-              style={styles.modalButton}
-              onPress={() => handleSelectBook(book)}
+              style={[styles.segmentedButton, filterMode === 'book' && styles.segmentedButtonActive]}
+              onPress={() => setFilterMode('book')}
             >
-              <Text style={styles.modalButtonText}>{book.replace('book', 'Book ')}</Text>
+              <Text style={[styles.segmentedButtonText, filterMode === 'book' && styles.segmentedButtonTextActive]}>By Book</Text>
             </TouchableOpacity>
-          ))}
+            <TouchableOpacity
+              style={[styles.segmentedButton, filterMode === 'lesson' && styles.segmentedButtonActive]}
+              onPress={() => setFilterMode('lesson')}
+              disabled={selectedBook === 'All'}
+            >
+              <Text style={[styles.segmentedButtonText, filterMode === 'lesson' && styles.segmentedButtonTextActive, selectedBook === 'All' && styles.disabledText]}>By Lesson</Text>
+            </TouchableOpacity>
+          </View>
+
+          {filterMode === 'book' ? (
+            <>
+              <TouchableOpacity
+                style={[styles.modalButton, selectedBook === 'All' && styles.modalButtonActive]}
+                onPress={() => handleSelectBook('All')}
+              >
+                <Text style={[styles.modalButtonText, selectedBook === 'All' && styles.modalButtonTextActive]}>All Books</Text>
+              </TouchableOpacity>
+              {books.map((book) => (
+                <TouchableOpacity
+                  key={book}
+                  style={[styles.modalButton, selectedBook === book && styles.modalButtonActive]}
+                  onPress={() => handleSelectBook(book)}
+                >
+                  <Text style={[styles.modalButtonText, selectedBook === book && styles.modalButtonTextActive]}>{book.replace('book', 'Book ')}</Text>
+                </TouchableOpacity>
+              ))}
+            </>
+          ) : (
+            <>
+              {selectedBook === 'All' ? (
+                <Text style={styles.infoText}>Please select a book to filter by lesson.</Text>
+              ) : (
+                <>
+                  <TouchableOpacity
+                    style={[styles.modalButton, selectedLesson === 'All' && styles.modalButtonActive]}
+                    onPress={() => handleSelectLesson('All')}
+                  >
+                    <Text style={[styles.modalButtonText, selectedLesson === 'All' && styles.modalButtonTextActive]}>All Lessons</Text>
+                  </TouchableOpacity>
+                  {availableLessons.slice(1).map((lesson) => (
+                    <TouchableOpacity
+                      key={lesson}
+                      style={[styles.modalButton, selectedLesson === lesson && styles.modalButtonActive]}
+                      onPress={() => handleSelectLesson(lesson)}
+                    >
+                      <Text style={[styles.modalButtonText, selectedLesson === lesson && styles.modalButtonTextActive]}>Lesson {lesson}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </>
+              )}
+            </>
+          )}
         </BottomSheetView>
       </BottomSheetModal>
     </SafeAreaView>
@@ -232,15 +308,57 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   modalButton: {
-    width: 200,
-    padding: 10,
+    width: '100%',
+    padding: 12,
     marginVertical: 5,
     backgroundColor: '#f0f0f0',
     borderRadius: 10,
     alignItems: 'center',
   },
+  modalButtonActive: {
+    backgroundColor: '#007AFF',
+  },
   modalButtonText: {
     fontSize: 16,
+    fontWeight: '500',
+  },
+  modalButtonTextActive: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  segmentedControl: {
+    flexDirection: 'row',
+    marginBottom: 20,
+    backgroundColor: '#e0e0e0',
+    borderRadius: 10,
+    width: '100%',
+  },
+  segmentedButton: {
+    flex: 1,
+    paddingVertical: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
+  },
+  segmentedButtonActive: {
+    backgroundColor: '#007AFF',
+  },
+  segmentedButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#000',
+  },
+  segmentedButtonTextActive: {
+    color: '#fff',
+  },
+  infoText: {
+    marginTop: 20,
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+  },
+  disabledText: {
+    color: '#aaa'
   },
   filterBadge: {
     position: 'absolute',
