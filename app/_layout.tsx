@@ -13,6 +13,7 @@ import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -82,9 +83,11 @@ export default function RootLayout() {
         client={queryClient}
         persistOptions={{ persister: asyncStoragePersister }}
       >
-        <FontProvider>
-          <RootLayoutNav />
-        </FontProvider>
+        <BottomSheetModalProvider>
+          <FontProvider>
+            <RootLayoutNav />
+          </FontProvider>
+        </BottomSheetModalProvider>
       </PersistQueryClientProvider>
     </GestureHandlerRootView>
   );

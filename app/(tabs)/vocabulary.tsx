@@ -7,20 +7,21 @@ import {
   ActivityIndicator,
   StyleSheet,
   TouchableOpacity,
+  Pressable,
 } from 'react-native';
 import { getVocabulary, Vocabulary } from '../../api/vocabulary';
 import { useFont } from '@/components/FontContext';
 import { Ionicons } from '@expo/vector-icons';
-import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 
-function VocabularyScreen() {
+export default function VocabularyScreen() {
   const [vocabulary, setVocabulary] = useState<Vocabulary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedBook, setSelectedBook] = useState<string | undefined>();
+  const [selectedBook, setSelectedBook] = useState<string>('All');
   const { selectedFont } = useFont();
-
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
   const snapPoints = useMemo(() => ['25%', '50%'], []);
 
   const handlePresentModalPress = useCallback(() => {
@@ -33,7 +34,9 @@ function VocabularyScreen() {
     try {
       setLoading(true);
       setError(null);
-      const data = await getVocabulary(selectedBook);
+      const data = await getVocabulary(
+        selectedBook === 'All' ? undefined : selectedBook
+      );
       setVocabulary(data);
     } catch (e) {
       setError('Failed to fetch vocabulary.');
@@ -55,18 +58,39 @@ function VocabularyScreen() {
     </View>
   );
 
-  const handleSelectBook = (bookId: string | undefined) => {
+  const handleSelectBook = (bookId: string) => {
     setSelectedBook(bookId);
     bottomSheetModalRef.current?.dismiss();
   };
+
+  const EmptyListComponent = () => (
+    <View style={styles.emptyContainer}>
+      {selectedBook !== 'All' ? (
+        <>
+          <Text style={styles.emptyText}>
+            No vocabulary found for this filter.
+          </Text>
+          <TouchableOpacity
+            style={styles.clearFilterButton}
+            onPress={() => handleSelectBook('All')}
+          >
+            <Text style={styles.clearFilterButtonText}>Clear Filter</Text>
+          </TouchableOpacity>
+        </>
+      ) : (
+        <Text style={styles.emptyText}>No vocabulary found.</Text>
+      )}
+    </View>
+  );
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Vocabulary</Text>
-        <TouchableOpacity onPress={handlePresentModalPress}>
+        <Pressable onPress={handlePresentModalPress}>
           <Ionicons name="filter-circle-outline" size={24} color="black" />
-        </TouchableOpacity>
+          {selectedBook !== 'All' && <View style={styles.filterBadge} />}
+        </Pressable>
       </View>
 
       {loading ? (
@@ -80,19 +104,20 @@ function VocabularyScreen() {
           keyExtractor={(item) => item.id}
           style={{ flex: 1 }}
           contentContainerStyle={styles.listContent}
-          ListEmptyComponent={<Text style={styles.errorText}>No vocabulary found.</Text>}
+          ListEmptyComponent={<EmptyListComponent />}
         />
       )}
+
       <BottomSheetModal
         ref={bottomSheetModalRef}
-        index={1}
         snapPoints={snapPoints}
+        style={styles.bottomSheet}
       >
-        <View style={styles.contentContainer}>
+        <BottomSheetView style={styles.modalView}>
           <Text style={styles.modalText}>Filter by Book</Text>
           <TouchableOpacity
             style={styles.modalButton}
-            onPress={() => handleSelectBook(undefined)}
+            onPress={() => handleSelectBook('All')}
           >
             <Text style={styles.modalButtonText}>All</Text>
           </TouchableOpacity>
@@ -105,17 +130,9 @@ function VocabularyScreen() {
               <Text style={styles.modalButtonText}>{book.replace('book', 'Book ')}</Text>
             </TouchableOpacity>
           ))}
-        </View>
+        </BottomSheetView>
       </BottomSheetModal>
     </SafeAreaView>
-  );
-}
-
-export default function VocabularyScreenWrapper() {
-  return (
-    <BottomSheetModalProvider>
-      <VocabularyScreen />
-    </BottomSheetModalProvider>
   );
 }
 
@@ -162,10 +179,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#555',
   },
-  contentContainer: {
-    flex: 1,
+  bottomSheet: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: -4,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalView: {
+    padding: 35,
     alignItems: 'center',
-    padding: 20,
+    width: '100%',
   },
   modalText: {
     marginBottom: 15,
@@ -183,5 +210,37 @@ const styles = StyleSheet.create({
   },
   modalButtonText: {
     fontSize: 16,
+  },
+  filterBadge: {
+    position: 'absolute',
+    right: -2,
+    top: -2,
+    backgroundColor: 'blue',
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 50,
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#555',
+    textAlign: 'center',
+  },
+  clearFilterButton: {
+    marginTop: 16,
+    backgroundColor: '#007AFF',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+  },
+  clearFilterButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
