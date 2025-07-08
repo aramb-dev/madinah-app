@@ -3,7 +3,7 @@ import {
   SafeAreaView,
   View,
   Text,
-  FlatList,
+  SectionList,
   ActivityIndicator,
   StyleSheet,
   TouchableOpacity,
@@ -49,6 +49,23 @@ export default function VocabularyScreen() {
     fetchVocabulary();
   }, [fetchVocabulary]);
 
+  const groupedVocabulary = useMemo(() => {
+    if (selectedBook !== 'All') {
+      return [];
+    }
+    const grouped = vocabulary.reduce((acc, item) => {
+      const lesson = `Lesson ${item.lessonId}`;
+      const existingLesson = acc.find((section) => section.title === lesson);
+      if (existingLesson) {
+        existingLesson.data.push(item);
+      } else {
+        acc.push({ title: lesson, data: [item] });
+      }
+      return acc;
+    }, [] as { title: string; data: Vocabulary[] }[]);
+    return grouped;
+  }, [vocabulary, selectedBook]);
+
   const renderItem = ({ item }: { item: Vocabulary }) => (
     <View style={styles.itemContainer}>
       <Text style={[styles.arabicWord, { fontFamily: selectedFont.fontFamily }]}>
@@ -57,6 +74,12 @@ export default function VocabularyScreen() {
       <Text style={styles.translation}>{item.translation.en}</Text>
     </View>
   );
+
+  const renderSectionHeader = ({
+    section: { title },
+  }: {
+    section: { title: string };
+  }) => <Text style={styles.sectionHeader}>{title}</Text>;
 
   const handleSelectBook = (bookId: string) => {
     setSelectedBook(bookId);
@@ -98,9 +121,10 @@ export default function VocabularyScreen() {
       ) : error ? (
         <Text style={styles.errorText}>{error}</Text>
       ) : (
-        <FlatList
-          data={vocabulary}
+        <SectionList
+          sections={groupedVocabulary}
           renderItem={renderItem}
+          renderSectionHeader={renderSectionHeader}
           keyExtractor={(item) => item.id}
           style={{ flex: 1 }}
           contentContainerStyle={styles.listContent}
@@ -164,6 +188,13 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingBottom: 20,
+  },
+  sectionHeader: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    backgroundColor: '#f7f7f7',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
   },
   itemContainer: {
     padding: 16,
