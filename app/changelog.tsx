@@ -1,3 +1,4 @@
+import { Stack } from 'expo-router';
 import { StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { useEffect, useState } from 'react';
@@ -44,9 +45,11 @@ export default function ChangelogScreen() {
   }
 
   return (
-    <ScrollView style={styles.scrollContainer}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Changelog</Text>
+    <>
+      <Stack.Screen options={{ headerBackTitle: 'Settings' }} />
+      <ScrollView style={styles.scrollContainer}>
+        <View style={styles.container}>
+          <Text style={styles.title}>Changelog</Text>
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
 
         {changelog.map((entry, index) => (
@@ -70,7 +73,8 @@ export default function ChangelogScreen() {
           <Text style={styles.noDataText}>No changelog entries available.</Text>
         )}
       </View>
-    </ScrollView>
+      </ScrollView>
+    </>
   );
 }
 

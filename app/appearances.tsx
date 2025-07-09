@@ -1,3 +1,4 @@
+import { Stack } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Pressable, ScrollView } from 'react-native';
 import { Text, View } from '@/components/Themed';
@@ -26,17 +27,19 @@ export default function AppearancesScreen() {
   }
 
   return (
-    <ScrollView style={styles.scrollContainer}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Appearances</Text>
+    <>
+      <Stack.Screen options={{ headerBackTitle: 'Settings', title: 'Appearance' }} />
+      <ScrollView style={styles.scrollContainer}>
+        <View style={styles.container}>
+          <Text style={styles.title}>Appearance</Text>
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-        
+
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Arabic Font</Text>
           <Text style={styles.sectionDescription}>
             Choose your preferred Arabic font for reading lessons and vocabulary.
           </Text>
-          
+
           <View style={styles.fontList}>
             {AVAILABLE_FONTS.map((font) => (
               <Pressable
@@ -44,11 +47,11 @@ export default function AppearancesScreen() {
                 style={[
                   styles.fontOption,
                   {
-                    backgroundColor: colorScheme === 'dark' 
-                      ? 'rgba(255,255,255,0.1)' 
+                    backgroundColor: colorScheme === 'dark'
+                      ? 'rgba(255,255,255,0.1)'
                       : 'rgba(0,0,0,0.05)',
-                    borderColor: selectedFont.id === font.id 
-                      ? Colors[colorScheme ?? 'light'].tint 
+                    borderColor: selectedFont.id === font.id
+                      ? Colors[colorScheme ?? 'light'].tint
                       : 'transparent',
                     borderWidth: selectedFont.id === font.id ? 2 : 1,
                   }
@@ -58,24 +61,24 @@ export default function AppearancesScreen() {
                 <View style={styles.fontOptionContent}>
                   <View style={styles.fontInfo}>
                     <Text style={styles.fontName}>{font.name}</Text>
-                    <ThemedText 
+                    <ThemedText
                       style={[styles.fontPreview, { fontFamily: font.fontFamily }]}
                     >
                       العربية - مدينة العربية
                     </ThemedText>
                   </View>
-                  
+
                   <View style={styles.radioContainer}>
                     {selectedFont.id === font.id ? (
-                      <FontAwesome 
-                        name="dot-circle-o" 
-                        size={20} 
+                      <FontAwesome
+                        name="dot-circle-o"
+                        size={20}
                         color={Colors[colorScheme ?? 'light'].tint}
                       />
                     ) : (
-                      <FontAwesome 
-                        name="circle-o" 
-                        size={20} 
+                      <FontAwesome
+                        name="circle-o"
+                        size={20}
                         color={Colors[colorScheme ?? 'light'].text}
                       />
                     )}
@@ -85,7 +88,7 @@ export default function AppearancesScreen() {
             ))}
           </View>
         </View>
-        
+
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>More Options</Text>
           <Text style={styles.sectionDescription}>
@@ -93,7 +96,8 @@ export default function AppearancesScreen() {
           </Text>
         </View>
       </View>
-    </ScrollView>
+      </ScrollView>
+    </>
   );
 }
 

@@ -1,8 +1,6 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import { withLayoutContext } from 'expo-router';
 import {
   createNativeBottomTabNavigator,
@@ -21,15 +19,8 @@ const Tabs = withLayoutContext<
 >(BottomTabNavigator);
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
 
   return (
     <Tabs>
@@ -43,7 +34,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="vocabulary"
         options={{
-          title: 'Vocabulary', // Explicitly set user-friendly name
+          title: 'Vocabulary',
           tabBarIcon: () => ({ sfSymbol: "pencil.and.list.clipboard" }),
         }}
       />

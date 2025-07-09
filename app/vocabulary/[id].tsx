@@ -36,7 +36,12 @@ export default function WordDetailScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Stack.Screen options={{ title: vocabulary.word }} />
+      <Stack.Screen
+        options={{
+          headerBackTitle: 'Vocabulary',
+          title: vocabulary.word,
+        }}
+      />
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <Text style={styles.word}>{vocabulary.word}</Text>
 

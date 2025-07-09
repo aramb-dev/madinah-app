@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { getVocabulary, Vocabulary } from '../../api/vocabulary';
 import { useFont } from '@/components/FontContext';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, Feather } from '@expo/vector-icons';
 import { BottomSheetModal, BottomSheetView, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { useRouter } from 'expo-router';
 
@@ -102,10 +102,13 @@ export default function VocabularyScreen() {
 
   const renderItem = ({ item }: { item: Vocabulary }) => (
     <TouchableOpacity onPress={() => handlePressItem(item)} style={styles.itemContainer}>
-      <Text style={[styles.arabicWord, { fontFamily: selectedFont.fontFamily }]}>
-        {item.word}
-      </Text>
-      <Text style={styles.translation}>{item.translation.en}</Text>
+      <View style={styles.textContainer}>
+        <Text style={[styles.arabicWord, { fontFamily: selectedFont.fontFamily }]}>
+          {item.word}
+        </Text>
+        <Text style={styles.translation}>{item.translation.en}</Text>
+      </View>
+      <Feather name="chevron-left" size={24} color="#555" />
     </TouchableOpacity>
   );
 
@@ -279,15 +282,23 @@ const styles = StyleSheet.create({
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
+    flexDirection: 'row-reverse',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  textContainer: {
+    flex: 1,
+    marginRight: 10,
   },
   arabicWord: {
     fontSize: 22,
     textAlign: 'right',
-    marginBottom: 8,
+    marginBottom: 4,
   },
   translation: {
     fontSize: 16,
     color: '#555',
+    textAlign: 'right',
   },
   bottomSheet: {
     shadowColor: '#000',
