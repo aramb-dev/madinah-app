@@ -12,6 +12,7 @@ import { FontProvider } from '@/components/FontContext';
 import { ThemeProvider as CustomThemeProvider } from '@/components/ThemeContext';
 import { FontSizeProvider } from '@/components/FontSizeContext';
 import { LearningProvider } from '@/components/LearningContext';
+import { NotificationsProvider } from '@/components/NotificationsContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
@@ -92,7 +93,9 @@ export default function RootLayout() {
             <FontSizeProvider>
               <FontProvider>
                 <LearningProvider>
-                  <RootLayoutNav />
+                  <NotificationsProvider>
+                    <RootLayoutNav />
+                  </NotificationsProvider>
                 </LearningProvider>
               </FontProvider>
             </FontSizeProvider>
