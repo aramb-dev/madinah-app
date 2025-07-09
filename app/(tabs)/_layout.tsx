@@ -49,9 +49,9 @@ export default function TabLayout() {
         name="(settings)"
         options={{
           title: 'Settings', // Explicitly set user-friendly name
-          header: () => null,
+          headerShown: true,
           tabBarIcon: () => ({ sfSymbol: "gear" }),
-        }}
+        } as any}
       />
     </Tabs>
   );
