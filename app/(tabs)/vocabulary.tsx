@@ -13,6 +13,7 @@ import { getVocabulary, Vocabulary } from '../../api/vocabulary';
 import { useFont } from '@/components/FontContext';
 import { Ionicons } from '@expo/vector-icons';
 import { BottomSheetModal, BottomSheetView, BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { useRouter } from 'expo-router';
 
 export default function VocabularyScreen() {
   const [vocabulary, setVocabulary] = useState<Vocabulary[]>([]);
@@ -23,6 +24,7 @@ export default function VocabularyScreen() {
   const [filterMode, setFilterMode] = useState<'book' | 'lesson'>('book');
   const { selectedFont } = useFont();
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const router = useRouter();
 
   const snapPoints = useMemo(() => ['25%', '60%'], []);
 
@@ -91,13 +93,20 @@ export default function VocabularyScreen() {
     return groupedByBook;
   }, [vocabulary, selectedBook, selectedLesson]);
 
+  const handlePressItem = (item: Vocabulary) => {
+    router.push({
+      pathname: `/vocabulary/${item.id}` as any,
+      params: { vocabulary: JSON.stringify(item) },
+    });
+  };
+
   const renderItem = ({ item }: { item: Vocabulary }) => (
-    <View style={styles.itemContainer}>
+    <TouchableOpacity onPress={() => handlePressItem(item)} style={styles.itemContainer}>
       <Text style={[styles.arabicWord, { fontFamily: selectedFont.fontFamily }]}>
         {item.word}
       </Text>
       <Text style={styles.translation}>{item.translation.en}</Text>
-    </View>
+    </TouchableOpacity>
   );
 
   const renderSectionHeader = ({
