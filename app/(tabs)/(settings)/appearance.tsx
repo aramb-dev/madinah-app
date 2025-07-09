@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { useTheme } from '@/components/ThemeContext';
 import { useFontSize } from '@/components/FontSizeContext';
 import { ThemedText } from '@/components/ThemedText';
-import { SegmentedControl } from '../../components/SegmentedControl';
+import { SegmentedControl } from '../../../components/SegmentedControl';
 import Slider from '@react-native-community/slider'; // This import is correct
 import { Stack } from 'expo-router';
 

@@ -1,7 +1,7 @@
 import { Text, View, StyleSheet, Linking, ScrollView } from 'react-native';
-import { useTheme } from '../../components/ThemeContext';
-import { useFontSize } from '../../components/FontSizeContext';
-import app from '../../app.json';
+import { useTheme } from '../../../components/ThemeContext';
+import { useFontSize } from '../../../components/FontSizeContext';
+import app from '../../../app.json';
 import { Stack } from 'expo-router';
 
 export default function AboutScreen() {

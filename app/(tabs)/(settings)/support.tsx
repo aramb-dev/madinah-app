@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Text, View, StyleSheet, Linking, ScrollView, TouchableOpacity, Platform } from 'react-native';
-import { useTheme } from '../../components/ThemeContext';
-import { useFontSize } from '../../components/FontSizeContext';
+import { useTheme } from '../../../components/ThemeContext';
+import { useFontSize } from '../../../components/FontSizeContext';
 import { Stack } from 'expo-router';
 
 export default function SupportScreen() {

@@ -46,9 +46,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="settings"
+        name="(settings)"
         options={{
           title: 'Settings', // Explicitly set user-friendly name
+          header: () => null,
           tabBarIcon: () => ({ sfSymbol: "gear" }),
         }}
       />
