@@ -170,8 +170,6 @@ export const getBookRuleCount = (bookId: string): Promise<RuleCount> => {
 
 import {
   getVocabulary,
-  getBookVocabulary,
-  getLessonVocabulary,
 } from './vocabulary';
 
 // Export all API functions as a single object for easier imports
@@ -184,8 +182,6 @@ export const api = {
 
   // Vocabulary
   getVocabulary,
-  getBookVocabulary,
-  getLessonVocabulary,
 
   // Lessons
   getAllLessons,
