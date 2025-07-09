@@ -1,152 +1,152 @@
-### Technical Plan: Settings Section Implementation
+# Technical Plan: Settings UI Refactor
 
-This document outlines the technical plan for creating a new, structured settings section for the application. The plan focuses on establishing the foundational structure, including file organization, component design, and navigation, as a first step before implementing the logic for individual settings.
+This document outlines the technical steps required to refactor the settings section of the application based on user feedback.
 
 ---
 
-### 1. File Structure
+## 1. Navigation & Header Refactoring
 
-To create a clean and scalable structure for the settings screens, we will use a grouped route in `expo-router`. This will keep all settings-related screens organized in a single directory and allow for a shared layout.
+The core of this refactor is to move from a shared header for all settings screens to individual headers for each screen. This will resolve the "framed" navigation and blurred header issues.
 
-**Main Settings Screen:**
+### 1.1. Eliminate the Shared Header
 
-- The primary settings screen will remain at `app/(tabs)/settings.tsx`. This file will be modified to display the new categorized list of settings.
+The current implementation in `app/(settings)/_layout.tsx` uses a single `<Stack>` to wrap all the settings screens, which creates the shared header. This will be changed to a layout that allows individual screen options.
 
-**Settings Sub-screens:**
-A new grouped route directory will be created at `app/(settings)/`. This approach uses a layout route to provide a consistent UI shell (like a header with a back button) for all sub-screens, without adding `(settings)` to the URL path.
+**File to Modify:** `app/(settings)/_layout.tsx`
 
-The following new files will be created:
+**Changes:**
 
-- `app/(settings)/_layout.tsx`: This file will define the common layout for all settings sub-screens, including a stack navigator to manage the navigation hierarchy and provide a back button.
-- `app/(settings)/appearance.tsx`: For **Appearance** settings.
-- `app/(settings)/notifications.tsx`: For **Notifications** settings.
-- `app/(settings)/learning.tsx`: For **Learning Settings**.
-- `app/(settings)/support.tsx`: For **Support & Feedback** options.
-- `app/(settings)/about.tsx`: For the **About** page.
+- Remove the `SettingsLayout` component.
+- Export a `Stack` component directly from `expo-router`.
+- Configure the `Stack` with default `screenOptions` to set the `headerBackTitle` to "Settings". This ensures consistent back-button behavior.
 
-The existing `app/changelog.tsx` will be moved to:
+```tsx
+import { Stack } from "expo-router";
 
-- `app/(settings)/changelog.tsx`: To consolidate all settings-related screens. A redirect might be needed if the old route was public.
+export default function SettingsStack() {
+  return (
+    <Stack
+      screenOptions={{
+        headerBackTitle: "Settings",
+      }}
+    />
+  );
+}
+```
 
-**File Structure Diagram:**
+### 1.2. Configure Individual Screen Headers
 
-```mermaid
-graph TD
-    A[app] --> B["(tabs)"];
-    A --> C["(settings)"];
+Each settings screen will now be responsible for its own header configuration.
 
-    B --> settings["settings.tsx (Main Screen)"];
+**Files to Modify:**
 
-    C --> layout["_layout.tsx (Stack Layout)"];
-    C --> appearance["appearance.tsx"];
-    C --> notifications["notifications.tsx"];
-    C --> learning["learning.tsx"];
-    C --> support["support.tsx"];
-    C --> about["about.tsx"];
-    C --> changelog["changelog.tsx"];
+- `app/(settings)/appearance.tsx`
+- `app/(settings)/notifications.tsx`
+- `app/(settings)/learning.tsx`
+- `app/(settings)/support.tsx`
+- `app/(settings)/about.tsx`
+- `app/(settings)/changelog.tsx`
 
-    style settings fill:#f9f,stroke:#333,stroke-width:2px
-    style layout fill:#ccf,stroke:#333,stroke-width:2px
+**Changes:**
+
+For each file, add a `Stack.Screen` component to define the `title`.
+
+**Example for `appearance.tsx`:**
+
+```tsx
+import { Stack } from "expo-router";
+// ... other imports
+
+export default function AppearanceScreen() {
+  return (
+    <>
+      <Stack.Screen options={{ title: "Appearance" }} />
+      {/* ... rest of the component */}
+    </>
+  );
+}
+```
+
+This will be repeated for all settings screens with their respective titles.
+
+### 1.3. Fix the Main Settings Screen Header
+
+The main "Settings" title will be moved from the page content to the navigation header.
+
+**Files to Modify:**
+
+- `app/(tabs)/settings.tsx`
+- `app/(tabs)/_layout.tsx`
+
+**Changes:**
+
+1.  **In `app/(tabs)/settings.tsx`:**
+
+    - Remove the `ListHeaderComponent` prop from the `SectionList`.
+
+2.  **In `app/(tabs)/_layout.tsx`:**
+    - Add `options` to the `Tabs.Screen` for the settings tab to set the `title`.
+
+**Example for `app/(tabs)/_layout.tsx`:**
+
+```tsx
+// ...
+<Tabs.Screen
+  name="settings"
+  options={{
+    title: "Settings", // This will be the header title
+    tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />,
+  }}
+/>
+// ...
 ```
 
 ---
 
-### 2. Component & Layout Design
+## 2. UI & Content Cleanup
 
-The main settings screen, `app/(tabs)/settings.tsx`, will be redesigned to present the settings in clear, logical sections as requested.
+With the navigation refactored, we can now remove redundant UI elements.
 
-- **Component Choice:** We will use a `SectionList` from React Native. It is the most appropriate component for rendering grouped or sectioned data, providing better performance and semantics than a `ScrollView` with manually rendered sections.
+### 2.1. Remove Redundant In-Page Titles
 
-- **Data Structure:** The data for the `SectionList` will be structured as an array of section objects, where each object contains a `title` and a `data` array of list items.
+The titles within the content of the sub-pages are now redundant because they are in the header.
 
-  ```typescript
-  const sections = [
-    {
-      title: "Content & Learning",
-      data: [
-        { title: "Appearance", icon: "🖌️", href: "/appearance" },
-        { title: "Notifications", icon: "🔔", href: "/notifications" },
-        { title: "Learning Settings", icon: "⚙️", href: "/learning" },
-      ],
-    },
-    {
-      title: "Support & Info",
-      data: [
-        { title: "Support & Feedback", icon: "❤️", href: "/support" },
-        { title: "Rate This App", icon: "⭐", action: "rate" },
-        { title: "About", icon: "ℹ️", href: "/about" },
-        { title: "Changelog", icon: "🔄", href: "/changelog" },
-      ],
-    },
-  ];
-  ```
+**Files to Modify:**
 
-- **List Item Component:** Each item in the list will be a custom component that includes:
-  - An icon (emoji or `FontAwesome` icon).
-  - The setting title (`Text`).
-  - A chevron icon on the right to indicate it's a navigation item.
-  - The entire item will be wrapped in a `Pressable` component.
+- `app/(settings)/changelog.tsx`
+- `app/(settings)/support.tsx`
+- `app/(settings)/about.tsx`
+
+**Changes:**
+
+- In each file, remove the `<Text>` component that renders the main title of the page. For `about.tsx`, this is the `<Text style={styles.title}>{app.expo.name}</Text>` line.
+
+### 2.2. Remove Redundant "Rate This App" Button
+
+The "Rate This App" button on the support screen is redundant.
+
+**File to Modify:** `app/(settings)/support.tsx`
+
+**Changes:**
+
+- Remove the `TouchableOpacity` component for the "Rate the App" button.
 
 ---
 
-### 3. Navigation
+## 3. Component Refactoring
 
-Navigation from the main settings screen to the sub-screens will be handled using `expo-router`.
+### 3.1. Pronunciation Speed Control
 
-- **`<Link>` Component:** Each navigation item in the `SectionList` will use the `<Link>` component from `expo-router` to navigate to its respective screen.
+**File:** `app/(settings)/learning.tsx`
 
-  ```tsx
-  import { Link } from "expo-router";
+**Analysis:**
 
-  // Inside the SectionList's renderItem function
-  <Link href={item.href} asChild>
-    <Pressable>{/* Icon, Text, Chevron */}</Pressable>
-  </Link>;
-  ```
+The user feedback indicated that the "Pronunciation Speed" control should be a `SegmentedControl`. Upon inspection, the component is already implemented as a `SegmentedControl`.
 
-- **Stack Navigator:** The `app/(settings)/_layout.tsx` file will configure a `Stack` navigator. This will automatically provide a header with a title for each sub-screen and a back button to return to the main settings screen.
+**Conclusion:**
 
-  ```tsx
-  // app/(settings)/_layout.tsx
-  import { Stack } from "expo-router";
-
-  export default function SettingsLayout() {
-    return (
-      <Stack>
-        <Stack.Screen name="appearance" options={{ title: "Appearance" }} />
-        <Stack.Screen
-          name="notifications"
-          options={{ title: "Notifications" }}
-        />
-        {/* ... other screens */}
-      </Stack>
-    );
-  }
-  ```
+No changes are required for this component.
 
 ---
 
-### 4. Initial Implementation Scope
-
-The first phase of implementation will focus exclusively on building the static structure and navigation, without implementing the logic for any individual setting.
-
-**The goals for the initial task are:**
-
-1.  **Refactor `app/(tabs)/settings.tsx`:**
-
-    - Replace the current layout with a `SectionList`.
-    - Populate the `SectionList` with the new, categorized settings data.
-    - Style the list and items to match the app's design.
-
-2.  **Create New Files and Directories:**
-
-    - Create the `app/(settings)` directory.
-    - Create the `_layout.tsx` file with the `Stack` navigator configuration.
-    - Create placeholder files for `appearance.tsx`, `notifications.tsx`, `learning.tsx`, `support.tsx`, and `about.tsx`. Each file will contain a simple component that renders its title.
-
-3.  **Move Existing Files:**
-
-    - Move `app/changelog.tsx` to `app/(settings)/changelog.tsx`.
-
-4.  **Footer:**
-    - Add a footer to the `SectionList` in `app/(tabs)/settings.tsx` to display the app version.
+This plan addresses all the user's feedback and will result in a cleaner, more intuitive settings section.
