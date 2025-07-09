@@ -19,6 +19,10 @@ import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persi
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import {
+  SafeAreaProvider,
+  SafeAreaView,
+} from 'react-native-safe-area-context';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -83,26 +87,28 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <PersistQueryClientProvider
-        client={queryClient}
-        persistOptions={{ persister: asyncStoragePersister }}
-      >
-        <BottomSheetModalProvider>
-          <CustomThemeProvider>
-            <FontSizeProvider>
-              <FontProvider>
-                <LearningProvider>
-                  <NotificationsProvider>
-                    <RootLayoutNav />
-                  </NotificationsProvider>
-                </LearningProvider>
-              </FontProvider>
-            </FontSizeProvider>
-          </CustomThemeProvider>
-        </BottomSheetModalProvider>
-      </PersistQueryClientProvider>
-    </GestureHandlerRootView>
+    <SafeAreaProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <PersistQueryClientProvider
+          client={queryClient}
+          persistOptions={{ persister: asyncStoragePersister }}
+        >
+          <BottomSheetModalProvider>
+            <CustomThemeProvider>
+              <FontSizeProvider>
+                <FontProvider>
+                  <LearningProvider>
+                    <NotificationsProvider>
+                      <RootLayoutNav />
+                    </NotificationsProvider>
+                  </LearningProvider>
+                </FontProvider>
+              </FontSizeProvider>
+            </CustomThemeProvider>
+          </BottomSheetModalProvider>
+        </PersistQueryClientProvider>
+      </GestureHandlerRootView>
+    </SafeAreaProvider>
   );
 }
 
@@ -110,17 +116,19 @@ function RootLayoutNav() {
   const { effectiveTheme } = useTheme();
 
   return (
-    <ThemeProvider value={effectiveTheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen
-          name="(tabs)"
-          options={{
-            headerShown: false,
-            title: "Lessons" // Add a proper title for iOS back button
-          }}
-        />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      </Stack>
-    </ThemeProvider>
+    <SafeAreaView style={{ flex: 1 }}>
+      <ThemeProvider value={effectiveTheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Stack>
+          <Stack.Screen
+            name="(tabs)"
+            options={{
+              headerShown: false,
+              title: "Lessons" // Add a proper title for iOS back button
+            }}
+          />
+          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+        </Stack>
+      </ThemeProvider>
+    </SafeAreaView>
   );
 }

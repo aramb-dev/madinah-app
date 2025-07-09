@@ -1,6 +1,6 @@
 import React from 'react';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { useColorScheme } from '@/components/useColorScheme';
+import { MaterialIcons } from '@expo/vector-icons';
+import { Platform } from 'react-native';
 import { withLayoutContext } from 'expo-router';
 import {
   createNativeBottomTabNavigator,
@@ -28,21 +28,36 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Lessons', // Explicitly set user-friendly name
-          tabBarIcon: () => ({ sfSymbol: "books.vertical" }),
+          tabBarIcon: ({ color }) =>
+            Platform.OS === 'ios' ? (
+              { sfSymbol: 'books.vertical' }
+            ) : (
+              <MaterialIcons name="home" size={24} color={color} />
+            ),
         }}
       />
       <Tabs.Screen
         name="vocabulary"
         options={{
           title: 'Vocabulary',
-          tabBarIcon: () => ({ sfSymbol: "pencil.and.list.clipboard" }),
+          tabBarIcon: ({ color }) =>
+            Platform.OS === 'ios' ? (
+              { sfSymbol: 'pencil.and.list.clipboard' }
+            ) : (
+              <MaterialIcons name="school" size={24} color={color} />
+            ),
         }}
       />
       <Tabs.Screen
         name="exercises"
         options={{
           title: 'Exercises',
-          tabBarIcon: () => ({ sfSymbol: "doc.questionmark" }),
+          tabBarIcon: ({ color }) =>
+            Platform.OS === 'ios' ? (
+              { sfSymbol: 'doc.questionmark' }
+            ) : (
+              <MaterialIcons name="fitness-center" size={24} color={color} />
+            ),
         }}
       />
       <Tabs.Screen
@@ -50,7 +65,12 @@ export default function TabLayout() {
         options={{
           title: 'Settings', // Explicitly set user-friendly name
           headerShown: true,
-          tabBarIcon: () => ({ sfSymbol: "gear" }),
+          tabBarIcon: ({ color }) =>
+            Platform.OS === 'ios' ? (
+              { sfSymbol: 'gear' }
+            ) : (
+              <MaterialIcons name="settings" size={24} color={color} />
+            ),
         } as any}
       />
     </Tabs>
