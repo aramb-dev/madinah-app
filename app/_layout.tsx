@@ -7,7 +7,10 @@ import 'react-native-reanimated';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 import { useColorScheme } from '@/components/useColorScheme';
+import { useTheme } from '@/components/ThemeContext';
 import { FontProvider } from '@/components/FontContext';
+import { ThemeProvider as CustomThemeProvider } from '@/components/ThemeContext';
+import { FontSizeProvider } from '@/components/FontSizeContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
@@ -84,9 +87,13 @@ export default function RootLayout() {
         persistOptions={{ persister: asyncStoragePersister }}
       >
         <BottomSheetModalProvider>
-          <FontProvider>
-            <RootLayoutNav />
-          </FontProvider>
+          <CustomThemeProvider>
+            <FontSizeProvider>
+              <FontProvider>
+                <RootLayoutNav />
+              </FontProvider>
+            </FontSizeProvider>
+          </CustomThemeProvider>
         </BottomSheetModalProvider>
       </PersistQueryClientProvider>
     </GestureHandlerRootView>
@@ -94,10 +101,10 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const colorScheme = useColorScheme();
+  const { effectiveTheme } = useTheme();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={effectiveTheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen
           name="(tabs)"
