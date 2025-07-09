@@ -3,6 +3,7 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
+import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
@@ -120,6 +121,7 @@ function RootLayoutNav() {
     colors: {
       ...DefaultTheme.colors,
       background: '#FFFFFF',
+      card: '#FFFFFF', // Add this line
     },
   };
 
@@ -128,6 +130,7 @@ function RootLayoutNav() {
       <ThemeProvider
         value={effectiveTheme === 'dark' ? DarkTheme : CustomDefaultTheme}
       >
+        <StatusBar style={effectiveTheme === 'dark' ? 'light' : 'dark'} />
         <Stack>
           <Stack.Screen
             name="(tabs)"

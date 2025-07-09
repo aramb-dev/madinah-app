@@ -22,7 +22,15 @@ const Tabs = withLayoutContext<
 export default function TabLayout() {
 
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={
+        {
+          tabBarStyle: {
+            backgroundColor: '#F0F0F0',
+          },
+        } as any
+      }
+    >
       <Tabs.Screen
         name="index"
         options={{
