@@ -11,6 +11,7 @@ import { useTheme } from '@/components/ThemeContext';
 import { FontProvider } from '@/components/FontContext';
 import { ThemeProvider as CustomThemeProvider } from '@/components/ThemeContext';
 import { FontSizeProvider } from '@/components/FontSizeContext';
+import { LearningProvider } from '@/components/LearningContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
@@ -90,7 +91,9 @@ export default function RootLayout() {
           <CustomThemeProvider>
             <FontSizeProvider>
               <FontProvider>
-                <RootLayoutNav />
+                <LearningProvider>
+                  <RootLayoutNav />
+                </LearningProvider>
               </FontProvider>
             </FontSizeProvider>
           </CustomThemeProvider>
