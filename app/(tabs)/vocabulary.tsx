@@ -12,7 +12,7 @@ import {
 import { getVocabulary, Vocabulary } from '../../api/vocabulary';
 import { useFont } from '@/components/FontContext';
 import { Ionicons } from '@expo/vector-icons';
-import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
+import { BottomSheetModal, BottomSheetView, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 
 export default function VocabularyScreen() {
   const [vocabulary, setVocabulary] = useState<Vocabulary[]>([]);
@@ -170,67 +170,61 @@ export default function VocabularyScreen() {
         style={styles.bottomSheet}
         onDismiss={() => setFilterMode('book')}
       >
-        <BottomSheetView style={styles.modalView}>
-          <View style={styles.segmentedControl}>
-            <TouchableOpacity
-              style={[styles.segmentedButton, filterMode === 'book' && styles.segmentedButtonActive]}
-              onPress={() => setFilterMode('book')}
-            >
-              <Text style={[styles.segmentedButtonText, filterMode === 'book' && styles.segmentedButtonTextActive]}>By Book</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.segmentedButton, filterMode === 'lesson' && styles.segmentedButtonActive]}
-              onPress={() => setFilterMode('lesson')}
-              disabled={selectedBook === 'All'}
-            >
-              <Text style={[styles.segmentedButtonText, filterMode === 'lesson' && styles.segmentedButtonTextActive, selectedBook === 'All' && styles.disabledText]}>By Lesson</Text>
-            </TouchableOpacity>
-          </View>
+        <BottomSheetView style={styles.bottomSheetContent}>
+      {/* Segmented Control */}
+      <View style={styles.segmentedControl}>
+        <TouchableOpacity
+          style={[styles.segmentedButton, filterMode === 'book' && styles.segmentedButtonActive]}
+          onPress={() => setFilterMode('book')}
+        >
+          <Text style={[styles.segmentedButtonText, filterMode === 'book' && styles.segmentedButtonTextActive]}>By Book</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.segmentedButton, filterMode === 'lesson' && styles.segmentedButtonActive]}
+          onPress={() => setFilterMode('lesson')}
+          disabled={selectedBook === 'All'}
+        >
+          <Text style={[styles.segmentedButtonText, filterMode === 'lesson' && styles.segmentedButtonTextActive, selectedBook === 'All' && styles.disabledText]}>By Lesson</Text>
+        </TouchableOpacity>
+      </View>
 
-          {filterMode === 'book' ? (
-            <>
+      {/* Conditional Content */}
+      {filterMode === 'book' ? (
+        <View>
+          <TouchableOpacity
+            style={[styles.modalButton, selectedBook === 'All' && styles.modalButtonActive]}
+            onPress={() => handleSelectBook('All')}
+          >
+            <Text style={[styles.modalButtonText, selectedBook === 'All' && styles.modalButtonTextActive]}>All Books</Text>
+          </TouchableOpacity>
+          {books.map((book) => (
+            <TouchableOpacity
+              key={book}
+              style={[styles.modalButton, selectedBook === book && styles.modalButtonActive]}
+              onPress={() => handleSelectBook(book)}
+            >
+              <Text style={[styles.modalButtonText, selectedBook === book && styles.modalButtonTextActive]}>{book.replace('book', 'Book ')}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      ) : (
+        <BottomSheetScrollView style={{ flex: 1 }}>
+          <View style={styles.lessonContainer}>
+            {availableLessons.map((lesson) => (
               <TouchableOpacity
-                style={[styles.modalButton, selectedBook === 'All' && styles.modalButtonActive]}
-                onPress={() => handleSelectBook('All')}
+                key={lesson}
+                style={[styles.lessonButton, selectedLesson === lesson && styles.modalButtonActive]}
+                onPress={() => handleSelectLesson(lesson)}
               >
-                <Text style={[styles.modalButtonText, selectedBook === 'All' && styles.modalButtonTextActive]}>All Books</Text>
+                <Text style={[styles.modalButtonText, selectedLesson === lesson && styles.modalButtonTextActive]}>
+                  {lesson === 'All' ? 'All Lessons' : `Lesson ${lesson}`}
+                </Text>
               </TouchableOpacity>
-              {books.map((book) => (
-                <TouchableOpacity
-                  key={book}
-                  style={[styles.modalButton, selectedBook === book && styles.modalButtonActive]}
-                  onPress={() => handleSelectBook(book)}
-                >
-                  <Text style={[styles.modalButtonText, selectedBook === book && styles.modalButtonTextActive]}>{book.replace('book', 'Book ')}</Text>
-                </TouchableOpacity>
-              ))}
-            </>
-          ) : (
-            <>
-              {selectedBook === 'All' ? (
-                <Text style={styles.infoText}>Please select a book to filter by lesson.</Text>
-              ) : (
-                <>
-                  <TouchableOpacity
-                    style={[styles.modalButton, selectedLesson === 'All' && styles.modalButtonActive]}
-                    onPress={() => handleSelectLesson('All')}
-                  >
-                    <Text style={[styles.modalButtonText, selectedLesson === 'All' && styles.modalButtonTextActive]}>All Lessons</Text>
-                  </TouchableOpacity>
-                  {availableLessons.slice(1).map((lesson) => (
-                    <TouchableOpacity
-                      key={lesson}
-                      style={[styles.modalButton, selectedLesson === lesson && styles.modalButtonActive]}
-                      onPress={() => handleSelectLesson(lesson)}
-                    >
-                      <Text style={[styles.modalButtonText, selectedLesson === lesson && styles.modalButtonTextActive]}>Lesson {lesson}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </>
-              )}
-            </>
-          )}
-        </BottomSheetView>
+            ))}
+          </View>
+        </BottomSheetScrollView>
+      )}
+    </BottomSheetView>
       </BottomSheetModal>
     </SafeAreaView>
   );
@@ -296,7 +290,13 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  bottomSheetContent: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
   modalView: {
+    flex: 1,
     padding: 35,
     alignItems: 'center',
     width: '100%',
@@ -326,6 +326,24 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
+  lessonScrollView: {
+    flex: 1,
+    width: '100%',
+  },
+  lessonContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'flex-start',
+      paddingBottom: 40, // Add padding to the bottom
+    },
+    lessonButton: {
+      paddingHorizontal: 16,
+      paddingVertical: 10,
+      margin: 5,
+      backgroundColor: '#f0f0f0',
+      borderRadius: 10,
+      alignItems: 'center',
+    },
   segmentedControl: {
     flexDirection: 'row',
     marginBottom: 20,
