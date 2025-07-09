@@ -5,6 +5,7 @@ import { useFontSize } from '@/components/FontSizeContext';
 import { ThemedText } from '@/components/ThemedText';
 import { SegmentedControl } from '../../components/SegmentedControl';
 import Slider from '@react-native-community/slider'; // This import is correct
+import { Stack } from 'expo-router';
 
 export default function AppearanceScreen() {
   const { themePreference, setThemePreference } = useTheme();
@@ -17,30 +18,33 @@ export default function AppearanceScreen() {
   ];
 
   return (
-    <View style={styles.container}>
-      <View style={styles.section}>
-        <ThemedText style={styles.heading}>Theme</ThemedText>
-        <SegmentedControl
-          options={themeOptions}
-          selectedValue={themePreference}
-          onValueChange={(value) => setThemePreference(value as any)}
-        />
-      </View>
-      <View style={styles.section}>
-        <ThemedText style={styles.heading}>Font Size</ThemedText>
-        <View style={styles.sliderContainer}>
-          <Slider
-            style={{ width: '100%' }}
-            minimumValue={12}
-            maximumValue={24}
-            step={1}
-            value={fontSize}
-            onSlidingComplete={setFontSize}
+    <>
+      <Stack.Screen options={{ title: 'Appearance' }} />
+      <View style={styles.container}>
+        <View style={styles.section}>
+          <ThemedText style={styles.heading}>Theme</ThemedText>
+          <SegmentedControl
+            options={themeOptions}
+            selectedValue={themePreference}
+            onValueChange={(value) => setThemePreference(value as any)}
           />
-          <ThemedText>{fontSize.toFixed(0)}</ThemedText>
+        </View>
+        <View style={styles.section}>
+          <ThemedText style={styles.heading}>Font Size</ThemedText>
+          <View style={styles.sliderContainer}>
+            <Slider
+              style={{ width: '100%' }}
+              minimumValue={12}
+              maximumValue={24}
+              step={1}
+              value={fontSize}
+              onSlidingComplete={setFontSize}
+            />
+            <ThemedText>{fontSize.toFixed(0)}</ThemedText>
+          </View>
         </View>
       </View>
-    </View>
+    </>
   );
 }
 

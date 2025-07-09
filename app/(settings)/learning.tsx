@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Switch } from 'react-native';
 import { useLearningContext } from '@/components/LearningContext';
 import { SegmentedControl } from '@/components/SegmentedControl';
 import { useTheme } from '@/components/ThemeContext';
+import { Stack } from 'expo-router';
 
 export default function LearningScreen() {
   const {
@@ -34,28 +35,31 @@ export default function LearningScreen() {
   });
 
   return (
-    <View style={styles.container}>
-      <View style={styles.settingContainer}>
-        <Text style={styles.label}>Auto-play audio</Text>
-        <Switch value={autoPlayAudio} onValueChange={setAutoPlayAudio} />
+    <>
+      <Stack.Screen options={{ title: 'Learning Settings' }} />
+      <View style={styles.container}>
+        <View style={styles.settingContainer}>
+          <Text style={styles.label}>Auto-play audio</Text>
+          <Switch value={autoPlayAudio} onValueChange={setAutoPlayAudio} />
+        </View>
+        <View style={styles.settingContainer}>
+          <Text style={styles.label}>Show Transliteration</Text>
+          <Switch
+            value={showTransliteration}
+            onValueChange={setShowTransliteration}
+          />
+        </View>
+        <View style={styles.settingContainer}>
+          <Text style={styles.label}>Pronunciation Speed</Text>
+          <SegmentedControl
+            options={[{ label: 'Normal', value: 'normal' }, { label: 'Slow', value: 'slow' }]}
+            selectedValue={pronunciationSpeed}
+            onValueChange={(value) =>
+              setPronunciationSpeed(value as 'normal' | 'slow')
+            }
+          />
+        </View>
       </View>
-      <View style={styles.settingContainer}>
-        <Text style={styles.label}>Show Transliteration</Text>
-        <Switch
-          value={showTransliteration}
-          onValueChange={setShowTransliteration}
-        />
-      </View>
-      <View style={styles.settingContainer}>
-        <Text style={styles.label}>Pronunciation Speed</Text>
-        <SegmentedControl
-          options={[{ label: 'Normal', value: 'normal' }, { label: 'Slow', value: 'slow' }]}
-          selectedValue={pronunciationSpeed}
-          onValueChange={(value) =>
-            setPronunciationSpeed(value as 'normal' | 'slow')
-          }
-        />
-      </View>
-    </View>
+    </>
   );
 }

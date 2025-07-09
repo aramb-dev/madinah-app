@@ -46,10 +46,9 @@ export default function ChangelogScreen() {
 
   return (
     <>
-      <Stack.Screen options={{ headerBackTitle: 'Settings' }} />
+      <Stack.Screen options={{ title: 'Changelog' }} />
       <ScrollView style={styles.scrollContainer}>
         <View style={styles.container}>
-          <Text style={styles.title}>Changelog</Text>
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
 
         {changelog.map((entry, index) => (

@@ -2,6 +2,7 @@ import { Text, View, StyleSheet, Linking, ScrollView } from 'react-native';
 import { useTheme } from '../../components/ThemeContext';
 import { useFontSize } from '../../components/FontSizeContext';
 import app from '../../app.json';
+import { Stack } from 'expo-router';
 
 export default function AboutScreen() {
   const { effectiveTheme } = useTheme();
@@ -12,13 +13,6 @@ export default function AboutScreen() {
       flex: 1,
       backgroundColor: effectiveTheme === 'dark' ? '#1a1a1a' : '#fff',
       padding: 20,
-    },
-    title: {
-      fontSize: fontSize * 1.5,
-      fontWeight: 'bold',
-      color: effectiveTheme === 'dark' ? '#fff' : '#000',
-      marginBottom: 10,
-      textAlign: 'center',
     },
     version: {
       fontSize: fontSize * 1.2,
@@ -46,19 +40,21 @@ export default function AboutScreen() {
   });
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>{app.expo.name}</Text>
-      <Text style={styles.version}>Version {app.expo.version}</Text>
+    <>
+      <Stack.Screen options={{ title: 'About' }} />
+      <ScrollView style={styles.container}>
+        <Text style={styles.version}>Version {app.expo.version}</Text>
 
-      <Text style={styles.sectionTitle}>Privacy Policy</Text>
-      <Text style={styles.link} onPress={() => Linking.openURL('https://your-privacy-policy-url.com')}>
-        Read our Privacy Policy
-      </Text>
+        <Text style={styles.sectionTitle}>Privacy Policy</Text>
+        <Text style={styles.link} onPress={() => Linking.openURL('https://your-privacy-policy-url.com')}>
+          Read our Privacy Policy
+        </Text>
 
-      <Text style={styles.sectionTitle}>Credits</Text>
-      <Text style={styles.creditText}>- React Native</Text>
-      <Text style={styles.creditText}>- Expo</Text>
-      <Text style={styles.creditText}>- TypeScript</Text>
-    </ScrollView>
+        <Text style={styles.sectionTitle}>Credits</Text>
+        <Text style={styles.creditText}>- React Native</Text>
+        <Text style={styles.creditText}>- Expo</Text>
+        <Text style={styles.creditText}>- TypeScript</Text>
+      </ScrollView>
+    </>
   );
 }

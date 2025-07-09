@@ -59,7 +59,6 @@ export default function SettingsScreen() {
         keyExtractor={(item, index) => item.title + index}
         renderItem={renderItem}
         renderSectionHeader={renderSectionHeader}
-        ListHeaderComponent={<Text style={styles.title}>Settings</Text>}
         ListFooterComponent={
           <Text style={styles.footerText}>
             App Version {AppConfig.expo.version}

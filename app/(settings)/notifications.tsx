@@ -3,6 +3,7 @@ import { View, Text, Switch, StyleSheet, TouchableOpacity, Platform } from 'reac
 import { useNotifications } from '@/components/NotificationsContext';
 import { useTheme } from '@/components/ThemeContext';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { Stack } from 'expo-router';
 
 export default function NotificationsScreen() {
   const {
@@ -62,31 +63,34 @@ export default function NotificationsScreen() {
   timeAsDate.setMinutes(parseInt(minutes, 10));
 
   return (
-    <View style={styles.container}>
-      <View style={styles.settingContainer}>
-        <Text style={styles.settingText}>Daily Learning Reminder</Text>
-        <Switch
-          value={dailyReminderEnabled}
-          onValueChange={setDailyReminderEnabled}
-        />
-      </View>
-      {dailyReminderEnabled && (
-        <View style={styles.timeContainer}>
-          <Text style={styles.settingText}>Reminder Time</Text>
-          <TouchableOpacity onPress={showPicker}>
-            <Text style={styles.timeText}>{dailyReminderTime}</Text>
-          </TouchableOpacity>
+    <>
+      <Stack.Screen options={{ title: 'Notifications' }} />
+      <View style={styles.container}>
+        <View style={styles.settingContainer}>
+          <Text style={styles.settingText}>Daily Learning Reminder</Text>
+          <Switch
+            value={dailyReminderEnabled}
+            onValueChange={setDailyReminderEnabled}
+          />
         </View>
-      )}
-      {showTimePicker && (
-        <DateTimePicker
-          value={timeAsDate}
-          mode="time"
-          is24Hour={true}
-          display="default"
-          onChange={onTimeChange}
-        />
-      )}
-    </View>
+        {dailyReminderEnabled && (
+          <View style={styles.timeContainer}>
+            <Text style={styles.settingText}>Reminder Time</Text>
+            <TouchableOpacity onPress={showPicker}>
+              <Text style={styles.timeText}>{dailyReminderTime}</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        {showTimePicker && (
+          <DateTimePicker
+            value={timeAsDate}
+            mode="time"
+            is24Hour={true}
+            display="default"
+            onChange={onTimeChange}
+          />
+        )}
+      </View>
+    </>
   );
 }
