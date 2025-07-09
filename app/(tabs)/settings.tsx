@@ -4,7 +4,7 @@ import { Link } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
-import Constants from 'expo-constants';
+import AppConfig from '../../app.json';
 
 const sections = [
   {
@@ -28,7 +28,6 @@ const sections = [
 
 export default function SettingsScreen() {
   const colorScheme = useColorScheme();
-  const appVersion = Constants.expoConfig?.version;
 
   const renderItem = ({ item }: { item: any }) => (
     <Link href={item.href || '#'} asChild>
@@ -63,7 +62,7 @@ export default function SettingsScreen() {
         ListHeaderComponent={<Text style={styles.title}>Settings</Text>}
         ListFooterComponent={
           <Text style={styles.footerText}>
-            App Version {appVersion}
+            App Version {AppConfig.expo.version}
           </Text>
         }
         contentContainerStyle={styles.listContentContainer}
