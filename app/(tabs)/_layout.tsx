@@ -1,5 +1,4 @@
 import React from 'react';
-import { MaterialIcons } from '@expo/vector-icons';
 import { Platform } from 'react-native';
 import { withLayoutContext } from 'expo-router';
 import {
@@ -28,36 +27,30 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Lessons', // Explicitly set user-friendly name
-          tabBarIcon: ({ color }) =>
-            Platform.OS === 'ios' ? (
-              { sfSymbol: 'books.vertical' }
-            ) : (
-              <MaterialIcons name="home" size={24} color={color} />
-            ),
+          tabBarIcon: () =>
+            Platform.OS === 'ios'
+              ? { sfSymbol: 'books.vertical' }
+              : require('../../assets/images/home.png'),
         }}
       />
       <Tabs.Screen
         name="vocabulary"
         options={{
           title: 'Vocabulary',
-          tabBarIcon: ({ color }) =>
-            Platform.OS === 'ios' ? (
-              { sfSymbol: 'pencil.and.list.clipboard' }
-            ) : (
-              <MaterialIcons name="school" size={24} color={color} />
-            ),
+          tabBarIcon: () =>
+            Platform.OS === 'ios'
+              ? { sfSymbol: 'pencil.and.list.clipboard' }
+              : require('../../assets/images/vocabulary.png'),
         }}
       />
       <Tabs.Screen
         name="exercises"
         options={{
           title: 'Exercises',
-          tabBarIcon: ({ color }) =>
-            Platform.OS === 'ios' ? (
-              { sfSymbol: 'doc.questionmark' }
-            ) : (
-              <MaterialIcons name="fitness-center" size={24} color={color} />
-            ),
+          tabBarIcon: () =>
+            Platform.OS === 'ios'
+              ? { sfSymbol: 'doc.questionmark' }
+              : require('../../assets/images/exercises.png'),
         }}
       />
       <Tabs.Screen
@@ -65,12 +58,10 @@ export default function TabLayout() {
         options={{
           title: 'Settings', // Explicitly set user-friendly name
           headerShown: true,
-          tabBarIcon: ({ color }) =>
-            Platform.OS === 'ios' ? (
-              { sfSymbol: 'gear' }
-            ) : (
-              <MaterialIcons name="settings" size={24} color={color} />
-            ),
+          tabBarIcon: () =>
+            Platform.OS === 'ios'
+              ? { sfSymbol: 'gear' }
+              : require('../../assets/images/settings.png'),
         } as any}
       />
     </Tabs>

@@ -115,15 +115,25 @@ export default function RootLayout() {
 function RootLayoutNav() {
   const { effectiveTheme } = useTheme();
 
+  const CustomDefaultTheme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      background: '#FFFFFF',
+    },
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ThemeProvider value={effectiveTheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <ThemeProvider
+        value={effectiveTheme === 'dark' ? DarkTheme : CustomDefaultTheme}
+      >
         <Stack>
           <Stack.Screen
             name="(tabs)"
             options={{
               headerShown: false,
-              title: "Lessons" // Add a proper title for iOS back button
+              title: 'Lessons', // Add a proper title for iOS back button
             }}
           />
           <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
