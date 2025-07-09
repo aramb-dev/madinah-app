@@ -1,57 +1,73 @@
-import { StyleSheet, Pressable } from 'react-native';
+import { StyleSheet, Pressable, SectionList } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { Link } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
+import Constants from 'expo-constants';
+
+const sections = [
+  {
+    title: 'Content & Learning',
+    data: [
+      { title: 'Appearance', icon: 'paint-brush', href: '/appearance' },
+      { title: 'Notifications', icon: 'bell', href: '/notifications' },
+      { title: 'Learning Settings', icon: 'graduation-cap', href: '/learning' },
+    ],
+  },
+  {
+    title: 'Support & Info',
+    data: [
+      { title: 'Support & Feedback', icon: 'heart', href: '/support' },
+      { title: 'Rate This App', icon: 'star', action: 'rate' },
+      { title: 'About', icon: 'info-circle', href: '/about' },
+      { title: 'Changelog', icon: 'history', href: '/changelog' },
+    ],
+  },
+];
 
 export default function SettingsScreen() {
   const colorScheme = useColorScheme();
+  const appVersion = Constants.expoConfig?.version;
+
+  const renderItem = ({ item }: { item: any }) => (
+    <Link href={item.href || '#'} asChild>
+      <Pressable style={styles.settingsButton}>
+        <FontAwesome
+          name={item.icon}
+          size={20}
+          color={Colors[colorScheme ?? 'light'].text}
+          style={styles.settingsIcon}
+        />
+        <Text style={styles.settingsText}>{item.title}</Text>
+        <FontAwesome
+          name="chevron-right"
+          size={16}
+          color={Colors[colorScheme ?? 'light'].text}
+        />
+      </Pressable>
+    </Link>
+  );
+
+  const renderSectionHeader = ({ section: { title } }: { section: { title: string } }) => (
+    <Text style={styles.sectionHeader}>{title}</Text>
+  );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Settings</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      
-      <View style={styles.settingsItem}>
-        <Link href="/appearances" asChild>
-          <Pressable style={styles.settingsButton}>
-            <FontAwesome 
-              name="paint-brush" 
-              size={20} 
-              color={Colors[colorScheme ?? 'light'].text}
-              style={styles.settingsIcon}
-            />
-            <Text style={styles.settingsText}>Appearances</Text>
-            <FontAwesome 
-              name="chevron-right" 
-              size={16} 
-              color={Colors[colorScheme ?? 'light'].text}
-            />
-          </Pressable>
-        </Link>
-      </View>
-      
-      <View style={styles.settingsItem}>
-        <Link href="/changelog" asChild>
-          <Pressable style={styles.settingsButton}>
-            <FontAwesome 
-              name="history" 
-              size={20} 
-              color={Colors[colorScheme ?? 'light'].text}
-              style={styles.settingsIcon}
-            />
-            <Text style={styles.settingsText}>Changelog</Text>
-            <FontAwesome 
-              name="chevron-right" 
-              size={16} 
-              color={Colors[colorScheme ?? 'light'].text}
-            />
-          </Pressable>
-        </Link>
-      </View>
-      
-
+      <SectionList
+        sections={sections}
+        keyExtractor={(item, index) => item.title + index}
+        renderItem={renderItem}
+        renderSectionHeader={renderSectionHeader}
+        ListHeaderComponent={<Text style={styles.title}>Settings</Text>}
+        ListFooterComponent={
+          <Text style={styles.footerText}>
+            App Version {appVersion}
+          </Text>
+        }
+        contentContainerStyle={styles.listContentContainer}
+      />
     </View>
   );
 }
@@ -59,22 +75,23 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
+  },
+  listContentContainer: {
+    paddingHorizontal: 20,
     paddingTop: 50,
+    paddingBottom: 20,
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-  settingsItem: {
-    width: '90%',
-    marginVertical: 10,
+  sectionHeader: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 20,
+    marginBottom: 10,
   },
   settingsButton: {
     flexDirection: 'row',
@@ -82,6 +99,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 8,
     backgroundColor: 'rgba(0,0,0,0.05)',
+    marginVertical: 5,
   },
   settingsIcon: {
     marginRight: 15,
@@ -89,5 +107,10 @@ const styles = StyleSheet.create({
   settingsText: {
     flex: 1,
     fontSize: 16,
+  },
+  footerText: {
+    textAlign: 'center',
+    marginTop: 20,
+    color: 'gray',
   },
 });
