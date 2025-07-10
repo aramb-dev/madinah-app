@@ -8,6 +8,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   Pressable,
+  Image,
+  Platform,
 } from 'react-native';
 import { getVocabulary, Vocabulary } from '../../api/vocabulary';
 import { useFont } from '@/components/FontContext';
@@ -155,7 +157,11 @@ export default function VocabularyScreen() {
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Vocabulary</Text>
         <Pressable onPress={handlePresentModalPress}>
-          <Ionicons name="filter-circle-outline" size={24} color="black" />
+         {Platform.OS === 'android' ? (
+   <Image source={require('../../assets/images/filter.png')} style={{ width: 24, height: 24 }} />
+ ) : (
+   <Ionicons name="filter-circle-outline" size={24} color="black" />
+ )}
           {(selectedBook !== 'All' || selectedLesson !== 'All') && <View style={styles.filterBadge} />}
         </Pressable>
       </View>
