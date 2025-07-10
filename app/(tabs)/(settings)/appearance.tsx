@@ -1,15 +1,14 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { useTheme } from '@/components/ThemeContext';
-import { useFontSize } from '@/components/FontSizeContext';
-import { ThemedText } from '@/components/ThemedText';
+import { View, StyleSheet, Text } from 'react-native';
+import { useSettings } from '@/contexts/SettingsContext';
 import { SegmentedControl } from '../../../components/SegmentedControl';
 import Slider from '@react-native-community/slider'; // This import is correct
 import { Stack } from 'expo-router';
+import { useTheme } from '@react-navigation/native';
 
 export default function AppearanceScreen() {
-  const { themePreference, setThemePreference } = useTheme();
-  const { fontSize, setFontSize } = useFontSize();
+  const { theme, setTheme, fontSize, setFontSize } = useSettings();
+  const { colors } = useTheme();
 
   const themeOptions = [
     { label: 'Light', value: 'light' },
@@ -22,15 +21,15 @@ export default function AppearanceScreen() {
       <Stack.Screen options={{ title: 'Appearance' }} />
       <View style={styles.container}>
         <View style={styles.section}>
-          <ThemedText style={styles.heading}>Theme</ThemedText>
+          <Text style={[styles.heading, { color: colors.text }]}>Theme</Text>
           <SegmentedControl
             options={themeOptions}
-            selectedValue={themePreference}
-            onValueChange={(value) => setThemePreference(value as any)}
+            selectedValue={theme}
+            onValueChange={(value) => setTheme(value as 'light' | 'dark' | 'system')}
           />
         </View>
         <View style={styles.section}>
-          <ThemedText style={styles.heading}>Font Size</ThemedText>
+          <Text style={[styles.heading, { color: colors.text }]}>Font Size</Text>
           <View style={styles.sliderContainer}>
             <Slider
               style={{ width: '100%' }}
@@ -38,9 +37,9 @@ export default function AppearanceScreen() {
               maximumValue={24}
               step={1}
               value={fontSize}
-              onSlidingComplete={setFontSize}
+              onValueChange={setFontSize}
             />
-            <ThemedText>{fontSize.toFixed(0)}</ThemedText>
+            <Text style={{ color: colors.text, fontSize: fontSize }}>{fontSize.toFixed(0)}</Text>
           </View>
         </View>
       </View>

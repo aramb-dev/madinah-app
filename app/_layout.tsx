@@ -7,11 +7,7 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
-import { useColorScheme } from '@/components/useColorScheme';
-import { useTheme } from '@/components/ThemeContext';
 import { FontProvider } from '@/components/FontContext';
-import { ThemeProvider as CustomThemeProvider } from '@/components/ThemeContext';
-import { FontSizeProvider } from '@/components/FontSizeContext';
 import { LearningProvider } from '@/components/LearningContext';
 import { NotificationsProvider } from '@/components/NotificationsContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -24,6 +20,7 @@ import {
   SafeAreaProvider,
   SafeAreaView,
 } from 'react-native-safe-area-context';
+import { SettingsProvider, useSettings } from '@/contexts/SettingsContext';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -90,44 +87,42 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <PersistQueryClientProvider
-          client={queryClient}
-          persistOptions={{ persister: asyncStoragePersister }}
-        >
-          <BottomSheetModalProvider>
-            <CustomThemeProvider>
-              <FontSizeProvider>
-                <FontProvider>
-                  <LearningProvider>
-                    <NotificationsProvider>
-                      <RootLayoutNav />
-                    </NotificationsProvider>
-                  </LearningProvider>
-                </FontProvider>
-              </FontSizeProvider>
-            </CustomThemeProvider>
-          </BottomSheetModalProvider>
-        </PersistQueryClientProvider>
+        <SettingsProvider>
+          <PersistQueryClientProvider
+            client={queryClient}
+            persistOptions={{ persister: asyncStoragePersister }}
+          >
+            <BottomSheetModalProvider>
+              <FontProvider>
+                <LearningProvider>
+                  <NotificationsProvider>
+                    <RootLayoutNav />
+                  </NotificationsProvider>
+                </LearningProvider>
+              </FontProvider>
+            </BottomSheetModalProvider>
+          </PersistQueryClientProvider>
+        </SettingsProvider>
       </GestureHandlerRootView>
     </SafeAreaProvider>
   );
 }
 
 function RootLayoutNav() {
-  const { effectiveTheme } = useTheme();
+  const { effectiveTheme } = useSettings();
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      <StatusBar style={effectiveTheme === 'dark' ? 'light' : 'dark'} />
       <ThemeProvider
         value={effectiveTheme === 'dark' ? DarkTheme : DefaultTheme}
       >
-        <StatusBar style={effectiveTheme === 'dark' ? 'light' : 'dark'} />
         <Stack>
           <Stack.Screen
             name="(tabs)"
             options={{
               headerShown: false,
-              title: 'Lessons', // Add a proper title for iOS back button
+              title: 'Lessons',
             }}
           />
           <Stack.Screen name="modal" options={{ presentation: 'modal' }} />

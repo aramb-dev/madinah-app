@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { ThemedText } from './ThemedText';
-import { useTheme } from './ThemeContext';
+import { useSettings } from '@/contexts/SettingsContext';
 
 interface Option {
   label: string;
@@ -15,7 +15,7 @@ interface SegmentedControlProps {
 }
 
 export function SegmentedControl({ options, selectedValue, onValueChange }: SegmentedControlProps) {
-  const { effectiveTheme } = useTheme();
+  const { effectiveTheme } = useSettings();
 
   return (
     <View style={[styles.container, { borderColor: effectiveTheme === 'dark' ? 'white' : 'black' }]}>
