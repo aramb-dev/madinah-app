@@ -16,8 +16,10 @@ import { useFont } from '@/components/FontContext';
 import { Ionicons, Feather } from '@expo/vector-icons';
 import { BottomSheetModal, BottomSheetView, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { useRouter } from 'expo-router';
+import { useTheme } from '@react-navigation/native';
 
 export default function VocabularyScreen() {
+  const { colors } = useTheme();
   const [vocabulary, setVocabulary] = useState<Vocabulary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -102,6 +104,202 @@ export default function VocabularyScreen() {
     });
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+      paddingHorizontal: 10,
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: 16,
+    },
+    headerTitle: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: colors.text,
+    },
+    loader: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    errorText: {
+      textAlign: 'center',
+      color: colors.notification,
+      marginTop: 20,
+    },
+    listContent: {
+      paddingBottom: 20,
+    },
+    sectionHeader: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      backgroundColor: colors.card,
+      paddingVertical: 8,
+      paddingHorizontal: 16,
+      color: colors.text,
+    },
+    itemContainer: {
+      padding: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+      flexDirection: 'row-reverse',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    textContainer: {
+      flex: 1,
+      marginRight: 10,
+    },
+    arabicWord: {
+      fontSize: 22,
+      textAlign: 'right',
+      marginBottom: 4,
+      color: colors.text,
+    },
+    translation: {
+      fontSize: 16,
+      color: colors.text,
+      textAlign: 'right',
+    },
+    bottomSheet: {
+      shadowColor: colors.text,
+      shadowOffset: {
+        width: 0,
+        height: -4,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+    },
+    bottomSheetContent: {
+      flex: 1,
+      paddingHorizontal: 20,
+      paddingTop: 20,
+      backgroundColor: colors.card,
+    },
+    modalView: {
+      flex: 1,
+      padding: 35,
+      alignItems: 'center',
+      width: '100%',
+    },
+    modalText: {
+      marginBottom: 15,
+      textAlign: 'center',
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: colors.text,
+    },
+    modalButton: {
+      width: '100%',
+      padding: 12,
+      marginVertical: 5,
+      backgroundColor: colors.card,
+      borderRadius: 10,
+      alignItems: 'center',
+    },
+    modalButtonActive: {
+      backgroundColor: colors.primary,
+    },
+    modalButtonText: {
+      fontSize: 16,
+      fontWeight: '500',
+      color: colors.text,
+    },
+    modalButtonTextActive: {
+      color: colors.card,
+      fontWeight: 'bold',
+    },
+    lessonScrollView: {
+      flex: 1,
+      width: '100%',
+    },
+    lessonContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'flex-start',
+        paddingBottom: 40, // Add padding to the bottom
+      },
+      lessonButton: {
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        margin: 5,
+        backgroundColor: colors.card,
+        borderRadius: 10,
+        alignItems: 'center',
+      },
+    segmentedControl: {
+      flexDirection: 'row',
+      marginBottom: 20,
+      backgroundColor: colors.border,
+      borderRadius: 10,
+      width: '100%',
+    },
+    segmentedButton: {
+      flex: 1,
+      paddingVertical: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 10,
+    },
+    segmentedButtonActive: {
+      backgroundColor: colors.primary,
+    },
+    segmentedButtonText: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.text,
+    },
+    segmentedButtonTextActive: {
+      color: colors.card,
+    },
+    infoText: {
+      marginTop: 20,
+      fontSize: 16,
+      color: '#666',
+      textAlign: 'center',
+    },
+    disabledText: {
+      color: 'gray'
+    },
+    filterBadge: {
+      position: 'absolute',
+      right: -2,
+      top: -2,
+      backgroundColor: colors.primary,
+      width: 10,
+      height: 10,
+      borderRadius: 5,
+    },
+    emptyContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 50,
+    },
+    emptyText: {
+      fontSize: 16,
+      color: colors.text,
+      textAlign: 'center',
+    },
+    clearFilterButton: {
+      marginTop: 16,
+      backgroundColor: colors.primary,
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderRadius: 8,
+    },
+    clearFilterButtonText: {
+      color: colors.card,
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+  });
+
   const renderItem = ({ item }: { item: Vocabulary }) => (
     <TouchableOpacity onPress={() => handlePressItem(item)} style={styles.itemContainer}>
       <View style={styles.textContainer}>
@@ -110,7 +308,7 @@ export default function VocabularyScreen() {
         </Text>
         <Text style={styles.translation}>{item.translation.en}</Text>
       </View>
-      <Feather name="chevron-left" size={24} color="#555" />
+      <Feather name="chevron-left" size={24} color={colors.text} />
     </TouchableOpacity>
   );
 
@@ -160,14 +358,14 @@ export default function VocabularyScreen() {
          {Platform.OS === 'android' ? (
    <Image source={require('../../assets/images/filter.png')} style={{ width: 24, height: 24 }} />
  ) : (
-   <Ionicons name="filter-circle-outline" size={24} color="black" />
+   <Ionicons name="filter-circle-outline" size={24} color={colors.text} />
  )}
           {(selectedBook !== 'All' || selectedLesson !== 'All') && <View style={styles.filterBadge} />}
         </Pressable>
       </View>
 
       {loading ? (
-        <ActivityIndicator size="large" style={styles.loader} />
+        <ActivityIndicator size="large" color={colors.primary} style={styles.loader} />
       ) : error ? (
         <Text style={styles.errorText}>{error}</Text>
       ) : (
@@ -247,193 +445,3 @@ export default function VocabularyScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    paddingHorizontal: 10,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  loader: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  errorText: {
-    textAlign: 'center',
-    color: 'red',
-    marginTop: 20,
-  },
-  listContent: {
-    paddingBottom: 20,
-  },
-  sectionHeader: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    backgroundColor: '#f7f7f7',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-  },
-  itemContainer: {
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-    flexDirection: 'row-reverse',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  textContainer: {
-    flex: 1,
-    marginRight: 10,
-  },
-  arabicWord: {
-    fontSize: 22,
-    textAlign: 'right',
-    marginBottom: 4,
-  },
-  translation: {
-    fontSize: 16,
-    color: '#555',
-    textAlign: 'right',
-  },
-  bottomSheet: {
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: -4,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  bottomSheetContent: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 20,
-  },
-  modalView: {
-    flex: 1,
-    padding: 35,
-    alignItems: 'center',
-    width: '100%',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  modalButton: {
-    width: '100%',
-    padding: 12,
-    marginVertical: 5,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  modalButtonActive: {
-    backgroundColor: '#007AFF',
-  },
-  modalButtonText: {
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  modalButtonTextActive: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  lessonScrollView: {
-    flex: 1,
-    width: '100%',
-  },
-  lessonContainer: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      justifyContent: 'flex-start',
-      paddingBottom: 40, // Add padding to the bottom
-    },
-    lessonButton: {
-      paddingHorizontal: 16,
-      paddingVertical: 10,
-      margin: 5,
-      backgroundColor: '#f0f0f0',
-      borderRadius: 10,
-      alignItems: 'center',
-    },
-  segmentedControl: {
-    flexDirection: 'row',
-    marginBottom: 20,
-    backgroundColor: '#e0e0e0',
-    borderRadius: 10,
-    width: '100%',
-  },
-  segmentedButton: {
-    flex: 1,
-    paddingVertical: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 10,
-  },
-  segmentedButtonActive: {
-    backgroundColor: '#007AFF',
-  },
-  segmentedButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#000',
-  },
-  segmentedButtonTextActive: {
-    color: '#fff',
-  },
-  infoText: {
-    marginTop: 20,
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-  },
-  disabledText: {
-    color: '#aaa'
-  },
-  filterBadge: {
-    position: 'absolute',
-    right: -2,
-    top: -2,
-    backgroundColor: 'blue',
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 50,
-  },
-  emptyText: {
-    fontSize: 16,
-    color: '#555',
-    textAlign: 'center',
-  },
-  clearFilterButton: {
-    marginTop: 16,
-    backgroundColor: '#007AFF',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-  },
-  clearFilterButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-});

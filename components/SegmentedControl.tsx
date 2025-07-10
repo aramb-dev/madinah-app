@@ -18,14 +18,14 @@ export function SegmentedControl({ options, selectedValue, onValueChange }: Segm
   const { effectiveTheme } = useTheme();
 
   return (
-    <View style={[styles.container, { borderColor: effectiveTheme === 'dark' ? '#fff' : '#000' }]}>
+    <View style={[styles.container, { borderColor: effectiveTheme === 'dark' ? 'white' : 'black' }]}>
       {options.map((option) => (
         <TouchableOpacity
           key={option.value}
           style={[
             styles.segment,
             selectedValue === option.value && {
-              backgroundColor: effectiveTheme === 'dark' ? '#fff' : '#000',
+              backgroundColor: effectiveTheme === 'dark' ? 'white' : 'black',
             },
           ]}
           onPress={() => onValueChange(option.value)}
@@ -33,8 +33,8 @@ export function SegmentedControl({ options, selectedValue, onValueChange }: Segm
           <ThemedText
             style={{
               color: selectedValue === option.value
-                ? (effectiveTheme === 'dark' ? '#000' : '#fff')
-                : (effectiveTheme === 'dark' ? '#fff' : '#000'),
+                ? (effectiveTheme === 'dark' ? 'black' : 'white')
+                : (effectiveTheme === 'dark' ? 'white' : 'black'),
             }}
           >
             {option.label}

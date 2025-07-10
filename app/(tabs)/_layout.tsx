@@ -23,13 +23,7 @@ export default function TabLayout() {
 
   return (
     <Tabs
-      screenOptions={
-        {
-          tabBarStyle: {
-            backgroundColor: '#FFFFFF',
-          },
-        } as any
-      }
+
     >
       <Tabs.Screen
         name="index"

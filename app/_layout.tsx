@@ -116,19 +116,10 @@ export default function RootLayout() {
 function RootLayoutNav() {
   const { effectiveTheme } = useTheme();
 
-  const CustomDefaultTheme = {
-    ...DefaultTheme,
-    colors: {
-      ...DefaultTheme.colors,
-      background: '#FFFFFF',
-      card: '#FFFFFF', // Add this line
-    },
-  };
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ThemeProvider
-        value={effectiveTheme === 'dark' ? DarkTheme : CustomDefaultTheme}
+        value={effectiveTheme === 'dark' ? DarkTheme : DefaultTheme}
       >
         <StatusBar style={effectiveTheme === 'dark' ? 'light' : 'dark'} />
         <Stack>
