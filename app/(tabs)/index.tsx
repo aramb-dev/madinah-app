@@ -92,9 +92,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    paddingHorizontal: 16, // Adjusted padding
-    paddingTop: 24, // Adjusted padding
-    paddingBottom: 24, // Added padding at the bottom
+    paddingHorizontal: 16,
+    paddingTop: 16, // Reduced from 24 to be more consistent
+    paddingBottom: 24,
   },
   title: {
     fontSize: 28, // Increased font size

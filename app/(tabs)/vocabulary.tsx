@@ -114,7 +114,8 @@ export default function VocabularyScreen() {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      padding: 16,
+      padding: 12,
+      paddingHorizontal: 16,
     },
     headerTitle: {
       fontSize: 24,

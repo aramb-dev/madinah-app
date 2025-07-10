@@ -2,7 +2,7 @@
   "expo": {
     "name": "madinah-resources",
     "slug": "madinah-resources",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "madinahresources",
@@ -10,8 +10,7 @@
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/images/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "resizeMode": "contain"
     },
     "ios": {
       "supportsTablet": true,
@@ -19,8 +18,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/adaptive-icon.png"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.arambdev.madinahresources"

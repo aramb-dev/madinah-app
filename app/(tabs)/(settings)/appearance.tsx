@@ -19,9 +19,9 @@ export default function AppearanceScreen() {
   return (
     <>
       <Stack.Screen options={{ title: 'Appearance' }} />
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
         <View style={styles.section}>
-          <Text style={[styles.heading, { color: colors.text }]}>Theme</Text>
+          <Text style={[styles.heading, { color: colors.text, fontSize: fontSize * 1.1 }]}>Theme</Text>
           <SegmentedControl
             options={themeOptions}
             selectedValue={theme}
@@ -29,7 +29,7 @@ export default function AppearanceScreen() {
           />
         </View>
         <View style={styles.section}>
-          <Text style={[styles.heading, { color: colors.text }]}>Font Size</Text>
+          <Text style={[styles.heading, { color: colors.text, fontSize: fontSize * 1.1 }]}>Font Size</Text>
           <View style={styles.sliderContainer}>
             <Slider
               style={{ width: '100%' }}
@@ -50,15 +50,15 @@ export default function AppearanceScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 16,
+    paddingTop: 12,
   },
   section: {
-    marginBottom: 20,
+    marginBottom: 24,
   },
   heading: {
-    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 12,
   },
   sliderContainer: {
     alignItems: 'center',

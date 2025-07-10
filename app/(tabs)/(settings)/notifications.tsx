@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, Switch, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import { useNotifications } from '@/components/NotificationsContext';
-import { useTheme } from '@/components/ThemeContext';
+import { useSettings } from '@/contexts/SettingsContext';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Stack } from 'expo-router';
+import { useTheme } from '@react-navigation/native';
 
 export default function NotificationsScreen() {
   const {
@@ -12,37 +13,9 @@ export default function NotificationsScreen() {
     dailyReminderTime,
     setDailyReminderTime,
   } = useNotifications();
-  const { effectiveTheme } = useTheme();
+  const { fontSize } = useSettings();
+  const { colors } = useTheme();
   const [showTimePicker, setShowTimePicker] = useState(false);
-
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      padding: 20,
-      backgroundColor: effectiveTheme === 'dark' ? '#000' : '#fff',
-    },
-    settingContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: 20,
-    },
-    settingText: {
-      fontSize: 18,
-      color: effectiveTheme === 'dark' ? '#fff' : '#000',
-    },
-    timeContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginTop: 10,
-      marginLeft: 20,
-    },
-    timeText: {
-      fontSize: 16,
-      color: effectiveTheme === 'dark' ? '#fff' : '#000',
-    },
-  });
 
   const onTimeChange = (event: any, selectedTime?: Date) => {
     setShowTimePicker(Platform.OS === 'ios');
@@ -65,9 +38,9 @@ export default function NotificationsScreen() {
   return (
     <>
       <Stack.Screen options={{ title: 'Notifications' }} />
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
         <View style={styles.settingContainer}>
-          <Text style={styles.settingText}>Daily Learning Reminder</Text>
+          <Text style={[styles.settingText, { color: colors.text, fontSize: fontSize * 1.1 }]}>Daily Learning Reminder</Text>
           <Switch
             value={dailyReminderEnabled}
             onValueChange={setDailyReminderEnabled}
@@ -75,9 +48,9 @@ export default function NotificationsScreen() {
         </View>
         {dailyReminderEnabled && (
           <View style={styles.timeContainer}>
-            <Text style={styles.settingText}>Reminder Time</Text>
+            <Text style={[styles.settingText, { color: colors.text, fontSize: fontSize * 1.1 }]}>Reminder Time</Text>
             <TouchableOpacity onPress={showPicker}>
-              <Text style={styles.timeText}>{dailyReminderTime}</Text>
+              <Text style={[styles.timeText, { color: colors.text, fontSize: fontSize }]}>{dailyReminderTime}</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -94,3 +67,30 @@ export default function NotificationsScreen() {
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+    paddingTop: 12,
+  },
+  settingContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  settingText: {
+    fontWeight: '500',
+  },
+  timeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 10,
+    marginLeft: 20,
+  },
+  timeText: {
+    textDecorationLine: 'underline',
+  },
+});
