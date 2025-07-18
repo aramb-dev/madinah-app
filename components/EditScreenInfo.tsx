@@ -4,15 +4,18 @@ import { StyleSheet } from 'react-native';
 import { ExternalLink } from './ExternalLink';
 import { MonoText } from './StyledText';
 import { Text, View } from './Themed';
+import { useSettings } from '@/contexts/SettingsContext';
 
 import Colors from '@/constants/Colors';
 
 export default function EditScreenInfo({ path }: { path: string }) {
+  const { fontSize } = useSettings();
+  
   return (
     <View>
       <View style={styles.getStartedContainer}>
         <Text
-          style={styles.getStartedText}
+          style={[styles.getStartedText, { fontSize: fontSize * 1.06 }]}
           lightColor="rgba(0,0,0,0.8)"
           darkColor="rgba(255,255,255,0.8)">
           Open up the code for this screen:
@@ -26,7 +29,7 @@ export default function EditScreenInfo({ path }: { path: string }) {
         </View>
 
         <Text
-          style={styles.getStartedText}
+          style={[styles.getStartedText, { fontSize: fontSize * 1.06 }]}
           lightColor="rgba(0,0,0,0.8)"
           darkColor="rgba(255,255,255,0.8)">
           Change any of the text, save the file, and your app will automatically update.
@@ -59,7 +62,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   getStartedText: {
-    fontSize: 17,
     lineHeight: 24,
     textAlign: 'center',
   },

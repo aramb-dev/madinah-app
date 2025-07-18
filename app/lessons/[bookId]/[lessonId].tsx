@@ -3,6 +3,7 @@ import { View, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
 import { Text, useThemeColor } from '../../../components/Themed';
 import { useLocalSearchParams, Stack } from 'expo-router';
 import { api, Lesson as ApiLesson, Book as ApiBook } from '../../../api/client';
+import { useSettings } from '@/contexts/SettingsContext';
 
 // Define a more specific Lesson type for the component's needs
 interface LessonContentItem {
@@ -35,6 +36,7 @@ const getLocalizedText = (localizedString: ApiLesson['title'] | ApiLesson['intro
 
 export default function LessonDetailScreen() {
   const { bookId, lessonId } = useLocalSearchParams<{ bookId: string; lessonId: string }>();
+  const { fontSize } = useSettings();
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -171,12 +173,12 @@ export default function LessonDetailScreen() {
           {loading && (
             <View style={[styles.container, styles.centeredContent]}>
               <ActivityIndicator size="large" />
-              <Text style={styles.loadingText}>Loading lesson content...</Text>
+              <Text style={[styles.loadingText, { fontSize }]}>Loading lesson content...</Text>
             </View>
           )}
           {error && !loading && (
             <View style={[styles.container, styles.centeredContent]}>
-              <Text style={styles.errorText}>{error || 'Lesson not found.'}</Text>
+              <Text style={[styles.errorText, { fontSize }]}>{error || 'Lesson not found.'}</Text>
             </View>
           )}
           {!loading && !error && lesson && (
@@ -187,7 +189,7 @@ export default function LessonDetailScreen() {
               </View>
               {lesson.introduction && (
                 <View style={[styles.introductionContainer, { backgroundColor: cardBackgroundColor }]}>
-                  <Text type="subtitle" style={[styles.introductionTitle, { color: textColor }]}>Introduction:</Text>
+                  <Text type="subtitle" style={[styles.introductionTitle, { color: textColor, fontSize: fontSize * 1.25 }]}>Introduction:</Text>
 
                   {/* Arabic introduction - handle both API structures */}
                   {((lesson.introduction as any).arabic || (lesson.introduction as any).ar) && (
@@ -200,26 +202,26 @@ export default function LessonDetailScreen() {
 
                   {/* English introduction - handle both API structures */}
                   {((lesson.introduction as any).english || (lesson.introduction as any).en) && (
-                    <Text style={[styles.introductionText, { color: mutedTextColor }]}>
+                    <Text style={[styles.introductionText, { color: mutedTextColor, fontSize }]}>
                       {(lesson.introduction as any).english || (lesson.introduction as any).en}
                     </Text>
                   )}
                 </View>
               )}
               {(lesson.description || '').trim() !== '' && (
-                <Text style={[styles.description, { color: mutedTextColor }]}>{lesson.description}</Text>
+                <Text style={[styles.description, { color: mutedTextColor, fontSize }]}>{lesson.description}</Text>
               )}
 
               {lesson.rules && Array.isArray(lesson.rules) && lesson.rules.length > 0 && (
                 <View style={styles.rulesContainer}>
-                  <Text type="subtitle" style={[styles.rulesTitle, { color: textColor }]}>Rules:</Text>
+                  <Text type="subtitle" style={[styles.rulesTitle, { color: textColor, fontSize: fontSize * 1.25 }]}>Rules:</Text>
                   {lesson.rules!.map((rule, index) => (
                     <View key={rule.id || `rule-${index}`} style={[styles.ruleItem, { backgroundColor: cardBackgroundColor }]}>
-                      <Text type="subtitle" style={[styles.ruleName, { color: textColor }]}>{rule.name}</Text>
+                      <Text type="subtitle" style={[styles.ruleName, { color: textColor, fontSize: fontSize * 1.13 }]}>{rule.name}</Text>
                       <View style={styles.arabicTextContainer}>
                         <Text type="arabic" style={[styles.arabicText, { color: textColor }]}>{rule.arabicText}</Text>
                       </View>
-                      <Text style={[styles.ruleExplanation, { color: mutedTextColor }]}>{rule.explanation}</Text>
+                      <Text style={[styles.ruleExplanation, { color: mutedTextColor, fontSize }]}>{rule.explanation}</Text>
                     </View>
                   ))}
                 </View>
@@ -240,7 +242,7 @@ export default function LessonDetailScreen() {
                       </View>
                     )}
                     {item.translation && (
-                      <Text style={[styles.translationText, { color: mutedTextColor }]}>
+                      <Text style={[styles.translationText, { color: mutedTextColor, fontSize: fontSize * 0.94 }]}>
                         {item.translation}
                       </Text>
                     )}
@@ -249,7 +251,7 @@ export default function LessonDetailScreen() {
               )}
 
               {!(lesson.rules && Array.isArray(lesson.rules) && lesson.rules.length > 0) && !(lesson.content && Array.isArray(lesson.content) && lesson.content.length > 0) && (
-                <Text style={[styles.noDataText, { color: mutedTextColor }]}>No content available for this lesson.</Text>
+                <Text style={[styles.noDataText, { color: mutedTextColor, fontSize }]}>No content available for this lesson.</Text>
               )}
             </>
           )}
@@ -288,7 +290,6 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   titleArabic: {
-    fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 4,
@@ -300,13 +301,11 @@ const styles = StyleSheet.create({
     includeFontPadding: true,
   },
   titleEnglish: {
-    fontSize: 22,
     fontWeight: 'bold',
     textAlign: 'center',
     width: '100%',
   },
   description: {
-    fontSize: 16,
     marginBottom: 16,
     textAlign: 'center',
   },
@@ -318,12 +317,10 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   introductionTitle: {
-    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 8,
   },
   introductionText: {
-    fontSize: 16,
     lineHeight: 22,
     textAlign: 'left',
     paddingHorizontal: 4,
@@ -349,7 +346,6 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   rulesTitle: {
-    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 12,
   },
@@ -359,12 +355,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   ruleName: {
-    fontSize: 18,
     fontWeight: '600',
     marginBottom: 4,
   },
   ruleExplanation: {
-    fontSize: 16,
+    // fontSize will be set dynamically
   },
   separator: {
     marginVertical: 16,
@@ -378,7 +373,6 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   arabicText: {
-    fontSize: 22,
     lineHeight: 45,  // Reduced but still sufficient
     textAlign: 'right',
     writingDirection: 'rtl',
@@ -390,20 +384,16 @@ const styles = StyleSheet.create({
     includeFontPadding: true,
   },
   translationText: {
-    fontSize: 15,
     fontStyle: 'italic',
   },
   loadingText: {
     marginTop: 12,
-    fontSize: 16,
     textAlign: 'center',
   },
   errorText: {
-    fontSize: 16,
     textAlign: 'center',
   },
   noDataText: {
-    fontSize: 16,
     textAlign: 'center',
     marginTop: 24,
   },

@@ -2,6 +2,7 @@ import { Stack, useLocalSearchParams } from 'expo-router';
 import { StyleSheet, View, ScrollView } from 'react-native';
 import { Text } from '../../components/Themed';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSettings } from '@/contexts/SettingsContext';
 
 // Temporary interface until the main one is updated
 interface Vocabulary {
@@ -24,6 +25,7 @@ interface Vocabulary {
 
 export default function WordDetailScreen() {
   const { vocabulary: vocabularyString } = useLocalSearchParams<{ vocabulary: string }>();
+  const { fontSize } = useSettings();
 
   if (!vocabularyString) {
     return (
@@ -44,34 +46,34 @@ export default function WordDetailScreen() {
         }}
       />
       <ScrollView contentContainerStyle={styles.contentContainer}>
-        <Text style={styles.word}>{vocabulary.word}</Text>
+        <Text style={[styles.word, { fontSize: fontSize * 2 }]}>{vocabulary.word}</Text>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Translation</Text>
-          <Text style={styles.sectionContent}>{vocabulary.translation.en}</Text>
+          <Text style={[styles.sectionTitle, { fontSize: fontSize * 1.25 }]}>Translation</Text>
+          <Text style={[styles.sectionContent, { fontSize }]}>{vocabulary.translation.en}</Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Information</Text>
-          {vocabulary.type && <Text style={styles.sectionContent}><Text style={styles.infoLabel}>Type:</Text> {vocabulary.type}</Text>}
-          {vocabulary.plural && <Text style={styles.sectionContent}><Text style={styles.infoLabel}>Plural:</Text> {vocabulary.plural}</Text>}
-          {vocabulary.transliteration && <Text style={styles.sectionContent}><Text style={styles.infoLabel}>Transliteration:</Text> {vocabulary.transliteration}</Text>}
+          <Text style={[styles.sectionTitle, { fontSize: fontSize * 1.25 }]}>Information</Text>
+          {vocabulary.type && <Text style={[styles.sectionContent, { fontSize }]}><Text style={[styles.infoLabel, { fontSize }]}>Type:</Text> {vocabulary.type}</Text>}
+          {vocabulary.plural && <Text style={[styles.sectionContent, { fontSize }]}><Text style={[styles.infoLabel, { fontSize }]}>Plural:</Text> {vocabulary.plural}</Text>}
+          {vocabulary.transliteration && <Text style={[styles.sectionContent, { fontSize }]}><Text style={[styles.infoLabel, { fontSize }]}>Transliteration:</Text> {vocabulary.transliteration}</Text>}
         </View>
 
         {vocabulary.definition && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Definition</Text>
-            <Text style={styles.sectionContent}>{vocabulary.definition}</Text>
+            <Text style={[styles.sectionTitle, { fontSize: fontSize * 1.25 }]}>Definition</Text>
+            <Text style={[styles.sectionContent, { fontSize }]}>{vocabulary.definition}</Text>
           </View>
         )}
 
         {vocabulary.examples && vocabulary.examples.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Examples</Text>
+            <Text style={[styles.sectionTitle, { fontSize: fontSize * 1.25 }]}>Examples</Text>
             {vocabulary.examples.map((example, index) => (
               <View key={index} style={styles.exampleContainer}>
-                <Text style={styles.arabicExample}>{example.arabic}</Text>
-                <Text style={styles.englishExample}>{example.english}</Text>
+                <Text style={[styles.arabicExample, { fontSize: fontSize * 1.13 }]}>{example.arabic}</Text>
+                <Text style={[styles.englishExample, { fontSize }]}>{example.english}</Text>
               </View>
             ))}
           </View>
@@ -90,7 +92,6 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   word: {
-    fontSize: 32,
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
@@ -99,7 +100,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   sectionTitle: {
-    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
     borderBottomWidth: 1,
@@ -107,7 +107,6 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
   },
   sectionContent: {
-    fontSize: 16,
     lineHeight: 24,
   },
   infoLabel: {
@@ -117,12 +116,10 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   arabicExample: {
-    fontSize: 18,
     marginBottom: 5,
     textAlign: 'right',
   },
   englishExample: {
-    fontSize: 16,
     color: '#555',
   },
 });

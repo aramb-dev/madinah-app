@@ -5,10 +5,12 @@ import { useLocalSearchParams, useRouter, Link, Stack } from 'expo-router';
 import { api, Lesson } from '@/api/client';
 import LessonListItem from '@/components/LessonListItem'; // Import the LessonListItem component
 import { useThemeColor } from '../../components/Themed';
+import { useSettings } from '@/contexts/SettingsContext';
 
 export default function BookLessonsScreen() {
   const { bookId } = useLocalSearchParams<{ bookId: string }>();
   const router = useRouter();
+  const { fontSize } = useSettings();
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [bookTitle, setBookTitle] = useState<string>('Loading title...'); // Initialize with a loading message
   const [loading, setLoading] = useState(true);
@@ -34,7 +36,6 @@ export default function BookLessonsScreen() {
       paddingBottom: 24,
     },
     title: {
-      fontSize: 28,
       fontWeight: 'bold',
       marginBottom: 16,
       textAlign: 'center',
@@ -52,23 +53,22 @@ export default function BookLessonsScreen() {
       // backgroundColor is now dynamic
     },
     lessonTitle: {
-      fontSize: 20,
       fontWeight: '600',
       marginBottom: 8,
     },
     lessonDescription: {
-      fontSize: 15,
+      // fontSize will be set dynamically
     },
     loadingText: {
       marginTop: 12,
-      fontSize: 16,
+      // fontSize will be set dynamically
     },
     errorText: {
-      fontSize: 16,
+      // fontSize will be set dynamically
       textAlign: 'center',
     },
     noDataText: {
-      fontSize: 16,
+      // fontSize will be set dynamically
       textAlign: 'center',
       marginTop: 24,
     },
@@ -159,11 +159,11 @@ export default function BookLessonsScreen() {
       {loading ? (
         <View style={styles.centeredContainer}>
           <ActivityIndicator size="large" />
-          <Text style={styles.loadingText}>Loading lessons...</Text>
+          <Text style={[styles.loadingText, { fontSize }]}>Loading lessons...</Text>
         </View>
       ) : error ? (
         <View style={styles.centeredContainer}>
-          <Text style={styles.errorText}>{error}</Text>
+          <Text style={[styles.errorText, { fontSize }]}>{error}</Text>
         </View>
       ) : (
         <ScrollView style={[styles.scrollContainer, { backgroundColor: itemBackgroundColor /* Use theme background for scroll view */ }]} >
@@ -179,14 +179,14 @@ export default function BookLessonsScreen() {
                 style={[styles.lessonItem, { backgroundColor: itemBackgroundColor }]} // Dynamic background
               >
                 {/* Assuming lesson.title is also a LocalizedString */}
-                <Text type="arabic" style={[styles.lessonTitle, { color: textColor }]}>
+                <Text type="arabic" style={[styles.lessonTitle, { color: textColor, fontSize: fontSize * 1.25 }]}>
                    {typeof lesson.title === 'object' && lesson.title.en ? lesson.title.en :
                    typeof lesson.title === 'string' ? lesson.title : 'Lesson Title Unavailable'}
                  </Text>
                 {/* lesson.description removed as it does not exist on Lesson type */}
               </TouchableOpacity>
             )) : (
-              <Text style={[styles.noDataText, { color: mutedTextColor }]}>No lessons available for this book.</Text>
+              <Text style={[styles.noDataText, { color: mutedTextColor, fontSize }]}>No lessons available for this book.</Text>
             )}
           </View>
         </ScrollView>

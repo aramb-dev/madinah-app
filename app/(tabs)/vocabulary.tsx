@@ -17,9 +17,11 @@ import { Ionicons, Feather } from '@expo/vector-icons';
 import { BottomSheetModal, BottomSheetView, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { useRouter } from 'expo-router';
 import { useTheme } from '@react-navigation/native';
+import { useSettings } from '@/contexts/SettingsContext';
 
 export default function VocabularyScreen() {
   const { colors } = useTheme();
+  const { fontSize } = useSettings();
   const [vocabulary, setVocabulary] = useState<Vocabulary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -118,7 +120,6 @@ export default function VocabularyScreen() {
       paddingHorizontal: 16,
     },
     headerTitle: {
-      fontSize: 24,
       fontWeight: 'bold',
       color: colors.text,
     },
@@ -136,7 +137,6 @@ export default function VocabularyScreen() {
       paddingBottom: 20,
     },
     sectionHeader: {
-      fontSize: 18,
       fontWeight: 'bold',
       backgroundColor: colors.card,
       paddingVertical: 8,
@@ -156,13 +156,11 @@ export default function VocabularyScreen() {
       marginRight: 10,
     },
     arabicWord: {
-      fontSize: 22,
       textAlign: 'right',
       marginBottom: 4,
       color: colors.text,
     },
     translation: {
-      fontSize: 16,
       color: colors.text,
       textAlign: 'right',
     },
@@ -191,7 +189,6 @@ export default function VocabularyScreen() {
     modalText: {
       marginBottom: 15,
       textAlign: 'center',
-      fontSize: 18,
       fontWeight: 'bold',
       color: colors.text,
     },
@@ -207,7 +204,6 @@ export default function VocabularyScreen() {
       backgroundColor: colors.primary,
     },
     modalButtonText: {
-      fontSize: 16,
       fontWeight: '500',
       color: colors.text,
     },
@@ -251,7 +247,6 @@ export default function VocabularyScreen() {
       backgroundColor: colors.primary,
     },
     segmentedButtonText: {
-      fontSize: 16,
       fontWeight: '600',
       color: colors.text,
     },
@@ -260,7 +255,6 @@ export default function VocabularyScreen() {
     },
     infoText: {
       marginTop: 20,
-      fontSize: 16,
       color: '#666',
       textAlign: 'center',
     },
@@ -283,7 +277,6 @@ export default function VocabularyScreen() {
       marginTop: 50,
     },
     emptyText: {
-      fontSize: 16,
       color: colors.text,
       textAlign: 'center',
     },
@@ -296,7 +289,6 @@ export default function VocabularyScreen() {
     },
     clearFilterButtonText: {
       color: colors.card,
-      fontSize: 16,
       fontWeight: 'bold',
     },
   });
@@ -304,10 +296,10 @@ export default function VocabularyScreen() {
   const renderItem = ({ item }: { item: Vocabulary }) => (
     <TouchableOpacity onPress={() => handlePressItem(item)} style={styles.itemContainer}>
       <View style={styles.textContainer}>
-        <Text style={[styles.arabicWord, { fontFamily: selectedFont.fontFamily }]}>
+        <Text style={[styles.arabicWord, { fontFamily: selectedFont.fontFamily, fontSize: fontSize * 1.38 }]}>
           {item.word}
         </Text>
-        <Text style={styles.translation}>{item.translation.en}</Text>
+        <Text style={[styles.translation, { fontSize }]}>{item.translation.en}</Text>
       </View>
       <Feather name="chevron-left" size={24} color={colors.text} />
     </TouchableOpacity>
@@ -317,9 +309,7 @@ export default function VocabularyScreen() {
     section: { title },
   }: {
     section: { title: string };
-  }) => <Text style={styles.sectionHeader}>{title}</Text>;
-
-  const handleSelectBook = (bookId: string) => {
+  }) => <Text style={[styles.sectionHeader, { fontSize: fontSize * 1.13 }]}>{title}</Text>;  const handleSelectBook = (bookId: string) => {
     setSelectedBook(bookId);
     setSelectedLesson('All');
     if (bookId === 'All') {
@@ -336,7 +326,7 @@ export default function VocabularyScreen() {
 
   const EmptyListComponent = () => (
     <View style={styles.emptyContainer}>
-      <Text style={styles.emptyText}>
+      <Text style={[styles.emptyText, { fontSize }]}>
         No vocabulary found for the selected filter.
       </Text>
       <TouchableOpacity
@@ -346,7 +336,7 @@ export default function VocabularyScreen() {
           setSelectedLesson('All');
         }}
       >
-        <Text style={styles.clearFilterButtonText}>Clear Filter</Text>
+        <Text style={[styles.clearFilterButtonText, { fontSize }]}>Clear Filter</Text>
       </TouchableOpacity>
     </View>
   );
@@ -354,7 +344,7 @@ export default function VocabularyScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Vocabulary</Text>
+        <Text style={[styles.headerTitle, { fontSize: fontSize * 1.5 }]}>Vocabulary</Text>
         <Pressable onPress={handlePresentModalPress}>
          {Platform.OS === 'android' ? (
    <Image source={require('../../assets/images/filter.png')} style={{ width: 24, height: 24 }} />
@@ -368,7 +358,7 @@ export default function VocabularyScreen() {
       {loading ? (
         <ActivityIndicator size="large" color={colors.primary} style={styles.loader} />
       ) : error ? (
-        <Text style={styles.errorText}>{error}</Text>
+        <Text style={[styles.errorText, { fontSize }]}>{error}</Text>
       ) : (
         <SectionList
           sections={groupedVocabulary}
@@ -394,14 +384,14 @@ export default function VocabularyScreen() {
           style={[styles.segmentedButton, filterMode === 'book' && styles.segmentedButtonActive]}
           onPress={() => setFilterMode('book')}
         >
-          <Text style={[styles.segmentedButtonText, filterMode === 'book' && styles.segmentedButtonTextActive]}>By Book</Text>
+          <Text style={[styles.segmentedButtonText, filterMode === 'book' && styles.segmentedButtonTextActive, { fontSize }]}>By Book</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.segmentedButton, filterMode === 'lesson' && styles.segmentedButtonActive]}
           onPress={() => setFilterMode('lesson')}
           disabled={selectedBook === 'All'}
         >
-          <Text style={[styles.segmentedButtonText, filterMode === 'lesson' && styles.segmentedButtonTextActive, selectedBook === 'All' && styles.disabledText]}>By Lesson</Text>
+          <Text style={[styles.segmentedButtonText, filterMode === 'lesson' && styles.segmentedButtonTextActive, selectedBook === 'All' && styles.disabledText, { fontSize }]}>By Lesson</Text>
         </TouchableOpacity>
       </View>
 
@@ -412,7 +402,7 @@ export default function VocabularyScreen() {
             style={[styles.modalButton, selectedBook === 'All' && styles.modalButtonActive]}
             onPress={() => handleSelectBook('All')}
           >
-            <Text style={[styles.modalButtonText, selectedBook === 'All' && styles.modalButtonTextActive]}>All Books</Text>
+            <Text style={[styles.modalButtonText, selectedBook === 'All' && styles.modalButtonTextActive, { fontSize }]}>All Books</Text>
           </TouchableOpacity>
           {books.map((book) => (
             <TouchableOpacity
@@ -420,7 +410,7 @@ export default function VocabularyScreen() {
               style={[styles.modalButton, selectedBook === book && styles.modalButtonActive]}
               onPress={() => handleSelectBook(book)}
             >
-              <Text style={[styles.modalButtonText, selectedBook === book && styles.modalButtonTextActive]}>{book.replace('book', 'Book ')}</Text>
+              <Text style={[styles.modalButtonText, selectedBook === book && styles.modalButtonTextActive, { fontSize }]}>{book.replace('book', 'Book ')}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -433,7 +423,7 @@ export default function VocabularyScreen() {
                 style={[styles.lessonButton, selectedLesson === lesson && styles.modalButtonActive]}
                 onPress={() => handleSelectLesson(lesson)}
               >
-                <Text style={[styles.modalButtonText, selectedLesson === lesson && styles.modalButtonTextActive]}>
+                <Text style={[styles.modalButtonText, selectedLesson === lesson && styles.modalButtonTextActive, { fontSize }]}>
                   {lesson === 'All' ? 'All Lessons' : `Lesson ${lesson}`}
                 </Text>
               </TouchableOpacity>

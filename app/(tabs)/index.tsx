@@ -3,12 +3,14 @@ import { Text, useThemeColor } from '@/components/Themed'; // Import useThemeCol
 import { useEffect, useState } from 'react';
 import { api, Book } from '../../api/client';
 import { useRouter } from 'expo-router'; // Import useRouter
+import { useSettings } from '@/contexts/SettingsContext';
 
 export default function LessonsScreen() {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter(); // Initialize router
+  const { fontSize } = useSettings(); // Add fontSize from settings
 
   // Moved useThemeColor hooks to the top level
   const bookItemBackground = useThemeColor({}, 'background');
@@ -37,7 +39,7 @@ export default function LessonsScreen() {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" />
-        <Text style={styles.loadingText}>Loading lessons...</Text>
+        <Text style={[styles.loadingText, { fontSize }]}>Loading lessons...</Text>
       </View>
     );
   }
@@ -45,7 +47,7 @@ export default function LessonsScreen() {
   if (error) {
     return (
       <View style={styles.container}>
-        <Text style={styles.errorText}>{error}</Text>
+        <Text style={[styles.errorText, { fontSize }]}>{error}</Text>
       </View>
     );
   }
@@ -62,23 +64,23 @@ export default function LessonsScreen() {
   return (
     <ScrollView style={styles.scrollContainer} contentInsetAdjustmentBehavior="automatic">
       <View style={styles.container}>
-        <Text style={[styles.title, { color: textColor }]}>Madinah Arabic Lessons</Text>
+        <Text style={[styles.title, { color: textColor, fontSize: fontSize * 1.75 }]}>Madinah Arabic Lessons</Text>
         <View style={[styles.separator, { backgroundColor: separatorColor }]} />
 
         {books.map((book, index) => (
           <TouchableOpacity key={book.id} onPress={() => handleBookPress(book.id)} style={[styles.bookItem, { backgroundColor: bookItemBackground }]}>
-            <Text style={[styles.bookTitle, { color: textColor }]}>{book.title.en}</Text>
+            <Text style={[styles.bookTitle, { color: textColor, fontSize: fontSize * 1.25 }]}>{book.title.en}</Text>
             {book.description && (
-              <Text style={[styles.bookDescription, { color: mutedColor }]}>{book.description.en}</Text>
+              <Text style={[styles.bookDescription, { color: mutedColor, fontSize: fontSize * 0.94 }]}>{book.description.en}</Text>
             )}
-            <Text style={[styles.lessonCount, { color: mutedColor }]}>
+            <Text style={[styles.lessonCount, { color: mutedColor, fontSize: fontSize * 0.81 }]}>
               {book.lessons?.length || 0} lessons
             </Text>
           </TouchableOpacity>
         ))}
 
         {books.length === 0 && (
-          <Text style={[styles.noDataText, { color: mutedColor }]}>No books available.</Text>
+          <Text style={[styles.noDataText, { color: mutedColor, fontSize }]}>No books available.</Text>
         )}
       </View>
     </ScrollView>
@@ -97,7 +99,6 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
   title: {
-    fontSize: 28, // Increased font size
     fontWeight: 'bold',
     marginBottom: 16, // Increased margin
   },
@@ -114,28 +115,26 @@ const styles = StyleSheet.create({
     // backgroundColor is now set dynamically
   },
   bookTitle: {
-    fontSize: 20, // Increased font size
     fontWeight: '600', // Adjusted font weight
     marginBottom: 8, // Increased margin
   },
   bookDescription: {
-    fontSize: 15, // Increased font size
     marginBottom: 8, // Increased margin
   },
   lessonCount: {
-    fontSize: 13, // Increased font size
+    // fontSize will be set dynamically
   },
   loadingText: {
     marginTop: 12, // Adjusted margin
-    fontSize: 16,
+    // fontSize will be set dynamically
   },
   errorText: {
-    fontSize: 16,
+    // fontSize will be set dynamically
     // color: 'red', // Color will be handled by theme or can be set explicitly if needed for errors
     textAlign: 'center',
   },
   noDataText: {
-    fontSize: 16,
+    // fontSize will be set dynamically
     textAlign: 'center',
     marginTop: 24, // Increased margin
   },
