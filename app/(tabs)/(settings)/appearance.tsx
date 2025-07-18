@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { Text } from '../../../components/Themed';
 import { useSettings } from '@/contexts/SettingsContext';
 import { SegmentedControl } from '../../../components/SegmentedControl';
 import Slider from '@react-native-community/slider'; // This import is correct

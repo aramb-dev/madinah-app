@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
+import { Text, useThemeColor } from '../../../components/Themed';
 import { useLocalSearchParams, Stack } from 'expo-router';
-import { api, Lesson as ApiLesson, Book as ApiBook } from '@/api/client'; // Assuming Lesson type includes content
-import { useThemeColor } from '@/hooks/useThemeColor';
-import { ThemedText } from '@/components/ThemedText';
+import { api, Lesson as ApiLesson, Book as ApiBook } from '../../../api/client';
 
 // Define a more specific Lesson type for the component's needs
 interface LessonContentItem {
@@ -172,55 +171,55 @@ export default function LessonDetailScreen() {
           {loading && (
             <View style={[styles.container, styles.centeredContent]}>
               <ActivityIndicator size="large" />
-              <ThemedText style={styles.loadingText}>Loading lesson content...</ThemedText>
+              <Text style={styles.loadingText}>Loading lesson content...</Text>
             </View>
           )}
           {error && !loading && (
             <View style={[styles.container, styles.centeredContent]}>
-              <ThemedText style={styles.errorText}>{error || 'Lesson not found.'}</ThemedText>
+              <Text style={styles.errorText}>{error || 'Lesson not found.'}</Text>
             </View>
           )}
           {!loading && !error && lesson && (
             <>
               <View style={styles.titleContainer}>
-                <ThemedText type="arabic" style={[styles.titleArabic, { color: textColor }]}>{getLocalizedText(lesson.title, 'ar') || 'عنوان الدرس غير متوفر'}</ThemedText>
-                <ThemedText type="title" style={[styles.titleEnglish, { color: textColor }]}>{getLocalizedText(lesson.title, 'en') || 'Lesson Title Unavailable'}</ThemedText>
+                <Text type="arabic" style={[styles.titleArabic, { color: textColor }]}>{getLocalizedText(lesson.title, 'ar') || 'عنوان الدرس غير متوفر'}</Text>
+                <Text type="title" style={[styles.titleEnglish, { color: textColor }]}>{getLocalizedText(lesson.title, 'en') || 'Lesson Title Unavailable'}</Text>
               </View>
               {lesson.introduction && (
                 <View style={[styles.introductionContainer, { backgroundColor: cardBackgroundColor }]}>
-                  <ThemedText type="subtitle" style={[styles.introductionTitle, { color: textColor }]}>Introduction:</ThemedText>
+                  <Text type="subtitle" style={[styles.introductionTitle, { color: textColor }]}>Introduction:</Text>
 
                   {/* Arabic introduction - handle both API structures */}
                   {((lesson.introduction as any).arabic || (lesson.introduction as any).ar) && (
                     <View style={styles.arabicTextContainer}>
-                      <ThemedText type="arabic" style={[styles.arabicIntroText, { color: textColor }]}>
+                      <Text type="arabic" style={[styles.arabicIntroText, { color: textColor }]}>
                         {(lesson.introduction as any).arabic || (lesson.introduction as any).ar}
-                      </ThemedText>
+                      </Text>
                     </View>
                   )}
 
                   {/* English introduction - handle both API structures */}
                   {((lesson.introduction as any).english || (lesson.introduction as any).en) && (
-                    <ThemedText style={[styles.introductionText, { color: mutedTextColor }]}>
+                    <Text style={[styles.introductionText, { color: mutedTextColor }]}>
                       {(lesson.introduction as any).english || (lesson.introduction as any).en}
-                    </ThemedText>
+                    </Text>
                   )}
                 </View>
               )}
               {(lesson.description || '').trim() !== '' && (
-                <ThemedText style={[styles.description, { color: mutedTextColor }]}>{lesson.description}</ThemedText>
+                <Text style={[styles.description, { color: mutedTextColor }]}>{lesson.description}</Text>
               )}
 
               {lesson.rules && Array.isArray(lesson.rules) && lesson.rules.length > 0 && (
                 <View style={styles.rulesContainer}>
-                  <ThemedText type="subtitle" style={[styles.rulesTitle, { color: textColor }]}>Rules:</ThemedText>
+                  <Text type="subtitle" style={[styles.rulesTitle, { color: textColor }]}>Rules:</Text>
                   {lesson.rules!.map((rule, index) => (
                     <View key={rule.id || `rule-${index}`} style={[styles.ruleItem, { backgroundColor: cardBackgroundColor }]}>
-                      <ThemedText type="subtitle" style={[styles.ruleName, { color: textColor }]}>{rule.name}</ThemedText>
+                      <Text type="subtitle" style={[styles.ruleName, { color: textColor }]}>{rule.name}</Text>
                       <View style={styles.arabicTextContainer}>
-                        <ThemedText type="arabic" style={[styles.arabicText, { color: textColor }]}>{rule.arabicText}</ThemedText>
+                        <Text type="arabic" style={[styles.arabicText, { color: textColor }]}>{rule.arabicText}</Text>
                       </View>
-                      <ThemedText style={[styles.ruleExplanation, { color: mutedTextColor }]}>{rule.explanation}</ThemedText>
+                      <Text style={[styles.ruleExplanation, { color: mutedTextColor }]}>{rule.explanation}</Text>
                     </View>
                   ))}
                 </View>
@@ -235,9 +234,9 @@ export default function LessonDetailScreen() {
                   <View key={index} style={[styles.contentItem, { backgroundColor: cardBackgroundColor }]}>
                     {item.arabic && (
                       <View style={styles.arabicTextContainer}>
-                        <ThemedText type="arabic" style={[styles.arabicText, { color: textColor }]}>
+                        <Text type="arabic" style={[styles.arabicText, { color: textColor }]}>
                           {item.arabic}
-                        </ThemedText>
+                        </Text>
                       </View>
                     )}
                     {item.translation && (

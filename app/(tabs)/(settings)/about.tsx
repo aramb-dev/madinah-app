@@ -1,4 +1,5 @@
-import { Text, View, StyleSheet, Linking, ScrollView } from 'react-native';
+import { View, StyleSheet, Linking, ScrollView } from 'react-native';
+import { Text } from '../../../components/Themed';
 import { useSettings } from '@/contexts/SettingsContext';
 import app from '../../../app.json';
 import { Stack } from 'expo-router';

@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, SectionList, Pressable, ScrollView, Platform, useColorScheme } from 'react-native';
+import { View, StyleSheet, SectionList, Pressable, ScrollView, Platform, useColorScheme } from 'react-native';
+import { Text } from '../../../components/Themed';
 import { Link } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';

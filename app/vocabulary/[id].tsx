@@ -1,5 +1,6 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { StyleSheet, View, Text, ScrollView } from 'react-native';
+import { StyleSheet, View, ScrollView } from 'react-native';
+import { Text } from '../../components/Themed';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 // Temporary interface until the main one is updated

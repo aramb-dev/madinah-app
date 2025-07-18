@@ -1,9 +1,9 @@
-import { Stack } from 'expo-router';
-import { StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
-import { Text, View } from '@/components/Themed';
-import { useEffect, useState } from 'react';
-import { ChangelogEntry } from '@/api/client'; // Assuming ChangelogEntry is still relevant or will be defined locally
-import changelogData from '@/assets/changelog.json'; // Import local changelog data
+import { Stack } from "expo-router";
+import { StyleSheet, ScrollView, ActivityIndicator } from "react-native";
+import { Text, View } from "@/components/Themed";
+import { useEffect, useState } from "react";
+import { ChangelogEntry } from "@/api/client"; // Assuming ChangelogEntry is still relevant or will be defined locally
+import changelogData from "@/assets/changelog.json"; // Import local changelog data
 
 export default function ChangelogScreen() {
   const [changelog, setChangelog] = useState<ChangelogEntry[]>([]);
@@ -17,8 +17,8 @@ export default function ChangelogScreen() {
         // Assuming changelogData is an array of ChangelogEntry
         setChangelog(changelogData as ChangelogEntry[]);
       } catch (err) {
-        setError('Failed to load changelog from local file');
-        console.error('Error loading changelog:', err);
+        setError("Failed to load changelog from local file");
+        console.error("Error loading changelog:", err);
       } finally {
         setLoading(false);
       }
@@ -46,10 +46,14 @@ export default function ChangelogScreen() {
 
   return (
     <>
-      <Stack.Screen options={{ title: 'Changelog' }} />
+      <Stack.Screen options={{ title: "Changelog" }} />
       <ScrollView style={styles.scrollContainer}>
         <View style={styles.container}>
-        <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+          <View
+            style={styles.separator}
+            lightColor="#eee"
+            darkColor="rgba(255,255,255,0.1)"
+          />
 
         {changelog.map((entry, index) => (
           <View key={index} style={styles.changelogEntry}>
@@ -68,10 +72,12 @@ export default function ChangelogScreen() {
           </View>
         ))}
 
-        {changelog.length === 0 && (
-          <Text style={styles.noDataText}>No changelog entries available.</Text>
-        )}
-      </View>
+          {changelog.length === 0 && (
+            <Text style={styles.noDataText}>
+              No changelog entries available.
+            </Text>
+          )}
+        </View>
       </ScrollView>
     </>
   );
@@ -83,8 +89,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
+    alignItems: "center",
+    justifyContent: "flex-start",
     paddingHorizontal: 16,
     paddingTop: 12,
   },
@@ -96,19 +102,19 @@ const styles = StyleSheet.create({
   separator: {
     marginVertical: 20,
     height: 1,
-    width: '100%',
+    width: "100%",
   },
   changelogEntry: {
-    width: '100%',
+    width: "100%",
     marginBottom: 25,
     padding: 15,
     borderRadius: 8,
-    backgroundColor: 'rgba(0,0,0,0.05)',
+    backgroundColor: "rgba(0,0,0,0.05)",
   },
   versionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 10,
   },
   versionText: {
@@ -139,7 +145,7 @@ const styles = StyleSheet.create({
   noDataText: {
     fontSize: 16,
     opacity: 0.7,
-    textAlign: 'center',
+    textAlign: "center",
     marginTop: 20,
   },
 });

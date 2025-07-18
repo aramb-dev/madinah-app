@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
+import { Text } from '../../components/Themed';
 import { useLocalSearchParams, useRouter, Link, Stack } from 'expo-router';
 import { api, Lesson } from '@/api/client';
-import { ThemedText } from '@/components/ThemedText'; // Corrected import path
 import LessonListItem from '@/components/LessonListItem'; // Import the LessonListItem component
-import { useThemeColor } from '@/components/Themed'; // Import useThemeColor
+import { useThemeColor } from '../../components/Themed';
 
 export default function BookLessonsScreen() {
   const { bookId } = useLocalSearchParams<{ bookId: string }>();
@@ -159,17 +159,17 @@ export default function BookLessonsScreen() {
       {loading ? (
         <View style={styles.centeredContainer}>
           <ActivityIndicator size="large" />
-          <ThemedText style={styles.loadingText}>Loading lessons...</ThemedText>
+          <Text style={styles.loadingText}>Loading lessons...</Text>
         </View>
       ) : error ? (
         <View style={styles.centeredContainer}>
-          <ThemedText style={styles.errorText}>{error}</ThemedText>
+          <Text style={styles.errorText}>{error}</Text>
         </View>
       ) : (
         <ScrollView style={[styles.scrollContainer, { backgroundColor: itemBackgroundColor /* Use theme background for scroll view */ }]} >
           <View style={styles.container}>
             {/* Always render the title Text component, bookTitle state handles loading/error/actual title */}
-            <ThemedText type="title" style={[styles.title, { color: textColor }]}>{bookTitle === 'Loading title...' || bookTitle === 'Error Loading Data' || bookTitle === 'Book Title Unavailable' ? bookTitle : `${bookTitle} - Lessons`}</ThemedText>
+            <Text type="title" style={[styles.title, { color: textColor }]}>{bookTitle === 'Loading title...' || bookTitle === 'Error Loading Data' || bookTitle === 'Book Title Unavailable' ? bookTitle : `${bookTitle} - Lessons`}</Text>
             <View style={[styles.separator, { backgroundColor: separatorColor }]} />
 
             {lessons && lessons.length > 0 ? lessons.map((lesson, index) => (
@@ -179,14 +179,14 @@ export default function BookLessonsScreen() {
                 style={[styles.lessonItem, { backgroundColor: itemBackgroundColor }]} // Dynamic background
               >
                 {/* Assuming lesson.title is also a LocalizedString */}
-                <ThemedText type="arabic" style={[styles.lessonTitle, { color: textColor }]}>
+                <Text type="arabic" style={[styles.lessonTitle, { color: textColor }]}>
                    {typeof lesson.title === 'object' && lesson.title.en ? lesson.title.en :
                    typeof lesson.title === 'string' ? lesson.title : 'Lesson Title Unavailable'}
-                 </ThemedText>
+                 </Text>
                 {/* lesson.description removed as it does not exist on Lesson type */}
               </TouchableOpacity>
             )) : (
-              <ThemedText style={[styles.noDataText, { color: mutedTextColor }]}>No lessons available for this book.</ThemedText>
+              <Text style={[styles.noDataText, { color: mutedTextColor }]}>No lessons available for this book.</Text>
             )}
           </View>
         </ScrollView>

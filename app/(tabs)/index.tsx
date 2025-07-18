@@ -1,7 +1,7 @@
-import { StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
-import { Text, View, useThemeColor } from '@/components/Themed'; // Import useThemeColor
+import { StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity, View } from 'react-native';
+import { Text, useThemeColor } from '@/components/Themed'; // Import useThemeColor
 import { useEffect, useState } from 'react';
-import { api, Book } from '@/api/client';
+import { api, Book } from '../../api/client';
 import { useRouter } from 'expo-router'; // Import useRouter
 
 export default function LessonsScreen() {

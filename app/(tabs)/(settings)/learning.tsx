@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, Switch } from 'react-native';
+import { View, StyleSheet, Switch } from 'react-native';
+import { Text } from '../../../components/Themed';
 import { useLearningContext } from '@/components/LearningContext';
 import { SegmentedControl } from '@/components/SegmentedControl';
 import { useSettings } from '@/contexts/SettingsContext';

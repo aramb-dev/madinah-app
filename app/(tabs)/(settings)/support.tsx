@@ -1,5 +1,6 @@
 import React from 'react';
-import { Text, View, StyleSheet, Linking, ScrollView, TouchableOpacity, Platform } from 'react-native';
+import { View, StyleSheet, Linking, ScrollView, TouchableOpacity, Platform } from 'react-native';
+import { Text } from '../../../components/Themed';
 import { useSettings } from '@/contexts/SettingsContext';
 import { Stack } from 'expo-router';
 import { useTheme } from '@react-navigation/native';
