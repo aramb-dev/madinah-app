@@ -1,8 +1,10 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { StyleSheet, View, ScrollView } from 'react-native';
 import { Text } from '../../components/Themed';
+import { ThemedText } from '../../components/ThemedText';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSettings } from '@/contexts/SettingsContext';
+import { useFont } from '@/components/FontContext';
 
 // Temporary interface until the main one is updated
 interface Vocabulary {
@@ -26,6 +28,7 @@ interface Vocabulary {
 export default function WordDetailScreen() {
   const { vocabulary: vocabularyString } = useLocalSearchParams<{ vocabulary: string }>();
   const { fontSize } = useSettings();
+  const { selectedFont } = useFont();
 
   if (!vocabularyString) {
     return (
@@ -56,7 +59,7 @@ export default function WordDetailScreen() {
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { fontSize: fontSize * 1.25 }]}>Information</Text>
           {vocabulary.type && <Text style={[styles.sectionContent, { fontSize }]}><Text style={[styles.infoLabel, { fontSize }]}>Type:</Text> {vocabulary.type}</Text>}
-          {vocabulary.plural && <Text style={[styles.sectionContent, { fontSize }]}><Text style={[styles.infoLabel, { fontSize }]}>Plural:</Text> {vocabulary.plural}</Text>}
+          {vocabulary.plural && <Text style={[styles.sectionContent, { fontSize }]}><Text style={[styles.infoLabel, { fontSize }]}>Plural:</Text> <ThemedText type="arabic" style={{ fontSize }}>{vocabulary.plural}</ThemedText></Text>}
           {vocabulary.transliteration && <Text style={[styles.sectionContent, { fontSize }]}><Text style={[styles.infoLabel, { fontSize }]}>Transliteration:</Text> {vocabulary.transliteration}</Text>}
         </View>
 
@@ -72,7 +75,7 @@ export default function WordDetailScreen() {
             <Text style={[styles.sectionTitle, { fontSize: fontSize * 1.25 }]}>Examples</Text>
             {vocabulary.examples.map((example, index) => (
               <View key={index} style={styles.exampleContainer}>
-                <Text style={[styles.arabicExample, { fontSize: fontSize * 1.13 }]}>{example.arabic}</Text>
+                <ThemedText type="arabic" style={[styles.arabicExample, { fontSize: fontSize * 1.13 }]}>{example.arabic}</ThemedText>
                 <Text style={[styles.englishExample, { fontSize }]}>{example.english}</Text>
               </View>
             ))}

@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
 import { Text } from '../../components/Themed';
+import { ThemedText } from '../../components/ThemedText';
 import { useLocalSearchParams, useRouter, Link, Stack } from 'expo-router';
 import { api, Lesson } from '@/api/client';
 import LessonListItem from '@/components/LessonListItem'; // Import the LessonListItem component
 import { useThemeColor } from '../../components/Themed';
 import { useSettings } from '@/contexts/SettingsContext';
+import { useFont } from '@/components/FontContext';
 
 export default function BookLessonsScreen() {
   const { bookId } = useLocalSearchParams<{ bookId: string }>();
   const router = useRouter();
   const { fontSize } = useSettings();
+  const { selectedFont } = useFont();
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [bookTitle, setBookTitle] = useState<string>('Loading title...'); // Initialize with a loading message
   const [loading, setLoading] = useState(true);
@@ -179,10 +182,10 @@ export default function BookLessonsScreen() {
                 style={[styles.lessonItem, { backgroundColor: itemBackgroundColor }]} // Dynamic background
               >
                 {/* Assuming lesson.title is also a LocalizedString */}
-                <Text type="arabic" style={[styles.lessonTitle, { color: textColor, fontSize: fontSize * 1.25 }]}>
+                <ThemedText type="arabic" style={[styles.lessonTitle, { color: textColor, fontSize: fontSize * 1.25 }]}>
                    {typeof lesson.title === 'object' && lesson.title.en ? lesson.title.en :
                    typeof lesson.title === 'string' ? lesson.title : 'Lesson Title Unavailable'}
-                 </Text>
+                 </ThemedText>
                 {/* lesson.description removed as it does not exist on Lesson type */}
               </TouchableOpacity>
             )) : (

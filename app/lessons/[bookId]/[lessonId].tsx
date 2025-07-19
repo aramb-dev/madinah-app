@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
 import { Text, useThemeColor } from '../../../components/Themed';
+import { ThemedText } from '../../../components/ThemedText';
 import { useLocalSearchParams, Stack } from 'expo-router';
 import { api, Lesson as ApiLesson, Book as ApiBook } from '../../../api/client';
 import { useSettings } from '@/contexts/SettingsContext';
+import { useFont } from '@/components/FontContext';
 
 // Define a more specific Lesson type for the component's needs
 interface LessonContentItem {
@@ -37,6 +39,7 @@ const getLocalizedText = (localizedString: ApiLesson['title'] | ApiLesson['intro
 export default function LessonDetailScreen() {
   const { bookId, lessonId } = useLocalSearchParams<{ bookId: string; lessonId: string }>();
   const { fontSize } = useSettings();
+  const { selectedFont } = useFont();
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -184,7 +187,7 @@ export default function LessonDetailScreen() {
           {!loading && !error && lesson && (
             <>
               <View style={styles.titleContainer}>
-                <Text type="arabic" style={[styles.titleArabic, { color: textColor }]}>{getLocalizedText(lesson.title, 'ar') || 'عنوان الدرس غير متوفر'}</Text>
+                <ThemedText type="arabic" style={[styles.titleArabic, { color: textColor }]}>{getLocalizedText(lesson.title, 'ar') || 'عنوان الدرس غير متوفر'}</ThemedText>
                 <Text type="title" style={[styles.titleEnglish, { color: textColor }]}>{getLocalizedText(lesson.title, 'en') || 'Lesson Title Unavailable'}</Text>
               </View>
               {lesson.introduction && (
@@ -194,9 +197,9 @@ export default function LessonDetailScreen() {
                   {/* Arabic introduction - handle both API structures */}
                   {((lesson.introduction as any).arabic || (lesson.introduction as any).ar) && (
                     <View style={styles.arabicTextContainer}>
-                      <Text type="arabic" style={[styles.arabicIntroText, { color: textColor }]}>
+                      <ThemedText type="arabic" style={[styles.arabicIntroText, { color: textColor }]}>
                         {(lesson.introduction as any).arabic || (lesson.introduction as any).ar}
-                      </Text>
+                      </ThemedText>
                     </View>
                   )}
 
@@ -219,7 +222,7 @@ export default function LessonDetailScreen() {
                     <View key={rule.id || `rule-${index}`} style={[styles.ruleItem, { backgroundColor: cardBackgroundColor }]}>
                       <Text type="subtitle" style={[styles.ruleName, { color: textColor, fontSize: fontSize * 1.13 }]}>{rule.name}</Text>
                       <View style={styles.arabicTextContainer}>
-                        <Text type="arabic" style={[styles.arabicText, { color: textColor }]}>{rule.arabicText}</Text>
+                        <ThemedText type="arabic" style={[styles.arabicText, { color: textColor }]}>{rule.arabicText}</ThemedText>
                       </View>
                       <Text style={[styles.ruleExplanation, { color: mutedTextColor, fontSize }]}>{rule.explanation}</Text>
                     </View>
@@ -236,9 +239,9 @@ export default function LessonDetailScreen() {
                   <View key={index} style={[styles.contentItem, { backgroundColor: cardBackgroundColor }]}>
                     {item.arabic && (
                       <View style={styles.arabicTextContainer}>
-                        <Text type="arabic" style={[styles.arabicText, { color: textColor }]}>
+                        <ThemedText type="arabic" style={[styles.arabicText, { color: textColor }]}>
                           {item.arabic}
-                        </Text>
+                        </ThemedText>
                       </View>
                     )}
                     {item.translation && (
