@@ -14,14 +14,16 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.aramb-dev.madinah-resources"
+      "bundleIdentifier": "com.aramb-dev.madinah-resources",
+      "buildNumber": "1"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.arambdev.madinahresources"
+      "package": "com.arambdev.madinahresources",
+      "versionCode": 1
     },
     "web": {
       "bundler": "metro",
@@ -30,9 +32,7 @@
     },
     "plugins": [
       "expo-router",
-      [
-        "react-native-bottom-tabs"
-      ],
+      ["react-native-bottom-tabs"],
       "expo-build-properties",
       [
         "expo-build-properties",

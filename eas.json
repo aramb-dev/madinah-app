@@ -6,8 +6,12 @@
       }
     },
     "production": {
+      "autoIncrement": true,
       "ios": {},
       "android": {}
     }
+  },
+  "cli": {
+    "appVersionSource": "remote"
   }
 }
