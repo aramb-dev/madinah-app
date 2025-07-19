@@ -1,0 +1,83 @@
+[
+  {
+    "version": "0.0.6",
+    "date": "Undated",
+    "changes": [
+      "Revert to using static changelog data from assets.",
+      "Move changelog logic to use git log data.",
+      "Display book name in book-level screen titles.",
+      "Improve dynamic title logic and fetch book details.",
+      "Remove unused lesson detail fetching logic and rendering.",
+      "Add dynamic screen title and restructure lesson detail view.",
+      "Add exercises tab and clarify screen titles.",
+      "Improve localization handling and content display logic."
+    ]
+  },
+  {
+    "version": "0.0.5",
+    "date": "Undated",
+    "changes": [
+      "Improve introduction section styling and readability.",
+      "Update rule interface and display in lesson view.",
+      "Ensure rules are copied over in lesson adaptation.",
+      "Add rules and introduction to lesson detail screen.",
+      "Handle api response structure and error cases.",
+      "Update getBookById to return ApiResponse<Book>.",
+      "Initialize book title with loading message and simplify title logic.",
+      "Move useThemeColor calls to top level for better readability.",
+      "Handle unexpected response structure in getBookLessons.",
+      "Improve error handling and add debug logging for book lessons."
+    ]
+  },
+  {
+    "version": "0.0.4",
+    "date": "Undated",
+    "changes": [
+      "Handle edge cases in book lessons fetching and display.",
+      "Improve theme handling and error states in book lessons screen.",
+      "Update book and lesson types to support localized strings.",
+      "Improve error handling and response parsing in apiRequest.",
+      "Move React Hooks to top level to prevent rendering errors.",
+      "Correct Amiri-Regular.ttf font path in _layout.tsx.",
+      "Add arabic font families including Amiri, Kufi, IBM, Baloo, Noto and Playpen.",
+      "Add muted, card and border color definitions.",
+      "Resolve useThemeColor module not found error.",
+      "Resolve TS errors in lesson detail screen."
+    ]
+  },
+  {
+    "version": "0.0.3",
+    "date": "Undated",
+    "changes": [
+      "Update color variable names and values for consistency.",
+      "Correct theme color usage in book lessons screen.",
+      "Resolve TypeScript errors and improve book lessons screen.",
+      "Improve lesson screens with dynamic theming and styling.",
+      "Implement React Query caching with AsyncStorage."
+    ]
+  },
+  {
+    "version": "0.0.2",
+    "date": "Undated",
+    "changes": [
+      "Implement ThemedText and add Amiri Arabic font.",
+      "Correct ThemedText import path in BookLessonsScreen.",
+      "Implement detailed lesson view and navigation.",
+      "Implement navigation to book lessons screen.",
+      "Create basic Exercise component placeholder."
+    ]
+  },
+  {
+    "version": "0.0.1",
+    "date": "Undated",
+    "changes": [
+      "Create LessonListItem component.",
+      "Switch to local changelog data from assets.",
+      "Ensure books state is array and update agent prompt for git commits.",
+      "Fix imports.",
+      "Remove duplicate FontAwesome import that was causing SyntaxError during iOS bundling.",
+      "Implement tab navigation with lessons, vocabulary, and settings.",
+      "Implement API client for all endpoints."
+    ]
+  }
+]

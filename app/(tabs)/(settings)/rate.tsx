@@ -35,8 +35,8 @@ export default function RateScreen() {
   };
 
   const handleFeedback = () => {
-    const email = 'feedback@madinahbookresources.com';
-    const subject = 'App Feedback';
+    const email = 'aramb@aramb.dev';
+    const subject = 'Madinah Resources App Feedback';
     const body = 'I would like to provide feedback about the Madinah Book Resources app:';
 
     Linking.openURL(`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);

@@ -25,8 +25,13 @@ export default function SupportScreen() {
   const platformColors = getBackgroundColors(colorScheme === 'dark');
 
   const handleSendFeedback = () => {
-    Linking.openURL('mailto:support@yourapp.com?subject=App Feedback');
-  };
+      const email = 'aramb@aramb.dev';
+      const subject = 'Madinah Resources App Feedback';
+      const body = 'I would like to provide feedback about the Madinah Book Resources app:';
+
+      Linking.openURL(`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
+    };
+
 
   return (
     <>

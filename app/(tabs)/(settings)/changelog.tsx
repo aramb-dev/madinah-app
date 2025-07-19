@@ -30,7 +30,7 @@ interface ChangelogEntry {
 // Categorize changes based on keywords
 const categorizeChange = (change: string) => {
   const lowerChange = change.toLowerCase();
-  
+
   if (lowerChange.includes('add') || lowerChange.includes('new') || lowerChange.includes('implement')) {
     return { type: 'feature', icon: 'add-circle', color: 'success' };
   } else if (lowerChange.includes('fix') || lowerChange.includes('resolve') || lowerChange.includes('correct')) {
@@ -125,6 +125,21 @@ export default function ChangelogScreen() {
     <>
       <Stack.Screen options={{ title: "What's New" }} />
       <View style={[styles.container, { backgroundColor: platformColors.primary }]}>
+        {/* iOS-style Section Header - positioned outside main content */}
+        {changelog.length > 0 && (
+          <View style={styles.sectionHeaderContainer}>
+            <Text style={[
+              styles.sectionHeader,
+              {
+                color: platformColors.secondaryText,
+                fontSize: fontSize * 0.85,
+              }
+            ]}>
+              VERSION HISTORY
+            </Text>
+          </View>
+        )}
+
         <ScrollView
           style={styles.scrollView}
           showsVerticalScrollIndicator={false}
@@ -132,116 +147,81 @@ export default function ChangelogScreen() {
         >
           {changelog.length > 0 ? (
             <>
-              {/* Latest Version Highlight */}
-              {changelog.length > 0 && (
-                <View style={styles.section}>
+              {/* Individual Version Cards */}
+              {changelog.map((entry, index) => (
+                <View key={index} style={styles.section}>
                   <View style={[
-                    styles.latestVersionCard,
+                    styles.sectionCard,
                     {
-                      backgroundColor: platformColors.accent,
-                      borderColor: platformColors.accent,
+                      backgroundColor: platformColors.secondary,
+                      borderColor: platformColors.border,
                     }
                   ]}>
-                    <View style={styles.latestVersionHeader}>
-                      <Ionicons name="star" size={24} color="white" />
-                      <Text style={[
-                        styles.latestVersionText,
-                        {
-                          color: 'white',
-                          fontSize: fontSize * 1.1,
-                        }
-                      ]}>
-                        Latest Version {changelog[0].version}
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              )}
-
-              {/* All Versions */}
-              <View style={styles.section}>
-                <View style={styles.sectionHeaderContainer}>
-                  <Text style={[
-                    styles.sectionHeader,
-                    {
-                      color: platformColors.secondaryText,
-                      fontSize: fontSize * 0.9,
-                    }
-                  ]}>
-                    VERSION HISTORY
-                  </Text>
-                </View>
-                
-                {changelog.map((entry, index) => (
-                  <View key={index} style={styles.versionSection}>
                     <View style={[
-                      styles.sectionCard,
+                      styles.versionHeader,
                       {
-                        backgroundColor: platformColors.secondary,
-                        borderColor: platformColors.border,
+                        borderBottomColor: platformColors.border,
                       }
                     ]}>
-                      <View style={styles.versionHeader}>
-                        <View style={styles.versionTitleContainer}>
-                          <Text style={[
-                            styles.versionText,
-                            {
-                              color: platformColors.text,
-                              fontSize: fontSize * 1.2,
-                            }
-                          ]}>
-                            v{entry.version}
-                          </Text>
-                          {index === 0 && (
-                            <View style={[styles.latestBadge, { backgroundColor: platformColors.accent }]}>
-                              <Text style={[styles.latestBadgeText, { fontSize: fontSize * 0.75 }]}>
-                                LATEST
-                              </Text>
-                            </View>
-                          )}
-                        </View>
+                      <View style={styles.versionTitleContainer}>
                         <Text style={[
-                          styles.dateText,
+                          styles.versionText,
                           {
-                            color: platformColors.secondaryText,
-                            fontSize: fontSize * 0.9,
+                            color: platformColors.text,
+                            fontSize: fontSize * 1.1,
                           }
                         ]}>
-                          {entry.date}
+                          v{entry.version}
                         </Text>
+                        {index === 0 && (
+                          <View style={[styles.latestBadge, { backgroundColor: platformColors.accent }]}>
+                            <Text style={[styles.latestBadgeText, { fontSize: fontSize * 0.7 }]}>
+                              LATEST
+                            </Text>
+                          </View>
+                        )}
                       </View>
-                      
-                      <View style={styles.changesContainer}>
-                        {entry.changes.map((change, changeIndex) => {
-                          const category = categorizeChange(change);
-                          const iconColor = platformColors[category.color as keyof typeof platformColors] || platformColors.text;
-                          
-                          return (
-                            <View key={changeIndex} style={styles.changeItem}>
-                              <View style={styles.changeIconContainer}>
-                                <Ionicons
-                                  name={category.icon as any}
-                                  size={16}
-                                  color={iconColor}
-                                />
-                              </View>
-                              <Text style={[
-                                styles.changeText,
-                                {
-                                  color: platformColors.text,
-                                  fontSize: fontSize * 0.95,
-                                }
-                              ]}>
-                                {change}
-                              </Text>
+                      <Text style={[
+                        styles.dateText,
+                        {
+                          color: platformColors.secondaryText,
+                          fontSize: fontSize * 0.85,
+                        }
+                      ]}>
+                        {entry.date}
+                      </Text>
+                    </View>
+
+                    <View style={styles.changesContainer}>
+                      {entry.changes.map((change, changeIndex) => {
+                        const category = categorizeChange(change);
+                        const iconColor = platformColors[category.color as keyof typeof platformColors] || platformColors.text;
+
+                        return (
+                          <View key={changeIndex} style={styles.changeItem}>
+                            <View style={styles.changeIconContainer}>
+                              <Ionicons
+                                name={category.icon as any}
+                                size={16}
+                                color={iconColor}
+                              />
                             </View>
-                          );
-                        })}
-                      </View>
+                            <Text style={[
+                              styles.changeText,
+                              {
+                                color: platformColors.text,
+                                fontSize: fontSize * 0.9,
+                              }
+                            ]}>
+                              {change}
+                            </Text>
+                          </View>
+                        );
+                      })}
                     </View>
                   </View>
-                ))}
-              </View>
+                </View>
+              ))}
             </>
           ) : (
             <View style={styles.section}>
@@ -271,7 +251,9 @@ export default function ChangelogScreen() {
       </View>
     </>
   );
-}const styles = StyleSheet.create({
+}
+
+const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -280,15 +262,17 @@ export default function ChangelogScreen() {
   },
   scrollContent: {
     paddingHorizontal: 16,
-    paddingTop: 20,
+    paddingTop: 8,
     paddingBottom: 40,
   },
   section: {
-    marginBottom: 24,
+    marginBottom: 16,
   },
   sectionHeaderContainer: {
-    paddingHorizontal: 4,
-    paddingBottom: 6,
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 8,
+    backgroundColor: 'transparent',
   },
   sectionHeader: {
     fontSize: 13,
@@ -297,49 +281,25 @@ export default function ChangelogScreen() {
     letterSpacing: 0.5,
   },
   sectionCard: {
-    borderRadius: 16,
+    borderRadius: 12,
     overflow: 'hidden',
+    shadowColor: '#000000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 1,
     },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  latestVersionCard: {
-    borderRadius: 16,
-    overflow: 'hidden',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 6,
-  },
-  latestVersionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-  },
-  latestVersionText: {
-    fontWeight: '600',
-    marginLeft: 8,
-  },
-  versionSection: {
-    marginBottom: 16,
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+    borderWidth: StyleSheet.hairlineWidth,
   },
   versionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(0,0,0,0.1)',
   },
   versionTitleContainer: {
     flexDirection: 'row',
@@ -350,36 +310,35 @@ export default function ChangelogScreen() {
   },
   latestBadge: {
     marginLeft: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 8,
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+    borderRadius: 6,
   },
   latestBadgeText: {
     color: 'white',
     fontWeight: '600',
-    fontSize: 10,
-    letterSpacing: 0.5,
+    fontSize: 9,
+    letterSpacing: 0.3,
   },
   dateText: {
     fontWeight: '400',
   },
   changesContainer: {
-    paddingHorizontal: 20,
-    paddingBottom: 16,
-    paddingTop: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   changeItem: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginBottom: 12,
+    marginBottom: 8,
   },
   changeIconContainer: {
-    marginRight: 12,
-    marginTop: 2,
+    marginRight: 10,
+    marginTop: 1,
   },
   changeText: {
     flex: 1,
-    lineHeight: 20,
+    lineHeight: 18,
   },
   noDataText: {
     textAlign: 'center',

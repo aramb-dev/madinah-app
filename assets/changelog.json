@@ -1,83 +1,120 @@
 [
   {
-    "version": "0.0.6",
-    "date": "Undated",
+    "version": "0.0.9",
+    "date": "2025-07-19",
     "changes": [
-      "Revert to using static changelog data from assets.",
-      "Move changelog logic to use git log data.",
-      "Display book name in book-level screen titles.",
-      "Improve dynamic title logic and fetch book details.",
-      "Remove unused lesson detail fetching logic and rendering.",
-      "Add dynamic screen title and restructure lesson detail view.",
-      "Add exercises tab and clarify screen titles.",
-      "Improve localization handling and content display logic."
+      "Overhaul all settings screens with native iOS-style UI",
+      "Implement global text size adjustment across entire application",
+      "Introduce settings-aware Text component for dynamic typography",
+      "Add color-coded changelog with categorized changes",
+      "Fix font selection component accessibility after redesign",
+      "Integrate Arabic font selection into settings appearance screen"
+    ]
+  },
+  {
+    "version": "0.0.8",
+    "date": "2025-07-10",
+    "changes": [
+      "Overhaul settings screen with native-style UI",
+      "Consolidate theme and font size into unified context",
+      "Adopt theme-based styling for light/dark mode",
+      "Use custom image for Android filter icon",
+      "Change tab bar background to white",
+      "Refine theme and layout styling"
+    ]
+  },
+  {
+    "version": "0.0.7",
+    "date": "2025-07-09",
+    "changes": [
+      "Add custom image assets for tab bar icons",
+      "Add navigation tab icons with platform-specific styling",
+      "Redesign settings screen with icons and card layout",
+      "Implement structured multi-screen settings section",
+      "Use stack navigator for proper screen titles",
+      "Implement about and support screens",
+      "Add daily reminder notifications settings",
+      "Implement learning settings screen",
+      "Add theme and font size controls",
+      "Improve navigation and UI consistency"
+    ]
+  },
+  {
+    "version": "0.0.6",
+    "date": "2025-07-09",
+    "changes": [
+      "Add vocabulary detail screen with enhanced UI",
+      "Consolidate vocabulary fetching into single function",
+      "Enhance lesson filter with scrollable wrapping layout",
+      "Add lesson-level filtering for vocabulary",
+      "Group vocabulary list by lesson for better organization",
+      "Enhance vocabulary filter UI and UX",
+      "Implement vocabulary screen with comprehensive filtering"
     ]
   },
   {
     "version": "0.0.5",
-    "date": "Undated",
+    "date": "2025-06-19",
     "changes": [
-      "Improve introduction section styling and readability.",
-      "Update rule interface and display in lesson view.",
-      "Ensure rules are copied over in lesson adaptation.",
-      "Add rules and introduction to lesson detail screen.",
-      "Handle api response structure and error cases.",
-      "Update getBookById to return ApiResponse<Book>.",
-      "Initialize book title with loading message and simplify title logic.",
-      "Move useThemeColor calls to top level for better readability.",
-      "Handle unexpected response structure in getBookLessons.",
-      "Improve error handling and add debug logging for book lessons."
+      "Add titles for back navigation in Lesson and Book screens",
+      "Enhance LessonDetailScreen with improved localization and styling",
+      "Update code signing settings and development team",
+      "Update expo-dev-client and related dependencies to v5.2.1",
+      "Implement coming soon component and clean up placeholder screens",
+      "Migrate to expo-router bottom tabs with SF Symbols",
+      "Add react-native-bottom-tabs dependency and configuration"
     ]
   },
   {
     "version": "0.0.4",
-    "date": "Undated",
+    "date": "2025-06-18",
     "changes": [
-      "Handle edge cases in book lessons fetching and display.",
-      "Improve theme handling and error states in book lessons screen.",
-      "Update book and lesson types to support localized strings.",
-      "Improve error handling and response parsing in apiRequest.",
-      "Move React Hooks to top level to prevent rendering errors.",
-      "Correct Amiri-Regular.ttf font path in _layout.tsx.",
-      "Add arabic font families including Amiri, Kufi, IBM, Baloo, Noto and Playpen.",
-      "Add muted, card and border color definitions.",
-      "Resolve useThemeColor module not found error.",
-      "Resolve TS errors in lesson detail screen."
+      "Update technical implementation with detailed data structures",
+      "Resolve syntax error in lesson book view",
+      "Apply selected font in lesson views",
+      "Implement Arabic font selection feature",
+      "Remove git-log file and revert to static changelog data",
+      "Update changelog with version history and changes",
+      "Add font context and provider for Arabic typography"
     ]
   },
   {
     "version": "0.0.3",
-    "date": "Undated",
+    "date": "2025-06-17",
     "changes": [
-      "Update color variable names and values for consistency.",
-      "Correct theme color usage in book lessons screen.",
-      "Resolve TypeScript errors and improve book lessons screen.",
-      "Improve lesson screens with dynamic theming and styling.",
-      "Implement React Query caching with AsyncStorage."
+      "Add comprehensive Arabic font support",
+      "Implement font loading and selection system",
+      "Add Amiri, Kufi, IBM Arabic, Baloo, Noto fonts",
+      "Improve theme handling and error states",
+      "Update book and lesson types for localized strings",
+      "Enhance error handling in API requests",
+      "Fix React Hooks positioning to prevent rendering errors"
     ]
   },
   {
     "version": "0.0.2",
-    "date": "Undated",
+    "date": "2025-06-16",
     "changes": [
-      "Implement ThemedText and add Amiri Arabic font.",
-      "Correct ThemedText import path in BookLessonsScreen.",
-      "Implement detailed lesson view and navigation.",
-      "Implement navigation to book lessons screen.",
-      "Create basic Exercise component placeholder."
+      "Handle edge cases in book lessons fetching",
+      "Improve API response structure and error handling",
+      "Add dynamic screen titles and book details fetching",
+      "Restructure lesson detail view with better organization",
+      "Add exercises tab and clarify screen navigation",
+      "Improve localization handling and content display",
+      "Enhanced introduction section styling and readability"
     ]
   },
   {
     "version": "0.0.1",
-    "date": "Undated",
+    "date": "2025-06-15",
     "changes": [
-      "Create LessonListItem component.",
-      "Switch to local changelog data from assets.",
-      "Ensure books state is array and update agent prompt for git commits.",
-      "Fix imports.",
-      "Remove duplicate FontAwesome import that was causing SyntaxError during iOS bundling.",
-      "Implement tab navigation with lessons, vocabulary, and settings.",
-      "Implement API client for all endpoints."
+      "Initial app setup with Expo and React Native",
+      "Basic navigation structure with tab-based interface",
+      "Implement core lesson and vocabulary data structures",
+      "Add basic API client for data fetching",
+      "Set up TypeScript configuration and development environment",
+      "Create fundamental UI components and styling system",
+      "Establish project architecture and folder structure"
     ]
   }
 ]
