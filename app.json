@@ -2,7 +2,7 @@
   "expo": {
     "name": "madinah-resources",
     "slug": "madinah-resources",
-    "version": "0.0.8",
+    "version": "0.0.9",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "madinahresources",
@@ -30,18 +30,17 @@
     },
     "plugins": [
       "expo-router",
+      ["react-native-bottom-tabs"],
+      "expo-build-properties",
       [
-        "react-native-bottom-tabs"
-      ],
-      "expo-build-properties"
-    ,[
         "expo-build-properties",
         {
           "ios": {
             "useFrameworks": "static"
           }
         }
-      ]],
+      ]
+    ],
     "experiments": {
       "typedRoutes": true
     }

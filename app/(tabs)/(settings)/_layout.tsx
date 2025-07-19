@@ -10,7 +10,7 @@ export default function SettingsLayout() {
       <Stack.Screen name="support" options={{ title: 'Support & Feedback' }} />
       <Stack.Screen name="rate" options={{ title: 'Rate This App' }} />
       <Stack.Screen name="about" options={{ title: 'About' }} />
-      <Stack.Screen name="changelog" options={{ title: 'Changelog' }} />
+      <Stack.Screen name="changelog" options={{ title: "What's New" }} />
     </Stack>
   );
 }

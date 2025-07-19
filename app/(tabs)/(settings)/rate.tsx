@@ -1,79 +1,179 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, Linking, Alert, Platform } from 'react-native';
+import { View, StyleSheet, ScrollView, Linking, TouchableOpacity, Alert } from 'react-native';
 import { Text } from '../../../components/Themed';
 import { useSettings } from '@/contexts/SettingsContext';
+import { useColorScheme } from '@/components/useColorScheme';
 import { Stack } from 'expo-router';
 import { useTheme } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 
+// Platform-specific colors for consistency
+const getBackgroundColors = (isDark: boolean) => ({
+  primary: isDark ? '#1c1c1e' : '#f2f2f7',
+  secondary: isDark ? '#2c2c2e' : '#ffffff',
+  border: isDark ? '#38383a' : '#c6c6c8',
+  text: isDark ? '#ffffff' : '#000000',
+  secondaryText: isDark ? '#8e8e93' : '#6d6d70',
+  accent: '#007AFF',
+});
+
 export default function RateScreen() {
   const { fontSize } = useSettings();
   const { colors } = useTheme();
+  const colorScheme = useColorScheme();
+
+  // Use platform-appropriate colors
+  const platformColors = getBackgroundColors(colorScheme === 'dark');
 
   const handleRateApp = () => {
-    const appId = 'YOUR_APP_ID'; // Replace with your actual app ID
-    const appStoreUrl = Platform.OS === 'ios'
-      ? `https://apps.apple.com/app/id${appId}?action=write-review`
-      : `market://details?id=com.yourapp.package`; // Replace with your package name
-
+    // This would typically open the App Store rating page
     Alert.alert(
       'Rate This App',
-      'Would you like to rate our app in the App Store?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Rate Now',
-          onPress: () => Linking.openURL(appStoreUrl).catch(() => {
-            Alert.alert('Error', 'Could not open the App Store');
-          })
-        },
-      ]
+      'Thank you for your feedback! This would normally redirect to the App Store.',
+      [{ text: 'OK', style: 'default' }]
     );
   };
 
-  const handleShareApp = () => {
-    // You can implement sharing functionality here
-    Alert.alert('Share App', 'Sharing functionality coming soon!');
+  const handleFeedback = () => {
+    const email = 'feedback@madinahbookresources.com';
+    const subject = 'App Feedback';
+    const body = 'I would like to provide feedback about the Madinah Book Resources app:';
+
+    Linking.openURL(`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
   };
 
   return (
     <>
       <Stack.Screen options={{ title: 'Rate This App' }} />
-      <View style={[styles.container, { backgroundColor: colors.background }]}>
-        <View style={styles.content}>
-          <Ionicons
-            name="star"
-            size={64}
-            color="#FFD700"
-            style={styles.starIcon}
-          />
+      <View style={[styles.container, { backgroundColor: platformColors.primary }]}>
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
+          {/* App Rating Section */}
+          <View style={styles.section}>
+            <View style={styles.sectionHeaderContainer}>
+              <Text style={[
+                styles.sectionHeader,
+                {
+                  color: platformColors.secondaryText,
+                  fontSize: fontSize * 0.9,
+                }
+              ]}>
+                RATE & REVIEW
+              </Text>
+            </View>
+            <View style={[
+              styles.sectionCard,
+              {
+                backgroundColor: platformColors.secondary,
+                borderColor: platformColors.border,
+              }
+            ]}>
+              <TouchableOpacity style={styles.actionItem} onPress={handleRateApp}>
+                <View style={styles.actionContent}>
+                  <View style={styles.actionIcon}>
+                    <Ionicons name="star" size={24} color={platformColors.accent} />
+                  </View>
+                  <View style={styles.actionTextContainer}>
+                    <Text style={[
+                      styles.actionTitle,
+                      {
+                        color: platformColors.text,
+                        fontSize: fontSize * 1.0,
+                      }
+                    ]}>
+                      Rate on App Store
+                    </Text>
+                    <Text style={[
+                      styles.actionDescription,
+                      {
+                        color: platformColors.secondaryText,
+                        fontSize: fontSize * 0.9,
+                      }
+                    ]}>
+                      Share your experience with other users
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
 
-          <Text style={[styles.title, { color: colors.text, fontSize: fontSize * 1.4 }]}>
-            Enjoying the app?
-          </Text>
+          {/* Feedback Section */}
+          <View style={styles.section}>
+            <View style={styles.sectionHeaderContainer}>
+              <Text style={[
+                styles.sectionHeader,
+                {
+                  color: platformColors.secondaryText,
+                  fontSize: fontSize * 0.9,
+                }
+              ]}>
+                FEEDBACK
+              </Text>
+            </View>
+            <View style={[
+              styles.sectionCard,
+              {
+                backgroundColor: platformColors.secondary,
+                borderColor: platformColors.border,
+              }
+            ]}>
+              <TouchableOpacity style={styles.actionItem} onPress={handleFeedback}>
+                <View style={styles.actionContent}>
+                  <View style={styles.actionIcon}>
+                    <Ionicons name="mail" size={24} color={platformColors.accent} />
+                  </View>
+                  <View style={styles.actionTextContainer}>
+                    <Text style={[
+                      styles.actionTitle,
+                      {
+                        color: platformColors.text,
+                        fontSize: fontSize * 1.0,
+                      }
+                    ]}>
+                      Send Feedback
+                    </Text>
+                    <Text style={[
+                      styles.actionDescription,
+                      {
+                        color: platformColors.secondaryText,
+                        fontSize: fontSize * 0.9,
+                      }
+                    ]}>
+                      Help us improve the app
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
 
-          <Text style={[styles.description, { color: colors.text, fontSize: fontSize }]}>
-            Your feedback helps us improve and reach more learners. Please consider rating us on the App Store!
-          </Text>
-
-          <TouchableOpacity
-            style={[styles.button, styles.primaryButton]}
-            onPress={handleRateApp}
-          >
-            <Ionicons name="star-outline" size={20} color="white" style={styles.buttonIcon} />
-            <Text style={[styles.buttonText, { fontSize: fontSize }]}>Rate on App Store</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.button, styles.secondaryButton, { borderColor: colors.border }]}
-            onPress={handleShareApp}
-          >
-            <Ionicons name="share-outline" size={20} color={colors.primary} style={styles.buttonIcon} />
-            <Text style={[styles.buttonText, styles.secondaryButtonText, { color: colors.primary, fontSize: fontSize }]}>
-              Share with Friends
-            </Text>
-          </TouchableOpacity>
-        </View>
+          {/* Appreciation Message */}
+          <View style={styles.section}>
+            <View style={[
+              styles.sectionCard,
+              {
+                backgroundColor: platformColors.secondary,
+                borderColor: platformColors.border,
+              }
+            ]}>
+              <View style={styles.messageItem}>
+                <Text style={[
+                  styles.messageText,
+                  {
+                    color: platformColors.text,
+                    fontSize: fontSize * 1.0,
+                  }
+                ]}>
+                  Thank you for using Madinah Book Resources! Your feedback helps us create a better learning experience for everyone.
+                </Text>
+              </View>
+            </View>
+          </View>
+        </ScrollView>
       </View>
     </>
   );
@@ -82,53 +182,66 @@ export default function RateScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    paddingTop: 12,
   },
-  content: {
+  scrollView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
-  starIcon: {
+  scrollContent: {
+    paddingHorizontal: 16,
+    paddingTop: 20,
+    paddingBottom: 40,
+  },
+  section: {
     marginBottom: 24,
   },
-  title: {
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 16,
+  sectionHeaderContainer: {
+    paddingHorizontal: 4,
+    paddingBottom: 6,
   },
-  description: {
-    textAlign: 'center',
-    lineHeight: 24,
-    marginBottom: 32,
-    opacity: 0.8,
+  sectionHeader: {
+    fontSize: 13,
+    fontWeight: '400',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
-  button: {
+  sectionCard: {
+    borderRadius: 16,
+    overflow: 'hidden',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  actionItem: {
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+  },
+  actionContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 12,
-    width: '100%',
-    maxWidth: 280,
   },
-  primaryButton: {
-    backgroundColor: '#007BFF',
+  actionIcon: {
+    marginRight: 16,
   },
-  secondaryButton: {
-    backgroundColor: 'transparent',
-    borderWidth: 2,
+  actionTextContainer: {
+    flex: 1,
   },
-  buttonIcon: {
-    marginRight: 8,
+  actionTitle: {
+    fontWeight: '500',
+    marginBottom: 4,
   },
-  buttonText: {
-    fontWeight: '600',
-    color: 'white',
+  actionDescription: {
+    lineHeight: 18,
   },
-  secondaryButtonText: {
-    color: '#007BFF',
+  messageItem: {
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+  },
+  messageText: {
+    textAlign: 'center',
+    lineHeight: 24,
   },
 });
