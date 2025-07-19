@@ -30,7 +30,9 @@
     },
     "plugins": [
       "expo-router",
-      ["react-native-bottom-tabs"],
+      [
+        "react-native-bottom-tabs"
+      ],
       "expo-build-properties",
       [
         "expo-build-properties",
@@ -43,6 +45,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "049ca412-573e-42d8-aaee-638ff5c0704c"
+      }
     }
   }
 }
