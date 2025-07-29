@@ -24,6 +24,8 @@ export default function NotificationsScreen() {
     setDailyReminderEnabled,
     dailyReminderTime,
     setDailyReminderTime,
+    permissionStatus,
+    requestPermissions,
   } = useNotifications();
   const { fontSize } = useSettings();
   const { colors } = useTheme();
@@ -110,7 +112,7 @@ export default function NotificationsScreen() {
 
               {dailyReminderEnabled && (
                 <>
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     style={[
                       styles.settingItem,
                       {
@@ -141,7 +143,7 @@ export default function NotificationsScreen() {
                       {dailyReminderTime}
                     </Text>
                   </TouchableOpacity>
-                  
+
                   {showInlineTimePicker && Platform.OS === 'ios' && (
                     <View style={[
                       styles.inlinePickerContainer,
@@ -163,6 +165,84 @@ export default function NotificationsScreen() {
                     </View>
                   )}
                 </>
+              )}
+            </View>
+          </View>
+
+          {/* Permission Status Section */}
+          <View style={styles.section}>
+            <View style={styles.sectionHeaderContainer}>
+              <Text style={[
+                styles.sectionHeader,
+                {
+                  color: platformColors.secondaryText,
+                  fontSize: fontSize * 0.9,
+                }
+              ]}>
+                NOTIFICATION STATUS
+              </Text>
+            </View>
+            <View style={[
+              styles.sectionCard,
+              {
+                backgroundColor: platformColors.secondary,
+                borderColor: platformColors.border,
+              }
+            ]}>
+              <View style={styles.settingItem}>
+                <Text style={[
+                  styles.settingText,
+                  {
+                    color: platformColors.text,
+                    fontSize: fontSize * 1.0,
+                  }
+                ]}>
+                  Permission Status
+                </Text>
+                <Text style={[
+                  styles.statusText,
+                  {
+                    color: permissionStatus === 'granted' ? '#34C759' :
+                           permissionStatus === 'denied' ? '#FF3B30' : platformColors.secondaryText,
+                    fontSize: fontSize * 0.9,
+                  }
+                ]}>
+                  {permissionStatus === 'granted' ? '✓ Allowed' :
+                   permissionStatus === 'denied' ? '✗ Denied' : 'Unknown'}
+                </Text>
+              </View>
+
+              {permissionStatus === 'denied' && (
+                <View style={[
+                  styles.settingItem,
+                  {
+                    borderTopWidth: StyleSheet.hairlineWidth,
+                    borderTopColor: platformColors.border,
+                    flexDirection: 'column',
+                    alignItems: 'flex-start',
+                  }
+                ]}>
+                  <Text style={[
+                    styles.warningText,
+                    {
+                      color: '#FF9500',
+                      fontSize: fontSize * 0.85,
+                      marginBottom: 8,
+                    }
+                  ]}>
+                    ⚠️ Notifications are disabled
+                  </Text>
+                  <Text style={[
+                    styles.helpText,
+                    {
+                      color: platformColors.secondaryText,
+                      fontSize: fontSize * 0.8,
+                      lineHeight: fontSize * 1.2,
+                    }
+                  ]}>
+                    To enable notifications, go to Settings → Notifications → Madinah App and allow notifications.
+                  </Text>
+                </View>
               )}
             </View>
           </View>
@@ -277,5 +357,14 @@ const styles = StyleSheet.create({
   inlinePicker: {
     width: '100%',
     height: 200,
+  },
+  statusText: {
+    fontWeight: '600',
+  },
+  warningText: {
+    fontWeight: '600',
+  },
+  helpText: {
+    fontWeight: '400',
   },
 });
