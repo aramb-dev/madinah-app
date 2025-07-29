@@ -1,12 +1,16 @@
 {
   "build": {
     "development": {
+      "environment": "development",
+      "distribution": "internal",
+      "developmentClient": true,
       "ios": {
         "simulator": true
       }
     },
     "production": {
       "autoIncrement": true,
+      
       "ios": {},
       "android": {}
     }
