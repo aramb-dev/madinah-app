@@ -29,12 +29,15 @@ export default function NotificationsScreen() {
   const { colors } = useTheme();
   const colorScheme = useColorScheme();
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const [showInlineTimePicker, setShowInlineTimePicker] = useState(false);
 
   // Use platform-appropriate colors
   const platformColors = getBackgroundColors(colorScheme === 'dark');
 
   const onTimeChange = (event: any, selectedTime?: Date) => {
-    setShowTimePicker(Platform.OS === 'ios');
+    if (Platform.OS === 'android') {
+      setShowTimePicker(false);
+    }
     if (selectedTime) {
       const hours = selectedTime.getHours().toString().padStart(2, '0');
       const minutes = selectedTime.getMinutes().toString().padStart(2, '0');
@@ -43,7 +46,11 @@ export default function NotificationsScreen() {
   };
 
   const showPicker = () => {
-    setShowTimePicker(true);
+    if (Platform.OS === 'ios') {
+      setShowInlineTimePicker(!showInlineTimePicker);
+    } else {
+      setShowTimePicker(true);
+    }
   };
 
   const timeAsDate = new Date();
@@ -102,23 +109,28 @@ export default function NotificationsScreen() {
               </View>
 
               {dailyReminderEnabled && (
-                <View style={[
-                  styles.settingItem,
-                  {
-                    borderTopWidth: StyleSheet.hairlineWidth,
-                    borderTopColor: platformColors.border,
-                  }
-                ]}>
-                  <Text style={[
-                    styles.settingText,
-                    {
-                      color: platformColors.text,
-                      fontSize: fontSize * 1.0,
-                    }
-                  ]}>
-                    Reminder Time
-                  </Text>
-                  <TouchableOpacity onPress={showPicker}>
+                <>
+                  <TouchableOpacity 
+                    style={[
+                      styles.settingItem,
+                      {
+                        borderTopWidth: StyleSheet.hairlineWidth,
+                        borderTopColor: platformColors.border,
+                        backgroundColor: showInlineTimePicker ? platformColors.primary : 'transparent',
+                      }
+                    ]}
+                    onPress={showPicker}
+                    activeOpacity={0.6}
+                  >
+                    <Text style={[
+                      styles.settingText,
+                      {
+                        color: platformColors.text,
+                        fontSize: fontSize * 1.0,
+                      }
+                    ]}>
+                      Reminder Time
+                    </Text>
                     <Text style={[
                       styles.timeText,
                       {
@@ -129,7 +141,28 @@ export default function NotificationsScreen() {
                       {dailyReminderTime}
                     </Text>
                   </TouchableOpacity>
-                </View>
+                  
+                  {showInlineTimePicker && Platform.OS === 'ios' && (
+                    <View style={[
+                      styles.inlinePickerContainer,
+                      {
+                        borderTopWidth: StyleSheet.hairlineWidth,
+                        borderTopColor: platformColors.border,
+                        backgroundColor: platformColors.secondary,
+                      }
+                    ]}>
+                      <DateTimePicker
+                         value={timeAsDate}
+                         mode="time"
+                         is24Hour={true}
+                         display="spinner"
+                         onChange={onTimeChange}
+                         style={styles.inlinePicker}
+                         textColor={platformColors.text}
+                       />
+                    </View>
+                  )}
+                </>
               )}
             </View>
           </View>
@@ -236,5 +269,13 @@ const styles = StyleSheet.create({
   placeholderText: {
     fontStyle: 'italic',
     textAlign: 'center',
+  },
+  inlinePickerContainer: {
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+  },
+  inlinePicker: {
+    width: '100%',
+    height: 200,
   },
 });
