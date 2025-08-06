@@ -1,152 +1,98 @@
-# Technical Plan: Settings UI Refactor
+# Technical Plan: Fix Notification Scheduling Error
 
-This document outlines the technical steps required to refactor the settings section of the application based on user feedback.
+## 1. Introduction
 
----
+This document outlines the technical plan to resolve a critical error in the Expo app that occurs when scheduling daily reminder notifications. The error, `[Error: Failed to schedule notification, Error Domain=NSInternalInconsistencyException Code=0 "(null)" UserInfo={NSAssertLine=536, NSAssertFile=UNNotificationTrigger.m}]`, indicates an invalid `UNNotificationTrigger` configuration on iOS.
 
-## 1. Navigation & Header Refactoring
+The root cause has been identified as the incorrect use of a `timeInterval` trigger for scheduling daily repeating notifications. This plan details the necessary changes to fix this issue by using the appropriate `CalendarTrigger`.
 
-The core of this refactor is to move from a shared header for all settings screens to individual headers for each screen. This will resolve the "framed" navigation and blurred header issues.
+## 2. Problem Analysis
 
-### 1.1. Eliminate the Shared Header
+The investigation of `components/NotificationsContext.tsx` revealed that the `scheduleDailyNotification` function uses `Notifications.scheduleNotificationAsync` with a `trigger` of type `timeInterval`. This trigger is designed for notifications that fire after a specific number of seconds and is not suitable for creating daily reminders that repeat at a specific time of day.
 
-The current implementation in `app/(settings)/_layout.tsx` uses a single `<Stack>` to wrap all the settings screens, which creates the shared header. This will be changed to a layout that allows individual screen options.
+The current implementation calculates the seconds until the next desired time and sets a repeating `timeInterval` trigger. This approach is fragile and is the direct cause of the `NSInternalInconsistencyException` on iOS when the trigger configuration is not valid.
 
-**File to Modify:** `app/(settings)/_layout.tsx`
+## 3. Proposed Solution
 
-**Changes:**
+The solution is to replace the `timeInterval` trigger with a `CalendarTrigger`. The `CalendarTrigger` is the correct way to schedule notifications that repeat at a specific time and on a daily basis.
 
-- Remove the `SettingsLayout` component.
-- Export a `Stack` component directly from `expo-router`.
-- Configure the `Stack` with default `screenOptions` to set the `headerBackTitle` to "Settings". This ensures consistent back-button behavior.
+This change will involve the following:
 
-```tsx
-import { Stack } from "expo-router";
+1.  **Modify `scheduleDailyNotification`**: Update the `scheduleNotificationAsync` call in `components/NotificationsContext.tsx` to use a `CalendarTrigger`. The trigger will be configured with the `hour` and `minute` for the daily reminder, and `repeats: true` to ensure it fires every day.
+2.  **Remove `getSecondsUntilTime`**: The `getSecondsUntilTime` helper function will no longer be needed, as the `CalendarTrigger` handles the scheduling logic internally. Removing this function will simplify the codebase.
 
-export default function SettingsStack() {
-  return (
-    <Stack
-      screenOptions={{
-        headerBackTitle: "Settings",
-      }}
-    />
-  );
-}
+## 4. Implementation Steps
+
+### Step 1: Modify `components/NotificationsContext.tsx`
+
+1.  **Remove the `getSecondsUntilTime` function.** This function is located at the beginning of the file and is no longer required.
+
+2.  **Update the `scheduleDailyNotification` function.** Modify the `trigger` object within the `Notifications.scheduleNotificationAsync` call to use a `CalendarTrigger`.
+
+#### Code Changes:
+
+```typescript
+// components/NotificationsContext.tsx
+
+// ... (imports and other code)
+
+// REMOVE THIS FUNCTION
+/*
+const getSecondsUntilTime = (hours: number, minutes: number): number => {
+  const now = new Date();
+  const target = new Date();
+  target.setHours(hours, minutes, 0, 0);
+
+  if (target <= now) {
+    target.setDate(target.getDate() + 1);
+  }
+
+  return Math.floor((target.getTime() - now.getTime()) / 1000);
+};
+*/
+
+// ... (storage helper functions)
+
+// ... (context interface)
+
+// ... (notification handler)
+
+// ... (NotificationsProvider component)
+
+// Schedule daily notification
+const scheduleDailyNotification = async (time: string) => {
+  try {
+    // Cancel existing notification if any
+    if (notificationId) {
+      await Notifications.cancelScheduledNotificationAsync(notificationId);
+    }
+
+    const [hour, minute] = time.split(":").map(Number);
+
+    const id = await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Daily Learning Reminder 📚",
+        body: "Time for your Arabic learning session! Keep up the great progress.",
+        sound: true,
+      },
+      trigger: {
+        hour,
+        minute,
+        repeats: true,
+      },
+    });
+
+    setNotificationId(id);
+    await saveToStorage(STORAGE_KEYS.NOTIFICATION_ID, id);
+    console.log("Scheduled daily notification:", id);
+  } catch (error) {
+    console.error("Error scheduling notification:", error);
+  }
+};
+
+// ... (rest of the component)
 ```
 
-### 1.2. Configure Individual Screen Headers
+## 5. Conclusion
 
-Each settings screen will now be responsible for its own header configuration.
-
-**Files to Modify:**
-
-- `app/(settings)/appearance.tsx`
-- `app/(settings)/notifications.tsx`
-- `app/(settings)/learning.tsx`
-- `app/(settings)/support.tsx`
-- `app/(settings)/about.tsx`
-- `app/(settings)/changelog.tsx`
-
-**Changes:**
-
-For each file, add a `Stack.Screen` component to define the `title`.
-
-**Example for `appearance.tsx`:**
-
-```tsx
-import { Stack } from "expo-router";
-// ... other imports
-
-export default function AppearanceScreen() {
-  return (
-    <>
-      <Stack.Screen options={{ title: "Appearance" }} />
-      {/* ... rest of the component */}
-    </>
-  );
-}
-```
-
-This will be repeated for all settings screens with their respective titles.
-
-### 1.3. Fix the Main Settings Screen Header
-
-The main "Settings" title will be moved from the page content to the navigation header.
-
-**Files to Modify:**
-
-- `app/(tabs)/settings.tsx`
-- `app/(tabs)/_layout.tsx`
-
-**Changes:**
-
-1.  **In `app/(tabs)/settings.tsx`:**
-
-    - Remove the `ListHeaderComponent` prop from the `SectionList`.
-
-2.  **In `app/(tabs)/_layout.tsx`:**
-    - Add `options` to the `Tabs.Screen` for the settings tab to set the `title`.
-
-**Example for `app/(tabs)/_layout.tsx`:**
-
-```tsx
-// ...
-<Tabs.Screen
-  name="settings"
-  options={{
-    title: "Settings", // This will be the header title
-    tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />,
-  }}
-/>
-// ...
-```
-
----
-
-## 2. UI & Content Cleanup
-
-With the navigation refactored, we can now remove redundant UI elements.
-
-### 2.1. Remove Redundant In-Page Titles
-
-The titles within the content of the sub-pages are now redundant because they are in the header.
-
-**Files to Modify:**
-
-- `app/(settings)/changelog.tsx`
-- `app/(settings)/support.tsx`
-- `app/(settings)/about.tsx`
-
-**Changes:**
-
-- In each file, remove the `<Text>` component that renders the main title of the page. For `about.tsx`, this is the `<Text style={styles.title}>{app.expo.name}</Text>` line.
-
-### 2.2. Remove Redundant "Rate This App" Button
-
-The "Rate This App" button on the support screen is redundant.
-
-**File to Modify:** `app/(settings)/support.tsx`
-
-**Changes:**
-
-- Remove the `TouchableOpacity` component for the "Rate the App" button.
-
----
-
-## 3. Component Refactoring
-
-### 3.1. Pronunciation Speed Control
-
-**File:** `app/(settings)/learning.tsx`
-
-**Analysis:**
-
-The user feedback indicated that the "Pronunciation Speed" control should be a `SegmentedControl`. Upon inspection, the component is already implemented as a `SegmentedControl`.
-
-**Conclusion:**
-
-No changes are required for this component.
-
----
-
-This plan addresses all the user's feedback and will result in a cleaner, more intuitive settings section.
+By implementing these changes, the notification scheduling will be robust and reliable, eliminating the `NSInternalInconsistencyException` error on iOS. The code will be cleaner and easier to maintain.

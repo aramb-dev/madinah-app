@@ -10,20 +10,6 @@ const STORAGE_KEYS = {
   NOTIFICATION_ID: 'notifications_notification_id',
 };
 
-// Helper function to calculate seconds until next occurrence of specified time
-const getSecondsUntilTime = (hours: number, minutes: number): number => {
-  const now = new Date();
-  const target = new Date();
-  target.setHours(hours, minutes, 0, 0);
-  
-  // If target time has passed today, schedule for tomorrow
-  if (target <= now) {
-    target.setDate(target.getDate() + 1);
-  }
-  
-  return Math.floor((target.getTime() - now.getTime()) / 1000);
-};
-
 // Storage helper functions
 const saveToStorage = async (key: string, value: string) => {
   try {
@@ -100,7 +86,7 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
         await Notifications.cancelScheduledNotificationAsync(notificationId);
       }
 
-      const [hours, minutes] = time.split(':').map(Number);
+      const [hour, minute] = time.split(':').map(Number);
 
       const id = await Notifications.scheduleNotificationAsync({
         content: {
@@ -109,10 +95,10 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
           sound: true,
         },
         trigger: {
-          type: 'timeInterval',
-          seconds: getSecondsUntilTime(hours, minutes),
+          hour,
+          minute,
           repeats: true,
-        },
+        } as unknown as Notifications.NotificationTriggerInput,
       });
 
       setNotificationId(id);
