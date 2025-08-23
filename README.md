@@ -126,7 +126,7 @@ If you have a suggestion that would make this better, please fork the repo and c
 
 Your feedback is invaluable! If you encounter any bugs or have suggestions, please open an issue on GitHub or reach out directly via email.
 
-Aram B. - [aramb@aramb.dev](mailto:aramb@aramb.dev)
+Abdur-Rahman Bilal - [aramb@aramb.dev](mailto:aramb@aramb.dev)
 
 Project Link: [https://github.com/aramb-dev/madinah-app](https://github.com/aramb-dev/madinah-app)
 
