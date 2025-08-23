@@ -1,6 +1,6 @@
 # Madinah Arabic Lessons
 
-![App Icon Placeholder](https://placehold.co/128x128/007AFF/FFFFFF?text=Logo)
+![App Icon Placeholder](https://placehold.co/128x128/096/FFFFFF?text=Madinah%20\nArabic%20Lessons)
 
 An elegant and modern mobile application for iOS and Android designed to help students learn the Arabic language through the renowned Madinah Books series. This app provides a clean, intuitive, and customizable learning experience.
 
