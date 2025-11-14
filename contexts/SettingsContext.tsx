@@ -2,7 +2,7 @@
 
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useColorScheme } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import storage from '@/utils/storage';
 
 // 1. Define the shape of the context data
 interface SettingsContextState {
@@ -22,13 +22,18 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
   const [theme, setThemeState] = useState<'light' | 'dark' | 'system'>('system');
   const [fontSize, setFontSizeState] = useState(16);
 
-  // Load settings from AsyncStorage on mount
+  // Load settings from storage on mount
   useEffect(() => {
     const loadSettings = async () => {
-      const savedTheme = await AsyncStorage.getItem('theme');
-      const savedFontSize = await AsyncStorage.getItem('fontSize');
+      const savedTheme = await storage.getItem<'light' | 'dark' | 'system'>('theme', {
+        defaultValue: 'system',
+      });
+      const savedFontSize = await storage.getItem('fontSize', {
+        defaultValue: '16',
+      });
+
       if (savedTheme) {
-        setThemeState(savedTheme as 'light' | 'dark' | 'system');
+        setThemeState(savedTheme);
       }
       if (savedFontSize) {
         setFontSizeState(Number(savedFontSize));
@@ -40,13 +45,13 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
   // Function to update and persist theme
   const setTheme = async (newTheme: 'light' | 'dark' | 'system') => {
     setThemeState(newTheme);
-    await AsyncStorage.setItem('theme', newTheme);
+    await storage.setItem('theme', newTheme, { showAlert: true });
   };
 
   // Function to update and persist font size
   const setFontSize = async (newSize: number) => {
     setFontSizeState(newSize);
-    await AsyncStorage.setItem('fontSize', String(newSize));
+    await storage.setItem('fontSize', String(newSize), { showAlert: true });
   };
 
   const effectiveTheme = theme === 'system' ? systemTheme : theme;

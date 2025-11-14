@@ -1,4 +1,5 @@
 import { apiRequest, ApiResponse, LocalizedString } from './client';
+import logger from '@/utils/logger';
 
 export interface Vocabulary {
   id: string;
@@ -26,6 +27,6 @@ export const getVocabulary = async (
   if (response && response.success && Array.isArray(response.data)) {
     return response.data;
   }
-  console.error('Unexpected response structure for getVocabulary:', response);
+  logger.error('Unexpected response structure for getVocabulary');
   return [];
 };

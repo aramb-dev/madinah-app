@@ -1,9 +1,21 @@
 /**
  * API Client for Madinah Arabic Learning App
- * Base URL: https://madinah.arabic.aramb.dev/api
  */
 
-const BASE_URL = 'https://madinah.arabic.aramb.dev/api';
+import logger from '@/utils/logger';
+import { z } from 'zod';
+import {
+  ApiResponseSchema,
+  BookSchema,
+  LessonSchema,
+  LessonTitleSchema,
+  MetadataSchema,
+  RuleCountSchema,
+  validateResponse,
+} from './schemas';
+import { API_BASE_URL, API_TIMEOUT } from '@/config/env';
+
+const BASE_URL = API_BASE_URL;
 
 // Types based on the API specification
 export interface LocalizedString {
@@ -75,33 +87,50 @@ export interface RuleCount {
   rulesByType: Record<string, number>;
 }
 
+// Fetch with timeout helper
+async function fetchWithTimeout(url: string, options: RequestInit = {}, timeout: number = API_TIMEOUT): Promise<Response> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+    return response;
+  } catch (error: any) {
+    clearTimeout(timeoutId);
+    if (error.name === 'AbortError') {
+      throw new Error('Request timeout');
+    }
+    throw error;
+  }
+}
+
 // Generic fetch function with error handling
 export async function apiRequest<T>(endpoint: string): Promise<T> {
   try {
-    const response = await fetch(`${BASE_URL}${endpoint}`);
+    logger.api.request(endpoint);
+    const response = await fetchWithTimeout(`${BASE_URL}${endpoint}`);
 
     if (!response.ok) {
-      console.error(`API request error for ${endpoint}: Status ${response.status}`);
-      const errorText = await response.text();
-      console.error(`API request error text for ${endpoint}:`, errorText);
+      logger.api.error(endpoint, `Status ${response.status}`);
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    // Log the raw response text before parsing
-    const responseText = await response.text();
-    console.log(`Raw response for ${endpoint}:`, responseText.substring(0, 500)); // Log first 500 chars
+    const data = await response.json();
+    logger.api.response(endpoint, response.status);
+    logger.api.data(endpoint, data);
 
-    try {
-      const data = JSON.parse(responseText); // Parse the logged text
-      console.log(`Parsed data for ${endpoint}:`, data);
-      return data;
-    } catch (parseError) {
-      console.error(`Failed to parse JSON for ${endpoint}:`, parseError);
-      console.error(`Response text that failed to parse for ${endpoint}:`, responseText.substring(0, 1000)); // Log more if parse fails
-      throw parseError; // Re-throw the parsing error
-    }
+    return data;
   } catch (error) {
-    console.error(`API request failed for ${endpoint}:`, error);
+    if (error instanceof SyntaxError) {
+      // JSON parsing error
+      logger.api.error(endpoint, 'Invalid JSON response');
+      throw new Error('Invalid response format from server');
+    }
+    logger.api.error(endpoint, error);
     throw error;
   }
 }
@@ -115,13 +144,13 @@ export interface ApiResponse<T> {
 
 // Books API
 export const getBooks = async (): Promise<Book[]> => {
-  const response = await apiRequest<ApiResponse<Book[]>>('/books');
-  if (response && response.success && Array.isArray(response.data)) {
-    return response.data;
-  }
-  // Log an error or return an empty array if the structure is not as expected
-  console.error('Unexpected response structure for getBooks:', response);
-  return [];
+  const rawResponse = await apiRequest<unknown>('/books');
+  const response = validateResponse(
+    ApiResponseSchema(z.array(BookSchema)),
+    rawResponse,
+    'getBooks'
+  );
+  return response.data;
 };
 
 export const getBookById = (bookId: string): Promise<ApiResponse<Book>> => {
@@ -129,12 +158,13 @@ export const getBookById = (bookId: string): Promise<ApiResponse<Book>> => {
 };
 
 export const getBookLessons = async (bookId: string): Promise<Lesson[]> => {
-  const response = await apiRequest<ApiResponse<Lesson[]>>(`/books/${bookId}/lessons`);
-  if (response && response.success && Array.isArray(response.data)) {
-    return response.data;
-  }
-  console.error(`Unexpected response structure for getBookLessons (bookId: ${bookId}):`, response);
-  return []; // Return empty array on unexpected structure or error
+  const rawResponse = await apiRequest<unknown>(`/books/${bookId}/lessons`);
+  const response = validateResponse(
+    ApiResponseSchema(z.array(LessonSchema)),
+    rawResponse,
+    `getBookLessons(${bookId})`
+  );
+  return response.data;
 };
 
 export const getBookLesson = (bookId: string, lessonId: string): Promise<ApiResponse<Lesson>> => {
