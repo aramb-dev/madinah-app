@@ -7,15 +7,20 @@ import { useColorScheme } from '@/components/useColorScheme';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Stack } from 'expo-router';
 import { useTheme } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 
 // Platform-specific colors for consistency
 const getBackgroundColors = (isDark: boolean) => ({
   primary: isDark ? '#1c1c1e' : '#f2f2f7',
   secondary: isDark ? '#2c2c2e' : '#ffffff',
+  tertiary: isDark ? '#3a3a3c' : '#f9f9f9',
   border: isDark ? '#38383a' : '#c6c6c8',
   text: isDark ? '#ffffff' : '#000000',
   secondaryText: isDark ? '#8e8e93' : '#6d6d70',
   accent: '#007AFF',
+  success: '#34C759',
+  warning: '#FF9500',
+  danger: '#FF3B30',
 });
 
 export default function NotificationsScreen() {
@@ -69,6 +74,26 @@ export default function NotificationsScreen() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
+          {/* Study Reminder Card */}
+          <View style={styles.section}>
+            <View style={[
+              styles.heroCard,
+              {
+                backgroundColor: platformColors.accent,
+              }
+            ]}>
+              <View style={styles.heroIconContainer}>
+                <Ionicons name="notifications" size={40} color="#fff" />
+              </View>
+              <Text style={[styles.heroTitle, { fontSize: fontSize * 1.2 }]}>
+                Stay Consistent
+              </Text>
+              <Text style={[styles.heroSubtitle, { fontSize: fontSize * 0.9 }]}>
+                Set daily reminders to build a strong learning habit
+              </Text>
+            </View>
+          </View>
+
           {/* Daily Reminder Section */}
           <View style={styles.section}>
             <View style={styles.sectionHeaderContainer}>
@@ -76,10 +101,10 @@ export default function NotificationsScreen() {
                 styles.sectionHeader,
                 {
                   color: platformColors.secondaryText,
-                  fontSize: fontSize * 0.9,
+                  fontSize: fontSize * 0.85,
                 }
               ]}>
-                DAILY REMINDERS
+                DAILY STUDY REMINDER
               </Text>
             </View>
             <View style={[
@@ -90,15 +115,31 @@ export default function NotificationsScreen() {
               }
             ]}>
               <View style={styles.settingItem}>
-                <Text style={[
-                  styles.settingText,
-                  {
-                    color: platformColors.text,
-                    fontSize: fontSize * 1.0,
-                  }
-                ]}>
-                  Daily Learning Reminder
-                </Text>
+                <View style={styles.settingIconText}>
+                  <View style={[styles.iconBadge, { backgroundColor: platformColors.accent + '20' }]}>
+                    <Ionicons name="alarm" size={20} color={platformColors.accent} />
+                  </View>
+                  <View>
+                    <Text style={[
+                      styles.settingText,
+                      {
+                        color: platformColors.text,
+                        fontSize: fontSize * 1.0,
+                      }
+                    ]}>
+                      Enable Daily Reminder
+                    </Text>
+                    <Text style={[
+                      styles.settingDescription,
+                      {
+                        color: platformColors.secondaryText,
+                        fontSize: fontSize * 0.8,
+                      }
+                    ]}>
+                      Get notified to study every day
+                    </Text>
+                  </View>
+                </View>
                 <Switch
                   value={dailyReminderEnabled}
                   onValueChange={setDailyReminderEnabled}
@@ -107,6 +148,7 @@ export default function NotificationsScreen() {
                     true: platformColors.accent,
                   }}
                   thumbColor={platformColors.secondary}
+                  ios_backgroundColor={platformColors.border}
                 />
               </View>
 
@@ -118,30 +160,43 @@ export default function NotificationsScreen() {
                       {
                         borderTopWidth: StyleSheet.hairlineWidth,
                         borderTopColor: platformColors.border,
-                        backgroundColor: showInlineTimePicker ? platformColors.primary : 'transparent',
+                        backgroundColor: showInlineTimePicker ? platformColors.tertiary : 'transparent',
                       }
                     ]}
                     onPress={showPicker}
-                    activeOpacity={0.6}
+                    activeOpacity={0.7}
                   >
-                    <Text style={[
-                      styles.settingText,
-                      {
-                        color: platformColors.text,
-                        fontSize: fontSize * 1.0,
-                      }
-                    ]}>
-                      Reminder Time
-                    </Text>
-                    <Text style={[
-                      styles.timeText,
-                      {
-                        color: platformColors.accent,
-                        fontSize: fontSize * 1.0,
-                      }
-                    ]}>
-                      {dailyReminderTime}
-                    </Text>
+                    <View style={styles.settingIconText}>
+                      <View style={[styles.iconBadge, { backgroundColor: platformColors.accent + '20' }]}>
+                        <Ionicons name="time" size={20} color={platformColors.accent} />
+                      </View>
+                      <Text style={[
+                        styles.settingText,
+                        {
+                          color: platformColors.text,
+                          fontSize: fontSize * 1.0,
+                        }
+                      ]}>
+                        Reminder Time
+                      </Text>
+                    </View>
+                    <View style={styles.timeContainer}>
+                      <Text style={[
+                        styles.timeText,
+                        {
+                          color: platformColors.accent,
+                          fontSize: fontSize * 1.1,
+                        }
+                      ]}>
+                        {dailyReminderTime}
+                      </Text>
+                      <Ionicons
+                        name={showInlineTimePicker ? "chevron-up" : "chevron-down"}
+                        size={16}
+                        color={platformColors.secondaryText}
+                        style={styles.chevronIcon}
+                      />
+                    </View>
                   </TouchableOpacity>
 
                   {showInlineTimePicker && Platform.OS === 'ios' && (
@@ -150,7 +205,7 @@ export default function NotificationsScreen() {
                       {
                         borderTopWidth: StyleSheet.hairlineWidth,
                         borderTopColor: platformColors.border,
-                        backgroundColor: platformColors.secondary,
+                        backgroundColor: platformColors.tertiary,
                       }
                     ]}>
                       <DateTimePicker
@@ -170,112 +225,111 @@ export default function NotificationsScreen() {
           </View>
 
           {/* Permission Status Section */}
-          <View style={styles.section}>
-            <View style={styles.sectionHeaderContainer}>
-              <Text style={[
-                styles.sectionHeader,
+          {permissionStatus !== 'granted' && (
+            <View style={styles.section}>
+              <View style={[
+                styles.warningCard,
                 {
-                  color: platformColors.secondaryText,
-                  fontSize: fontSize * 0.9,
+                  backgroundColor: permissionStatus === 'denied' ? platformColors.danger + '15' : platformColors.warning + '15',
+                  borderColor: permissionStatus === 'denied' ? platformColors.danger : platformColors.warning,
                 }
               ]}>
-                NOTIFICATION STATUS
-              </Text>
-            </View>
-            <View style={[
-              styles.sectionCard,
-              {
-                backgroundColor: platformColors.secondary,
-                borderColor: platformColors.border,
-              }
-            ]}>
-              <View style={styles.settingItem}>
+                <View style={styles.warningIconContainer}>
+                  <Ionicons
+                    name="warning"
+                    size={28}
+                    color={permissionStatus === 'denied' ? platformColors.danger : platformColors.warning}
+                  />
+                </View>
                 <Text style={[
-                  styles.settingText,
+                  styles.warningTitle,
                   {
-                    color: platformColors.text,
+                    color: permissionStatus === 'denied' ? platformColors.danger : platformColors.warning,
                     fontSize: fontSize * 1.0,
                   }
                 ]}>
-                  Permission Status
+                  {permissionStatus === 'denied' ? 'Notifications Blocked' : 'Permission Needed'}
                 </Text>
                 <Text style={[
-                  styles.statusText,
+                  styles.warningMessage,
                   {
-                    color: permissionStatus === 'granted' ? '#34C759' :
-                           permissionStatus === 'denied' ? '#FF3B30' : platformColors.secondaryText,
-                    fontSize: fontSize * 0.9,
+                    color: platformColors.text,
+                    fontSize: fontSize * 0.85,
                   }
                 ]}>
-                  {permissionStatus === 'granted' ? '✓ Allowed' :
-                   permissionStatus === 'denied' ? '✗ Denied' : 'Unknown'}
+                  {permissionStatus === 'denied'
+                    ? 'Please enable notifications in your device settings to receive study reminders.'
+                    : 'Grant notification permission to receive daily learning reminders.'}
                 </Text>
-              </View>
-
-              {permissionStatus === 'denied' && (
-                <View style={[
-                  styles.settingItem,
-                  {
-                    borderTopWidth: StyleSheet.hairlineWidth,
-                    borderTopColor: platformColors.border,
-                    flexDirection: 'column',
-                    alignItems: 'flex-start',
-                  }
-                ]}>
+                {permissionStatus === 'denied' && (
                   <Text style={[
-                    styles.warningText,
-                    {
-                      color: '#FF9500',
-                      fontSize: fontSize * 0.85,
-                      marginBottom: 8,
-                    }
-                  ]}>
-                    ⚠️ Notifications are disabled
-                  </Text>
-                  <Text style={[
-                    styles.helpText,
+                    styles.warningSteps,
                     {
                       color: platformColors.secondaryText,
-                      fontSize: fontSize * 0.8,
-                      lineHeight: fontSize * 1.2,
+                      fontSize: fontSize * 0.75,
                     }
                   ]}>
-                    To enable notifications, go to Settings → Notifications → Madinah App and allow notifications.
+                    Settings → Notifications → Madinah Resources → Allow Notifications
                   </Text>
-                </View>
-              )}
+                )}
+              </View>
             </View>
-          </View>
+          )}
 
-          {/* Future Options Section */}
+          {/* Study Tips Section */}
           <View style={styles.section}>
             <View style={styles.sectionHeaderContainer}>
               <Text style={[
                 styles.sectionHeader,
                 {
                   color: platformColors.secondaryText,
-                  fontSize: fontSize * 0.9,
+                  fontSize: fontSize * 0.85,
                 }
               ]}>
-                ADDITIONAL OPTIONS
+                STUDY TIPS
               </Text>
             </View>
             <View style={[
-              styles.sectionCard,
+              styles.tipsCard,
               {
-                backgroundColor: platformColors.secondary,
-                borderColor: platformColors.border,
+                backgroundColor: platformColors.success + '15',
+                borderColor: platformColors.success + '30',
               }
             ]}>
-              <View style={styles.settingItem}>
+              <View style={styles.tipRow}>
+                <Ionicons name="checkmark-circle" size={20} color={platformColors.success} />
                 <Text style={[
-                  styles.placeholderText,
+                  styles.tipText,
                   {
-                    color: platformColors.secondaryText,
-                    fontSize: fontSize * 0.9,
+                    color: platformColors.text,
+                    fontSize: fontSize * 0.85,
                   }
                 ]}>
-                  More notification options will be available in future updates.
+                  Study at the same time daily for best results
+                </Text>
+              </View>
+              <View style={styles.tipRow}>
+                <Ionicons name="checkmark-circle" size={20} color={platformColors.success} />
+                <Text style={[
+                  styles.tipText,
+                  {
+                    color: platformColors.text,
+                    fontSize: fontSize * 0.85,
+                  }
+                ]}>
+                  Even 10-15 minutes daily builds strong habits
+                </Text>
+              </View>
+              <View style={styles.tipRow}>
+                <Ionicons name="checkmark-circle" size={20} color={platformColors.success} />
+                <Text style={[
+                  styles.tipText,
+                  {
+                    color: platformColors.text,
+                    fontSize: fontSize * 0.85,
+                  }
+                ]}>
+                  Review previous lessons regularly for retention
                 </Text>
               </View>
             </View>
@@ -305,29 +359,25 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingHorizontal: 16,
-    paddingTop: 20,
+    paddingTop: 12,
     paddingBottom: 40,
   },
   section: {
-    marginBottom: 24,
+    marginBottom: 20,
   },
   sectionHeaderContainer: {
-    paddingHorizontal: 4,
-    paddingBottom: 6,
+    paddingHorizontal: 6,
+    paddingBottom: 8,
   },
   sectionHeader: {
-    fontSize: 13,
-    fontWeight: '400',
+    fontWeight: '600',
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    letterSpacing: 0.8,
   },
   sectionCard: {
     borderRadius: 16,
     overflow: 'hidden',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
     shadowRadius: 8,
     elevation: 4,
@@ -336,19 +386,41 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 20,
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+    minHeight: 60,
+  },
+  settingIconText: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    gap: 12,
+  },
+  iconBadge: {
+    width: 40,
+    height: 40,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   settingText: {
-    fontWeight: '500',
-    flex: 1,
+    fontWeight: '600',
+  },
+  settingDescription: {
+    marginTop: 2,
+    opacity: 0.8,
+  },
+  timeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
   },
   timeText: {
-    fontWeight: '500',
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
-  placeholderText: {
-    fontStyle: 'italic',
-    textAlign: 'center',
+  chevronIcon: {
+    marginLeft: 2,
   },
   inlinePickerContainer: {
     paddingVertical: 8,
@@ -358,13 +430,77 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 200,
   },
-  statusText: {
-    fontWeight: '600',
+  // Hero Card
+  heroCard: {
+    borderRadius: 20,
+    padding: 24,
+    alignItems: 'center',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 6,
   },
-  warningText: {
-    fontWeight: '600',
+  heroIconContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
   },
-  helpText: {
-    fontWeight: '400',
+  heroTitle: {
+    color: '#fff',
+    fontWeight: '700',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  heroSubtitle: {
+    color: '#fff',
+    opacity: 0.9,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  // Warning Card
+  warningCard: {
+    borderRadius: 16,
+    borderWidth: 1.5,
+    padding: 20,
+    alignItems: 'center',
+  },
+  warningIconContainer: {
+    marginBottom: 12,
+  },
+  warningTitle: {
+    fontWeight: '700',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  warningMessage: {
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 8,
+  },
+  warningSteps: {
+    textAlign: 'center',
+    opacity: 0.8,
+    fontWeight: '500',
+    marginTop: 4,
+  },
+  // Tips Card
+  tipsCard: {
+    borderRadius: 16,
+    borderWidth: 1,
+    padding: 18,
+    gap: 14,
+  },
+  tipRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+  },
+  tipText: {
+    flex: 1,
+    lineHeight: 20,
   },
 });
