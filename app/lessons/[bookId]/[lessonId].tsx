@@ -6,6 +6,7 @@ import { useLocalSearchParams, Stack } from 'expo-router';
 import { api, Lesson as ApiLesson, Book as ApiBook } from '../../../api/client';
 import { useSettings } from '@/contexts/SettingsContext';
 import { useFont } from '@/components/FontContext';
+import logger from '@/utils/logger';
 
 // Define a more specific Lesson type for the component's needs
 interface LessonContentItem {
@@ -78,7 +79,7 @@ export default function LessonDetailScreen() {
           if (bookResponse && bookResponse.success && bookResponse.data) {
             setBookDetails(bookResponse.data);
           } else {
-            console.error(`[LessonDetailScreen] Failed to fetch book details for bookId: ${bookId}`, bookResponse);
+            logger.error(`[LessonDetailScreen] Failed to fetch book details for bookId: ${bookId}`, bookResponse);
             // Optionally set an error state specific to book fetching if needed
           }
         }
@@ -86,7 +87,7 @@ export default function LessonDetailScreen() {
         // Fetch lesson details
         if (bookId && lessonId) { // Ensure lessonId is also present before fetching lesson
           const lessonApiResponse = await api.getBookLesson(bookId, lessonId);
-          console.log('[LessonDetailScreen] Received apiResponse for lesson details:', JSON.stringify(lessonApiResponse, null, 2));
+          logger.log('[LessonDetailScreen] Received apiResponse for lesson details:', JSON.stringify(lessonApiResponse, null, 2));
 
           if (lessonApiResponse && lessonApiResponse.success && lessonApiResponse.data) {
             const lessonData = lessonApiResponse.data;
@@ -101,21 +102,21 @@ export default function LessonDetailScreen() {
               rules: lessonData.rules || [],
             };
             setLesson(adaptedLesson);
-            console.log('[LessonDetailScreen] Adapted lesson set:', JSON.stringify(adaptedLesson, null, 2));
+            logger.log('[LessonDetailScreen] Adapted lesson set:', JSON.stringify(adaptedLesson, null, 2));
           } else {
-            console.error('[LessonDetailScreen] Failed to fetch lesson details or data is missing in response:', lessonApiResponse);
+            logger.error('[LessonDetailScreen] Failed to fetch lesson details or data is missing in response:', lessonApiResponse);
             setError(`Failed to load details for lesson ${lessonId} from book ${bookId}.`);
             setLesson(null);
           }
         }
       } catch (err) {
-        console.error('[LessonDetailScreen] Error in fetchData:', err);
+        logger.error('[LessonDetailScreen] Error in fetchData:', err);
         setError(`Failed to load data for book ${bookId} / lesson ${lessonId}.`);
         setLesson(null); // Also clear lesson if book fetch fails or general error
         setBookDetails(null); // Clear book details on error
       } finally {
         setLoading(false);
-        console.log('[LessonDetailScreen] fetchData finished.');
+        logger.log('[LessonDetailScreen] fetchData finished.');
       }
     };
 
@@ -128,7 +129,7 @@ export default function LessonDetailScreen() {
       try {
         setLoading(true);
         const apiResponse = await api.getBookLesson(bookId, lessonId);
-        console.log('[LessonDetailScreen] Received apiResponse for lesson details:', JSON.stringify(apiResponse, null, 2));
+        logger.log('[LessonDetailScreen] Received apiResponse for lesson details:', JSON.stringify(apiResponse, null, 2));
 
         if (apiResponse && apiResponse.success && apiResponse.data) {
           const lessonData = apiResponse.data;
@@ -145,19 +146,19 @@ export default function LessonDetailScreen() {
             rules: lessonData.rules || [], // Ensure rules are copied over
           };
           setLesson(adaptedLesson);
-          console.log('[LessonDetailScreen] Adapted lesson set:', JSON.stringify(adaptedLesson, null, 2));
+          logger.log('[LessonDetailScreen] Adapted lesson set:', JSON.stringify(adaptedLesson, null, 2));
         } else {
-          console.error('[LessonDetailScreen] Failed to fetch lesson details or data is missing in response:', apiResponse);
+          logger.error('[LessonDetailScreen] Failed to fetch lesson details or data is missing in response:', apiResponse);
           setError(`Failed to load details for lesson ${lessonId} from book ${bookId}.`);
           setLesson(null);
         }
       } catch (err) {
-        console.error('[LessonDetailScreen] Error in fetchLessonDetails:', err);
+        logger.error('[LessonDetailScreen] Error in fetchLessonDetails:', err);
         setError(`Failed to load lesson ${lessonId} from book ${bookId}.`);
         setLesson(null);
       } finally {
         setLoading(false);
-        console.log('[LessonDetailScreen] fetchLessonDetails finished.');
+        logger.log('[LessonDetailScreen] fetchLessonDetails finished.');
       }
     };
 

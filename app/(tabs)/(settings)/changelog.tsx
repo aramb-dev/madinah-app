@@ -7,6 +7,7 @@ import { useColorScheme } from '@/components/useColorScheme';
 import { useTheme } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import changelogData from "@/assets/changelog.json";
+import logger from '@/utils/logger';
 
 // Platform-specific colors for consistency
 const getBackgroundColors = (isDark: boolean) => ({
@@ -68,7 +69,7 @@ export default function ChangelogScreen() {
         setChangelog(sortedChangelog);
       } catch (err) {
         setError("Failed to load changelog from local file");
-        console.error("Error loading changelog:", err);
+        logger.error("Error loading changelog:", err);
       } finally {
         setLoading(false);
       }

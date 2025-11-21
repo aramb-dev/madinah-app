@@ -1,32 +1,32 @@
 import { StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity, View } from 'react-native';
-import { Text, useThemeColor } from '@/components/Themed'; // Import useThemeColor
+import { Text, useThemeColor } from '@/components/Themed';
 import { useEffect, useState } from 'react';
 import { api, Book } from '../../api/client';
-import { useRouter } from 'expo-router'; // Import useRouter
+import { useRouter } from 'expo-router';
 import { useSettings } from '@/contexts/SettingsContext';
+import logger from '@/utils/logger';
 
 export default function LessonsScreen() {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter(); // Initialize router
-  const { fontSize } = useSettings(); // Add fontSize from settings
+  const router = useRouter();
+  const { fontSize } = useSettings();
 
-  // Moved useThemeColor hooks to the top level
   const bookItemBackground = useThemeColor({}, 'background');
   const textColor = useThemeColor({}, 'text');
-  const mutedColor = useThemeColor({}, 'text'); // Assuming this was intended to be 'text' or similar, not 'muted'
+  const mutedColor = useThemeColor({}, 'text');
   const separatorColor = useThemeColor({}, 'background');
 
   useEffect(() => {
     const fetchBooks = async () => {
       try {
         setLoading(true);
-        const booksData = await api.getBooks(); // getBooks now returns Book[] directly
-        setBooks(booksData); // Set the books directly
+        const booksData = await api.getBooks();
+        setBooks(booksData);
       } catch (err) {
         setError('Failed to load books');
-        console.error('Error fetching books:', err);
+        logger.error('Error fetching books:', err);
       } finally {
         setLoading(false);
       }
@@ -55,11 +55,6 @@ export default function LessonsScreen() {
   const handleBookPress = (bookId: string) => {
     router.push(`/lessons/${bookId}`);
   };
-
-  // const bookItemBackground = useThemeColor({}, 'background'); // Example usage for book item background
-  // const textColor = useThemeColor({}, 'text');
-  // const mutedColor = useThemeColor({}, 'text');
-  // const separatorColor = useThemeColor({}, 'background');
 
   return (
     <ScrollView style={styles.scrollContainer} contentInsetAdjustmentBehavior="automatic">
@@ -95,47 +90,40 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingTop: 16, // Reduced from 24 to be more consistent
+    paddingTop: 16,
     paddingBottom: 24,
   },
   title: {
     fontWeight: 'bold',
-    marginBottom: 16, // Increased margin
+    marginBottom: 16,
   },
   separator: {
-    marginVertical: 24, // Increased margin
+    marginVertical: 24,
     height: 1,
     width: '100%',
   },
   bookItem: {
     width: '100%',
-    marginBottom: 16, // Adjusted margin
-    padding: 20, // Increased padding
-    borderRadius: 12, // Increased border radius
-    // backgroundColor is now set dynamically
+    marginBottom: 16,
+    padding: 20,
+    borderRadius: 12,
   },
   bookTitle: {
-    fontWeight: '600', // Adjusted font weight
-    marginBottom: 8, // Increased margin
+    fontWeight: '600',
+    marginBottom: 8,
   },
   bookDescription: {
-    marginBottom: 8, // Increased margin
+    marginBottom: 8,
   },
-  lessonCount: {
-    // fontSize will be set dynamically
-  },
+  lessonCount: {},
   loadingText: {
-    marginTop: 12, // Adjusted margin
-    // fontSize will be set dynamically
+    marginTop: 12,
   },
   errorText: {
-    // fontSize will be set dynamically
-    // color: 'red', // Color will be handled by theme or can be set explicitly if needed for errors
     textAlign: 'center',
   },
   noDataText: {
-    // fontSize will be set dynamically
     textAlign: 'center',
-    marginTop: 24, // Increased margin
+    marginTop: 24,
   },
 });
